@@ -19,18 +19,14 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Font Utama (Montserrat) untuk Body */
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background-color: var(--light-bg); line-height: 1.6; }
 
-        /* Font Mewah (Cormorant) untuk Judul */
         h1, h2, h3, h4, h5, h6 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); font-weight: 600; }
         
-        /* Memastikan Tombol & Input juga konsisten */
         button, input, select, textarea { font-family: 'Montserrat', sans-serif; }
-
         a { text-decoration: none; transition: 0.3s; }
         
-        /* --- 2. NAVBAR (Copy dari Index.html agar Identik) --- */
+        /* --- 2. NAVBAR --- */
         header {
             position: fixed; top: 0; width: 100%; padding: 20px 50px;
             display: flex; justify-content: space-between; align-items: center;
@@ -38,17 +34,30 @@
             background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
         }
         header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        
-        /* Logo menggunakan Cormorant */
         .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
         
         .nav-menu { display: flex; gap: 30px; list-style: none; }
-        
-        /* Menu Link menggunakan Montserrat (Kecil, Kapital) */
         .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
         
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
         .btn-book:hover { background: transparent; color: var(--gold); }
+
+        /* --- MOBILE MENU --- */
+        .mobile-menu-btn {
+            display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
+        }
+        .mobile-nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s;
+        }
+        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-nav-link {
+            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
+            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
+        }
 
         /* --- 3. HERO SECTION --- */
         .hero-meeting {
@@ -59,22 +68,20 @@
         }
         .hero-title {
             color: #fff; font-size: 4rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            /* Font Cormorant otomatis dari h1 global */
         }
         .hero-subtitle {
             color: var(--gold); font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 15px; font-weight: 600;
-            font-family: 'Montserrat', sans-serif; /* Subtitle pakai Montserrat agar terbaca jelas */
+            font-family: 'Montserrat', sans-serif;
         }
 
-        /* --- 4. TAB NAVIGATION (Tab menggunakan Cormorant agar Elegan) --- */
+        /* --- 4. TAB NAVIGATION --- */
         .tab-nav {
             display: flex; justify-content: center; gap: 40px; 
             padding: 30px 0; background: #fff; border-bottom: 1px solid #ddd;
             position: sticky; top: 70px; z-index: 900;
         }
         .tab-btn {
-            background: none; border: none; 
-            font-family: 'Cormorant Garamond', serif; /* Font Mewah untuk Tab */
+            background: none; border: none; font-family: 'Cormorant Garamond', serif;
             font-size: 1.3rem; color: #888; cursor: pointer; padding-bottom: 5px;
             transition: 0.3s; letter-spacing: 1px;
         }
@@ -97,8 +104,7 @@
         .capacity-table th { 
             text-align: left; padding: 15px; border-bottom: 2px solid var(--emerald); 
             color: var(--emerald); 
-            font-family: 'Cormorant Garamond', serif; /* Header Tabel Pakai Serif */
-            font-size: 1.2rem; 
+            font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; 
         }
         .capacity-table td { padding: 15px; border-bottom: 1px solid #eee; color: #555; }
         .capacity-table tr:hover { background: #fdfdfd; }
@@ -110,7 +116,7 @@
         }
         .package-card:hover { transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-color: var(--gold); }
         
-        .pkg-title { font-size: 2rem; margin-bottom: 5px; } /* Cormorant */
+        .pkg-title { font-size: 2rem; margin-bottom: 5px; } 
         .pkg-price { display: block; color: var(--gold); font-weight: 600; font-size: 1.1rem; margin-bottom: 25px; letter-spacing: 1px; font-family: 'Montserrat', sans-serif; }
         
         .pkg-list { list-style: none; text-align: left; font-size: 0.9rem; color: #666; margin-bottom: 30px; padding: 0; }
@@ -134,50 +140,24 @@
             .split-layout { flex-direction: column; }
             .package-grid { grid-template-columns: 1fr; }
             .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; }
+            .btn-book { display: none; }
             header { justify-content: center; }
             .img-col img { height: 250px; }
             .tab-nav { gap: 20px; }
             .tab-btn { font-size: 1rem; }
         }
-        /* --- MOBILE MENU HAMBURGER --- */
-        .mobile-menu-btn {
-            display: none; /* Hidden di Desktop */
-            font-size: 1.5rem; color: #fff; cursor: pointer;
-            z-index: 1001;
-        }
-
-        .mobile-nav-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
-            z-index: 1000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: 0.4s;
-        }
-        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
-
-        .mobile-nav-link {
-            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
-            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        /* TAMPILKAN DI HP */
-        @media (max-width: 900px) {
-            .nav-menu { display: none; } /* Hide menu biasa */
-            .mobile-menu-btn { display: block; } /* Show Hamburger */
-            .btn-book { display: none; } /* Opsional: Sembunyikan tombol book di header hp jika sempit */
-        }
-
     </style>
 </head>
 <body>
 
-        <header id="navbar">
+    <header id="navbar">
         <div class="logo">Spencer Green</div>
         
         <ul class="nav-menu">
-            <li><a href="index.html" class="nav-link">Suites</a></li>
+            <li><a href="index.html" class="nav-link">Home</a></li>
             <li><a href="dining.html" class="nav-link">Gastronomy</a></li>
-            <li><a href="meeting.html" class="nav-link">Meeting</a></li>
+            <li><a href="meeting.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Meeting</a></li>
             <li><a href="wedding.html" class="nav-link">Weddings</a></li>
             <li><a href="gallery.html" class="nav-link">Gallery</a></li>
         </ul>
@@ -189,16 +169,14 @@
 
     <div class="mobile-nav-overlay" id="mobileNav">
         <a href="index.html" class="mobile-nav-link">Home</a>
-        <a href="dining.html" class="mobile-nav-link">Dining</a>
-        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
+        <a href="dining.html" class="mobile-nav-link">Gastronomy</a>
+        <a href="meeting.html" class="mobile-nav-link" style="color:var(--gold);">Meeting</a>
         <a href="wedding.html" class="mobile-nav-link">Weddings</a>
         <a href="gallery.html" class="mobile-nav-link">Gallery</a>
-        <a href="index.html" class="mobile-nav-link" style="color:var(--gold); border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Now</a>
+        <a href="index.html" class="mobile-nav-link" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Now</a>
         
         <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
     </div>
-
-    </header>
 
     <section class="hero-meeting">
         <div>
@@ -335,7 +313,7 @@
             event.currentTarget.classList.add("active");
         }
 
-        // Fungsi Toggle Mobile Menu
+        // Toggle Mobile Menu
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileNav');
             menu.classList.toggle('active');
