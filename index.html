@@ -137,9 +137,45 @@
 </head>
 <body>
 
-    <header id="navbar">
+        <header id="navbar">
         <div class="logo">Spencer Green</div>
+        
         <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link">Suites</a></li>
+            <li><a href="dining.html" class="nav-link">Gastronomy</a></li>
+            <li><a href="meeting.html" class="nav-link">Meeting</a></li>
+            <li><a href="wedding.html" class="nav-link">Weddings</a></li>
+            <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        </ul>
+
+        <a href="index.html" class="btn-book">Book Now</a>
+
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</div>
+    </header>
+
+    <div class="mobile-nav-overlay" id="mobileNav">
+        <a href="index.html" class="mobile-nav-link">Suites</a>
+        <a href="dining.html" class="mobile-nav-link">Gastronomy</a>
+        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
+        <a href="wedding.html" class="mobile-nav-link">Weddings</a>
+        <a href="gallery.html" class="mobile-nav-link">Gallery</a>
+        <a href="index.html" class="mobile-nav-link" style="color:var(--gold); border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Now</a>
+        
+        <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
+    </div>
+
+
+    <div class="mobile-nav-overlay" id="mobileNav">
+        <a href="index.html" class="mobile-nav-link">Suites</a>
+        <a href="dining.html" class="mobile-nav-link">Gastronomy</a>
+        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
+        <a href="wedding.html" class="mobile-nav-link">Weddings</a>
+        <a href="gallery.html" class="mobile-nav-link">Gallery</a>
+        <a href="index.html" class="mobile-nav-link" style="color:var(--gold); border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Now</a>
+        
+        <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
+    </div>
+ss="nav-menu">
             <li><a href="index.html" class="nav-link"  style="color:var(--gold); border-bottom: 1px solid var(--gold);">Home</a></li>
             <li><a href="dining.html" class="nav-link">Dining</a></li>
             <li><a href="meeting.html" class="nav-link">Meeting</a></li>
@@ -285,6 +321,12 @@
     </div>
 
     <script>
+        // Fungsi Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileNav');
+            menu.classList.toggle('active');
+        }
+        
         // CONFIG
         const API_URL = "https://script.google.com/macros/s/AKfycbz8NCQgwChpMLSYF3FjkVtXlgoe12u_-UHHNedozKrTuMmp-piWtzINkcCZeF0XuBWdXQ/exec"; 
         const HOTEL_WA_NUMBER = "6281334480210"; // GANTI DENGAN NO WA HOTEL ANDA (Format 62...)
