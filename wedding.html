@@ -35,10 +35,29 @@
         }
         header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+        
         .nav-menu { display: flex; gap: 30px; list-style: none; }
         .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+        
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
         .btn-book:hover { background: transparent; color: var(--gold); }
+
+        /* --- MOBILE MENU CSS (ADDED) --- */
+        .mobile-menu-btn {
+            display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
+        }
+        .mobile-nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s;
+        }
+        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-nav-link {
+            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
+            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
+        }
 
         /* --- 3. HERO SECTION --- */
         .hero-wedding {
@@ -104,7 +123,11 @@
             .venue-section { flex-direction: column; padding: 40px 20px; }
             .venue-img img { height: 300px; }
             .gallery-strip { grid-template-columns: 1fr; }
+            
+            /* Mobile Nav Logic */
             .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; }
+            .btn-book { display: none; }
             header { justify-content: center; }
         }
     </style>
@@ -113,15 +136,30 @@
 
     <header id="navbar">
         <div class="logo">Spencer Green</div>
+        
         <ul class="nav-menu">
             <li><a href="index.html" class="nav-link">Home</a></li>
             <li><a href="dining.html" class="nav-link">Dining</a></li>
             <li><a href="meeting.html" class="nav-link">Meeting</a></li>
-			<li><a href="wedding.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Wedding</a></li>
+            <li><a href="wedding.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Wedding</a></li>
             <li><a href="gallery.html" class="nav-link">Gallery</a></li>
         </ul>
+        
         <a href="#inquire" class="btn-book">Plan Your Wedding</a>
+
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</div>
     </header>
+
+    <div class="mobile-nav-overlay" id="mobileNav">
+        <a href="index.html" class="mobile-nav-link">Home</a>
+        <a href="dining.html" class="mobile-nav-link">Dining</a>
+        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
+        <a href="wedding.html" class="mobile-nav-link" style="color:var(--gold);">Weddings</a>
+        <a href="gallery.html" class="mobile-nav-link">Gallery</a>
+        <a href="#inquire" class="mobile-nav-link" onclick="toggleMobileMenu()" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Plan Your Wedding</a>
+        
+        <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
+    </div>
 
     <section class="hero-wedding">
         <div>
@@ -205,6 +243,12 @@
             const header = document.getElementById('navbar');
             header.classList.toggle('scrolled', window.scrollY > 50);
         });
+
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileNav');
+            menu.classList.toggle('active');
+        }
 
         // WhatsApp Logic
         function kirimWa(e) {
