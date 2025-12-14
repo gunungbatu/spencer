@@ -33,48 +33,46 @@
         }
         header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+        
+        /* Menu Desktop */
         .nav-menu { display: flex; gap: 30px; list-style: none; }
         .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+        
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; }
         .btn-book:hover { background: transparent; color: var(--gold); }
 
-        /* --- 4. HERO SECTION (VIDEO LOKAL) --- */
+        /* --- 4. MOBILE MENU --- */
+        .mobile-menu-btn {
+            display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
+        }
+        .mobile-nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s;
+        }
+        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-nav-link {
+            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
+            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        /* --- 5. HERO SECTION --- */
         .hero {
-            position: relative;
-            height: 100vh;
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            overflow: hidden;
+            position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden;
         }
-        
         .video-background-local {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: -2;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;
         }
-
-        .hero::before { 
-            content: ''; position: absolute; inset: 0; 
-            background: rgba(0,0,0,0.4); 
-            z-index: -1; 
-        }
-        
+        .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: -1; }
         .hero-content { position: relative; z-index: 2; animation: fadeUp 1.5s ease-out; }
+        .hero-subtitle { color: #ffffff; letter-spacing: 3px; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8); }
+        .hero-title { color: #ffffff; font-size: 5rem; line-height: 1.1; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9); }
 
-        .hero-subtitle {
-            color: #ffffff; letter-spacing: 3px; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
-        }
-
-        .hero-title { 
-            color: #ffffff; font-size: 5rem; line-height: 1.1; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 5px;
-            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
-        }
-
-        /* --- 5. INTRO --- */
+        /* --- 6. CONTENT LAYOUT --- */
         .intro { padding: 80px 20px; text-align: center; max-width: 800px; margin: 0 auto; }
-        .intro h2 { font-size: 2.5rem; margin-bottom: 20px; }
         .divider { width: 50px; height: 2px; background: var(--gold); margin: 20px auto; }
-
-        /* --- 6. UNIVERSAL LAYOUT --- */
+        
         .full-section { width: 100%; }
         .section-separator { text-align: center; padding: 80px 20px 40px; background-color: #fff; }
         .section-separator h2 { font-size: 3rem; text-transform: uppercase; letter-spacing: 2px; }
@@ -85,7 +83,6 @@
         .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
         .content-card:hover .card-img { transform: scale(1.05); }
         .card-info-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 80px; background-color: #fff; }
-        
         .content-card.reverse { flex-direction: row-reverse; }
         .content-card.reverse .card-info-box { background-color: #F9F9F9; }
 
@@ -94,16 +91,13 @@
         .card-desc { font-size: 1rem; color: #666; margin-bottom: 30px; line-height: 1.8; }
         .card-specs { display: flex; gap: 30px; margin-bottom: 40px; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 15px 0; }
         .spec-item { font-size: 0.85rem; text-transform: uppercase; color: #333; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
-
         .btn-discover { color: var(--dark-grey); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; font-weight: 600; border-bottom: 1px solid var(--gold); padding-bottom: 5px; align-self: flex-start; cursor: pointer; }
         .btn-discover:hover { color: var(--gold); }
 
-        /* --- 7. BOOKING MODAL (ENGINE) --- */
+        /* --- 7. BOOKING MODAL --- */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.active { display: flex; opacity: 1; }
-
         .booking-form-box { background: #fff; padding: 40px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); max-height: 90vh; overflow-y: auto; }
-
         .close-modal { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; color: #999; }
         .form-group { margin-bottom: 15px; }
         .form-label { display: block; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; color: var(--emerald); }
@@ -112,11 +106,8 @@
         
         .btn-check { width: 100%; background: var(--dark-grey); color: #fff; padding: 12px; border: none; text-transform: uppercase; font-weight: 600; cursor: pointer; margin-bottom: 20px; letter-spacing: 1px; }
         .btn-check:hover { background: var(--emerald); }
-
         .btn-submit { width: 100%; background: var(--gold); color: #fff; padding: 15px; border: none; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
-        
-        /* Area Hasil Pencarian */
         #roomResultArea { display: none; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; animation: fadeUp 0.5s; }
         .loading { display: none; text-align: center; margin: 10px 0; color: var(--gold); font-size: 0.9rem; }
 
@@ -130,6 +121,8 @@
             .card-image-box, .card-info-box { width: 100%; height: 400px; }
             .card-info-box { height: auto; padding: 50px 30px; }
             .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; }
+            .btn-book { display: none; }
             header { justify-content: center; }
         }
         @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
@@ -137,53 +130,32 @@
 </head>
 <body>
 
-        <header id="navbar">
+    <header id="navbar">
         <div class="logo">Spencer Green</div>
         
         <ul class="nav-menu">
-            <li><a href="index.html" class="nav-link">Suites</a></li>
-            <li><a href="dining.html" class="nav-link">Gastronomy</a></li>
+            <li><a href="index.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Home</a></li>
+            <li><a href="dining.html" class="nav-link">Dining</a></li>
             <li><a href="meeting.html" class="nav-link">Meeting</a></li>
             <li><a href="wedding.html" class="nav-link">Weddings</a></li>
             <li><a href="gallery.html" class="nav-link">Gallery</a></li>
         </ul>
 
-        <a href="index.html" class="btn-book">Book Now</a>
+        <a href="#" class="btn-book" onclick="openBooking()">Book Your Stay</a>
 
         <div class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</div>
     </header>
 
     <div class="mobile-nav-overlay" id="mobileNav">
-        <a href="index.html" class="mobile-nav-link">Suites</a>
+        <a href="index.html" class="mobile-nav-link" style="color:var(--gold);">Home</a>
         <a href="dining.html" class="mobile-nav-link">Dining</a>
         <a href="meeting.html" class="mobile-nav-link">Meeting</a>
         <a href="wedding.html" class="mobile-nav-link">Weddings</a>
         <a href="gallery.html" class="mobile-nav-link">Gallery</a>
-        <a href="index.html" class="mobile-nav-link" style="color:var(--gold); border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Now</a>
+        <a href="#" class="mobile-nav-link" onclick="openBooking(); toggleMobileMenu();" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Now</a>
         
         <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
     </div>
-
-
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <a href="index.html" class="mobile-nav-link">Suites</a>
-        <a href="dining.html" class="mobile-nav-link">Gastronomy</a>
-        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
-        <a href="wedding.html" class="mobile-nav-link">Weddings</a>
-        <a href="gallery.html" class="mobile-nav-link">Gallery</a>
-        <a href="index.html" class="mobile-nav-link" style="color:var(--gold); border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Now</a>
-        
-        <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
-    </div>
-ss="nav-menu">
-            <li><a href="index.html" class="nav-link"  style="color:var(--gold); border-bottom: 1px solid var(--gold);">Home</a></li>
-            <li><a href="dining.html" class="nav-link">Dining</a></li>
-            <li><a href="meeting.html" class="nav-link">Meeting</a></li>
-			<li><a href="wedding.html" class="nav-link">Wedding</a></li>
-            <li><a href="gallery.html" class="nav-link">Gallery</a></li>
-        </ul>
-        <a href="#" class="btn-book" onclick="openBooking()">Book Your Stay</a>
-    </header>
 
     <section class="hero">
         <video autoplay muted loop playsinline class="video-background-local">
@@ -200,7 +172,65 @@ ss="nav-menu">
         <div class="divider"></div>
         <p>Inspired by the majesty of Indonesia, Spencer Green offers a collection of rooms & facilities designed to harmonize with the breathtaking landscape of Mount Panderman.</p>
     </section>
-	
+
+    <div class="section-separator">
+        <h2>Accommodation</h2>
+        <p>A Collection of Rooms</p>
+    </div>
+    
+    <section class="full-section">
+        <div class="content-card">
+            <div class="card-image-box">
+                <img src="assets/room1.jpg" alt="Deluxe Room" class="card-img">
+            </div>
+            <div class="card-info-box">
+                <span class="card-cat">Comfort & Style</span>
+                <h3 class="card-title">Deluxe Room</h3>
+                <p class="card-desc">Experience the perfect blend of modern comfort and elegance. Our Deluxe rooms offer a spacious sanctuary with contemporary amenities.</p>
+                <div class="card-specs">
+                    <span class="spec-item">📐 32 Sqm</span>
+                    <span class="spec-item">🚿 Rain Shower</span>
+                    <span class="spec-item">👥 2 Adults</span>
+                </div>
+                <a href="#" class="btn-discover" onclick="openBooking()">Book Room</a>
+            </div>
+        </div>
+
+        <div class="content-card reverse">
+            <div class="card-image-box">
+                <img src="assets/room2.jpg" alt="Superior Room" class="card-img">
+            </div>
+            <div class="card-info-box">
+                <span class="card-cat">Elevated Views</span>
+                <h3 class="card-title">Superior Room</h3>
+                <p class="card-desc">Perched on higher floors, the Superior Room offers breathtaking views of the surrounding highlands. Featuring enhanced living space and premium bedding.</p>
+                <div class="card-specs">
+                    <span class="spec-item">📐 40 Sqm</span>
+                    <span class="spec-item">⛰️ Mountain View</span>
+                    <span class="spec-item">☕ Coffee Machine</span>
+                </div>
+                <a href="#" class="btn-discover" onclick="openBooking()">Book Room</a>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="card-image-box">
+                <img src="assets/room3.avif" alt="Executive Room" class="card-img">
+            </div>
+            <div class="card-info-box">
+                <span class="card-cat">The Ultimate Luxury</span>
+                <h3 class="card-title">Executive Room</h3>
+                <p class="card-desc">Designed for the discerning traveler, featuring a separate living area and exclusive access to the Executive Lounge. Enjoy privacy and luxury.</p>
+                <div class="card-specs">
+                    <span class="spec-item">📐 56 Sqm</span>
+                    <span class="spec-item">🛁 Bathtub</span>
+                    <span class="spec-item">🍸 Lounge Access</span>
+                </div>
+                <a href="#" class="btn-discover" onclick="openBooking()">View Details</a>
+            </div>
+        </div>
+    </section>
+    
     <div class="section-separator">
         <h2>Facilities</h2>
         <p>Curated Experiences For Every Occasion</p>
@@ -209,7 +239,7 @@ ss="nav-menu">
         <div class="content-card reverse">
             <div class="card-image-box"><img src="assets/rooftop.jpg" alt="Rooftop Cafe Batu" class="card-img"></div>
             <div class="card-info-box">
-                <span class="card-cat">Dining</span>
+                <span class="card-cat">Gastronomy</span>
                 <h3 class="card-title">Rooftop Cafe</h3>
                 <p class="card-desc">Sip on artisan coffee while embraced by the misty clouds. Our rooftop sanctuary offers a selection of local blends and light bites.</p>
                 <div class="card-specs">
@@ -217,7 +247,7 @@ ss="nav-menu">
                     <span class="spec-item">🌅 Sunset View</span>
                     <span class="spec-item">🕒 10:00 - 22:00</span>
                 </div>
-                <a href="#" class="btn-discover">View Menu</a>
+                <a href="dining.html" class="btn-discover">View Menu</a>
             </div>
         </div>
         <div class="content-card">
@@ -231,7 +261,7 @@ ss="nav-menu">
                     <span class="spec-item">🍷 5-Course Meal</span>
                     <span class="spec-item">🎻 Live Violin</span>
                 </div>
-                <a href="#" class="btn-discover">Reserve Table</a>
+                <a href="dining.html" class="btn-discover">Reserve Table</a>
             </div>
         </div>
         <div class="content-card reverse">
@@ -245,7 +275,7 @@ ss="nav-menu">
                     <span class="spec-item">🎉 Outdoor & Indoor</span>
                     <span class="spec-item">💐 Wedding Specialist</span>
                 </div>
-                <a href="#" class="btn-discover">Plan Your Wedding</a>
+                <a href="wedding.html" class="btn-discover">Plan Your Wedding</a>
             </div>
         </div>
         <div class="content-card">
@@ -259,7 +289,7 @@ ss="nav-menu">
                     <span class="spec-item">📶 High Speed Wifi</span>
                     <span class="spec-item">🍽️ Coffee Break</span>
                 </div>
-                <a href="#" class="btn-discover">Inquire Now</a>
+                <a href="meeting.html" class="btn-discover">Inquire Now</a>
             </div>
         </div>
     </section>
@@ -321,19 +351,20 @@ ss="nav-menu">
     </div>
 
     <script>
-        // Fungsi Toggle Mobile Menu
+        // CONFIG
+        const API_URL = "https://script.google.com/macros/s/AKfycbz8NCQgwChpMLSYF3FjkVtXlgoe12u_-UHHNedozKrTuMmp-piWtzINkcCZeF0XuBWdXQ/exec"; 
+        const HOTEL_WA_NUMBER = "6281334480210"; 
+
+        // Scroll Navbar
+        window.addEventListener('scroll', function() {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Toggle Mobile Menu
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileNav');
             menu.classList.toggle('active');
         }
-        
-        // CONFIG
-        const API_URL = "https://script.google.com/macros/s/AKfycbz8NCQgwChpMLSYF3FjkVtXlgoe12u_-UHHNedozKrTuMmp-piWtzINkcCZeF0XuBWdXQ/exec"; 
-        const HOTEL_WA_NUMBER = "6281334480210"; // GANTI DENGAN NO WA HOTEL ANDA (Format 62...)
-
-        window.addEventListener('scroll', function() {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-        });
 
         const modal = document.getElementById('bookingModal');
         const roomResultArea = document.getElementById('roomResultArea');
@@ -374,7 +405,6 @@ ss="nav-menu">
                         let option = document.createElement('option');
                         option.value = r.name;
                         option.dataset.price = r.totalPrice; 
-                        // Simpan harga formated text juga untuk pesan WA
                         option.dataset.pricetext = priceFmt;
                         option.text = `${r.name} - ${priceFmt} (Total Price)`;
                         roomSelect.appendChild(option);
@@ -414,7 +444,6 @@ ss="nav-menu">
             submitLoader.style.display = 'block';
             btnFinalSubmit.disabled = true;
 
-            // Ambil text harga yang cantik dari dropdown
             const selectedOption = roomSelect.options[roomSelect.selectedIndex];
             const priceDisplay = selectedOption.dataset.pricetext;
             const roomName = selectedOption.value;
@@ -440,24 +469,17 @@ ss="nav-menu">
             .then(result => {
                 submitLoader.style.display = 'none';
                 
-                // Pesan WA Otomatis
                 const waMessage = `Halo Spencer Green Hotel, saya ingin konfirmasi booking:\n\nNama: ${nama}\nKamar: ${roomName}\nCheck-In: ${checkIn}\nCheck-Out: ${checkOut}\nTotal: ${priceDisplay}\n\nMohon info pembayaran. Terima kasih.`;
                 
-                // Redirect ke WA
                 const waLink = `https://wa.me/${HOTEL_WA_NUMBER}?text=${encodeURIComponent(waMessage)}`;
                 window.location.href = waLink;
             })
             .catch(err => {
                 alert("Booking Sent! Redirecting to WhatsApp...");
-                // Fallback redirect jika fetch error (tapi data mungkin blm masuk sheet)
                 const waMessage = `Halo, saya booking manual: ${nama}, Kamar ${roomName}, ${checkIn}-${checkOut}.`;
                 window.location.href = `https://wa.me/${HOTEL_WA_NUMBER}?text=${encodeURIComponent(waMessage)}`;
             });
         });
     </script>
 </body>
-
 </html>
-
-
-
