@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spencer Green Hotel Batu | The Majestic Highland Sanctuary</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. GLOBAL VARIABLES & RESET --- */
+        :root {
+            --gold: #D4AF37;
+            --emerald: #1B4D3E;
+            --dark-grey: #1a1a1a;
+            --light-bg: #F9F9F9;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; }
+
+        /* --- 2. TYPOGRAPHY --- */
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); }
+        a { text-decoration: none; transition: 0.3s; }
+        
+        /* --- 3. NAVBAR --- */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; transition: 0.4s;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+        }
+        header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+        .nav-menu { display: flex; gap: 30px; list-style: none; }
+        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+        .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; }
+        .btn-book:hover { background: transparent; color: var(--gold); }
+
+        /* --- 4. HERO SECTION (VIDEO LOKAL) --- */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            overflow: hidden;
+        }
+        
+        .video-background-local {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: -2;
+        }
+
+        .hero::before { 
+            content: ''; position: absolute; inset: 0; 
+            background: rgba(0,0,0,0.4); 
+            z-index: -1; 
+        }
+        
+        .hero-content { position: relative; z-index: 2; animation: fadeUp 1.5s ease-out; }
+
+        .hero-subtitle {
+            color: #ffffff; letter-spacing: 3px; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-title { 
+            color: #ffffff; font-size: 5rem; line-height: 1.1; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 5px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
+        }
+
+        /* --- 5. INTRO --- */
+        .intro { padding: 80px 20px; text-align: center; max-width: 800px; margin: 0 auto; }
+        .intro h2 { font-size: 2.5rem; margin-bottom: 20px; }
+        .divider { width: 50px; height: 2px; background: var(--gold); margin: 20px auto; }
+
+        /* --- 6. UNIVERSAL LAYOUT --- */
+        .full-section { width: 100%; }
+        .section-separator { text-align: center; padding: 80px 20px 40px; background-color: #fff; }
+        .section-separator h2 { font-size: 3rem; text-transform: uppercase; letter-spacing: 2px; }
+        .section-separator p { color: #888; letter-spacing: 1px; margin-top: 10px; font-size: 0.9rem; text-transform: uppercase;}
+
+        .content-card { display: flex; width: 100%; height: 600px; overflow: hidden; }
+        .card-image-box { flex: 1; position: relative; overflow: hidden; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .content-card:hover .card-img { transform: scale(1.05); }
+        .card-info-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 80px; background-color: #fff; }
+        
+        .content-card.reverse { flex-direction: row-reverse; }
+        .content-card.reverse .card-info-box { background-color: #F9F9F9; }
+
+        .card-cat { color: var(--gold); letter-spacing: 2px; font-size: 0.8rem; text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+        .card-title { font-size: 2.8rem; margin-bottom: 20px; line-height: 1.1; }
+        .card-desc { font-size: 1rem; color: #666; margin-bottom: 30px; line-height: 1.8; }
+        .card-specs { display: flex; gap: 30px; margin-bottom: 40px; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 15px 0; }
+        .spec-item { font-size: 0.85rem; text-transform: uppercase; color: #333; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
+
+        .btn-discover { color: var(--dark-grey); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; font-weight: 600; border-bottom: 1px solid var(--gold); padding-bottom: 5px; align-self: flex-start; cursor: pointer; }
+        .btn-discover:hover { color: var(--gold); }
+
+        /* --- 7. BOOKING MODAL (ENGINE) --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .booking-form-box { background: #fff; padding: 40px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); max-height: 90vh; overflow-y: auto; }
+
+        .close-modal { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; color: #999; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; color: var(--emerald); }
+        .form-input, .form-select { width: 100%; padding: 10px; border: 1px solid #ddd; font-family: 'Montserrat', sans-serif; font-size: 1rem; }
+        .form-input:focus { border-color: var(--gold); outline: none; }
+        
+        .btn-check { width: 100%; background: var(--dark-grey); color: #fff; padding: 12px; border: none; text-transform: uppercase; font-weight: 600; cursor: pointer; margin-bottom: 20px; letter-spacing: 1px; }
+        .btn-check:hover { background: var(--emerald); }
+
+        .btn-submit { width: 100%; background: var(--gold); color: #fff; padding: 15px; border: none; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+        
+        /* Area Hasil Pencarian */
+        #roomResultArea { display: none; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; animation: fadeUp 0.5s; }
+        .loading { display: none; text-align: center; margin: 10px 0; color: var(--gold); font-size: 0.9rem; }
+
+        /* FOOTER */
+        footer { background: var(--emerald); color: #fff; padding: 50px; text-align: center; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero-title { font-size: 3rem; }
+            .content-card, .content-card.reverse { flex-direction: column; height: auto; }
+            .card-image-box, .card-info-box { width: 100%; height: 400px; }
+            .card-info-box { height: auto; padding: 50px 30px; }
+            .nav-menu { display: none; }
+            header { justify-content: center; }
+        }
+        @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
+    </style>
+</head>
+<body>
+
+    <header id="navbar">
+        <div class="logo">Spencer Green</div>
+        <ul class="nav-menu">
+            <li><a href="#" class="nav-link">Suites</a></li>
+            <li><a href="#" class="nav-link">Gastronomy</a></li>
+            <li><a href="#" class="nav-link">Weddings</a></li>
+        </ul>
+        <a href="#" class="btn-book" onclick="openBooking()">Book Your Stay</a>
+    </header>
+
+    <section class="hero">
+        <video autoplay muted loop playsinline class="video-background-local">
+            <source src="assets/hero-video.mp4" type="video/mp4">
+        </video>
+        <div class="hero-content">
+            <p class="hero-subtitle">WELCOME TO BATU HIGHLANDS</p>
+            <h1 class="hero-title">The Sanctuary<br>Above Clouds</h1>
+        </div>
+    </section>
+
+    <section class="intro">
+        <h2>Refined Luxury in Nature</h2>
+        <div class="divider"></div>
+        <p>Inspired by the majesty of the Apurva, Spencer Green offers a collection of suites and villas designed to harmonize with the breathtaking landscape of Mount Panderman.</p>
+    </section>
+
+    <div class="section-separator">
+        <h2>Accommodation</h2>
+        <p>A Collection of Suites & Villas</p>
+    </div>
+    <section class="full-section">
+        <div class="content-card">
+            <div class="card-image-box"><img src="assets/room1.jpg" alt="Grand Deluxe Room" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat">Starting Category</span>
+                <h3 class="card-title">Grand Deluxe Room</h3>
+                <p class="card-desc">Spacious sanctuary with a private balcony overlooking the lush city garden.</p>
+                <div class="card-specs"><span class="spec-item">📐 45 Sqm</span><span class="spec-item">👥 2 Adults</span></div>
+                <a href="#" class="btn-discover" onclick="openBooking()">Book Room</a>
+            </div>
+        </div>
+        <div class="content-card reverse">
+            <div class="card-image-box"><img src="assets/room2.jpg" alt="The Valley Suite" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat">Elevated Experience</span>
+                <h3 class="card-title">The Valley Suite</h3>
+                <p class="card-desc">Panoramic spectacle of Batu's misty valleys featuring a bathtub with a view.</p>
+                <div class="card-specs"><span class="spec-item">📐 65 Sqm</span><span class="spec-item">🛁 Bathtub</span></div>
+                <a href="#" class="btn-discover" onclick="openBooking()">Book Suite</a>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="card-image-box"><img src="assets/room3.avif" alt="Presidential Villa" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat">The Ultimate Sanctuary</span>
+                <h3 class="card-title">Spencer Residence</h3>
+                <p class="card-desc">Private villa residence with its own infinity plunge pool and butler service.</p>
+                <div class="card-specs"><span class="spec-item">🏊 Private Pool</span><span class="spec-item">🍸 Butler</span></div>
+                <a href="#" class="btn-discover" onclick="openBooking()">View Residence</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-separator">
+        <h2>Facilities</h2>
+        <p>Curated Experiences For Every Occasion</p>
+    </div>
+    <section class="full-section">
+        <div class="content-card reverse">
+            <div class="card-image-box"><img src="assets/rooftop.jpg" alt="Rooftop Cafe Batu" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat">Gastronomy</span>
+                <h3 class="card-title">Rooftop Cafe</h3>
+                <p class="card-desc">Sip on artisan coffee while embraced by the misty clouds. Our rooftop sanctuary offers a selection of local blends and light bites.</p>
+                <div class="card-specs">
+                    <span class="spec-item">☕ Specialty Coffee</span>
+                    <span class="spec-item">🌅 Sunset View</span>
+                    <span class="spec-item">🕒 10:00 - 22:00</span>
+                </div>
+                <a href="#" class="btn-discover">View Menu</a>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="card-image-box"><img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070&auto=format&fit=crop" alt="Romantic Dinner" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat">Romantic Experience</span>
+                <h3 class="card-title">Candle Light Dinner</h3>
+                <p class="card-desc">An intimate culinary journey under the stars. Curated private dining experience with a bespoke menu and floral arrangements.</p>
+                <div class="card-specs">
+                    <span class="spec-item">🌹 Private Setting</span>
+                    <span class="spec-item">🍷 5-Course Meal</span>
+                    <span class="spec-item">🎻 Live Violin</span>
+                </div>
+                <a href="#" class="btn-discover">Reserve Table</a>
+            </div>
+        </div>
+        <div class="content-card reverse">
+            <div class="card-image-box"><img src="assets/wedding.jpg" alt="Wedding Venue Batu" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat">Celebrations</span>
+                <h3 class="card-title">The Grand Wedding</h3>
+                <p class="card-desc">A majestic highland setting for your sacred union. From the open-air garden chapel to the grand ballroom.</p>
+                <div class="card-specs">
+                    <span class="spec-item">💍 up to 500 Guests</span>
+                    <span class="spec-item">🎉 Outdoor & Indoor</span>
+                    <span class="spec-item">💐 Wedding Specialist</span>
+                </div>
+                <a href="#" class="btn-discover">Plan Your Wedding</a>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="card-image-box"><img src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407?q=80&w=2074&auto=format&fit=crop" alt="Meeting Room" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat">Business & Events</span>
+                <h3 class="card-title">Meetings & Events</h3>
+                <p class="card-desc">Elevate your business gatherings in our sophisticated venues. Equipped with modern technology and bathed in natural light.</p>
+                <div class="card-specs">
+                    <span class="spec-item">📽️ Audio Visual</span>
+                    <span class="spec-item">📶 High Speed Wifi</span>
+                    <span class="spec-item">🍽️ Coffee Break</span>
+                </div>
+                <a href="#" class="btn-discover">Inquire Now</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Spencer Green Hotel Batu. All Rights Reserved.</p>
+    </footer>
+
+    <div class="modal-overlay" id="bookingModal">
+        <div class="booking-form-box">
+            <span class="close-modal" onclick="closeBooking()">&times;</span>
+            <h2 style="font-family: 'Cormorant Garamond', serif; text-align: center; margin-bottom: 20px;">Check Availability</h2>
+            
+            <form id="reservationForm">
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Check In</label>
+                        <input type="date" name="checkIn" id="checkIn" class="form-input" required>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Check Out</label>
+                        <input type="date" name="checkOut" id="checkOut" class="form-input" required>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-check" onclick="checkAvailability()">Search Rooms</button>
+                <div class="loading" id="searchLoader">Checking rates & availability...</div>
+
+                <div id="roomResultArea">
+                    <div class="form-group">
+                        <label class="form-label">Available Rooms</label>
+                        <select name="kamar" id="roomSelect" class="form-select">
+                            <option value="">-- Select a Room --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="nama" id="namaTamu" class="form-input" placeholder="Your Name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">WhatsApp Number</label>
+                        <input type="text" name="whatsapp" id="waTamu" class="form-input" placeholder="e.g. 08123456789" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" id="emailTamu" class="form-input" placeholder="email@address.com" required>
+                    </div>
+
+                    <input type="hidden" id="totalHargaFix" name="totalHarga">
+
+                    <button type="submit" class="btn-submit" id="btnFinalSubmit" disabled>Confirm Booking</button>
+                    <div class="loading" id="submitLoader">Sending reservation...</div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // CONFIG
+        const API_URL = "https://script.google.com/macros/s/AKfycbw38ky2_BGLRs9LTi3xa_ZCCLZ7vRO9jYk3b9liQ6e5lEsIbLh_h8HGqP2mJuo2HOSoAg/exec"; 
+        const HOTEL_WA_NUMBER = "6281334480210"; // GANTI DENGAN NO WA HOTEL ANDA (Format 62...)
+
+        window.addEventListener('scroll', function() {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        const modal = document.getElementById('bookingModal');
+        const roomResultArea = document.getElementById('roomResultArea');
+        const searchLoader = document.getElementById('searchLoader');
+        const submitLoader = document.getElementById('submitLoader');
+        const roomSelect = document.getElementById('roomSelect');
+        const btnFinalSubmit = document.getElementById('btnFinalSubmit');
+
+        function openBooking() { modal.classList.add('active'); }
+        function closeBooking() { modal.classList.remove('active'); }
+
+        // FUNGSI 1: CEK KETERSEDIAAN
+        function checkAvailability() {
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+
+            if(!checkIn || !checkOut) { alert("Please select Check-in and Check-out dates."); return; }
+            if(checkIn >= checkOut) { alert("Check-out date must be after Check-in."); return; }
+
+            searchLoader.style.display = 'block';
+            roomResultArea.style.display = 'none';
+            roomSelect.innerHTML = '<option value="">Loading...</option>';
+
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "search", checkIn: checkIn, checkOut: checkOut })
+            })
+            .then(response => response.json())
+            .then(result => {
+                searchLoader.style.display = 'none';
+                
+                if (result.status === "success" && result.data.length > 0) {
+                    roomResultArea.style.display = 'block';
+                    roomSelect.innerHTML = '<option value="">-- Select a Room --</option>';
+                    
+                    result.data.forEach(r => {
+                        let priceFmt = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: 3 }).format(r.totalPrice);
+                        let option = document.createElement('option');
+                        option.value = r.name;
+                        option.dataset.price = r.totalPrice; 
+                        // Simpan harga formated text juga untuk pesan WA
+                        option.dataset.pricetext = priceFmt;
+                        option.text = `${r.name} - ${priceFmt} (Total Price)`;
+                        roomSelect.appendChild(option);
+                    });
+                } else {
+                    alert("No rooms available / Sold Out for these dates.");
+                    roomSelect.innerHTML = '<option value="">Sold Out</option>';
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                searchLoader.style.display = 'none';
+                alert("Connection Error. Try again later.");
+            });
+        }
+
+        roomSelect.addEventListener('change', function() {
+            if(this.value && this.options[this.selectedIndex].dataset.price) {
+                btnFinalSubmit.disabled = false;
+                document.getElementById('totalHargaFix').value = this.options[this.selectedIndex].dataset.price;
+            } else {
+                btnFinalSubmit.disabled = true;
+            }
+        });
+
+        // FUNGSI 2: KIRIM BOOKING & REDIRECT WA
+        const form = document.getElementById('reservationForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('namaTamu').value;
+            const email = document.getElementById('emailTamu').value;
+            const wa = document.getElementById('waTamu').value;
+            
+            if(!nama || !email || !wa) { alert("Please fill all fields."); return; }
+
+            submitLoader.style.display = 'block';
+            btnFinalSubmit.disabled = true;
+
+            // Ambil text harga yang cantik dari dropdown
+            const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+            const priceDisplay = selectedOption.dataset.pricetext;
+            const roomName = selectedOption.value;
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+
+            const bookingData = {
+                action: "book",
+                nama: nama,
+                email: email,
+                whatsapp: wa,
+                checkIn: checkIn,
+                checkOut: checkOut,
+                kamar: roomName,
+                totalHarga: document.getElementById('totalHargaFix').value
+            };
+
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(bookingData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                submitLoader.style.display = 'none';
+                
+                // Pesan WA Otomatis
+                const waMessage = `Halo Spencer Green Hotel, saya ingin konfirmasi booking:\n\nNama: ${nama}\nKamar: ${roomName}\nCheck-In: ${checkIn}\nCheck-Out: ${checkOut}\nTotal: ${priceDisplay}\n\nMohon info pembayaran. Terima kasih.`;
+                
+                // Redirect ke WA
+                const waLink = `https://wa.me/${HOTEL_WA_NUMBER}?text=${encodeURIComponent(waMessage)}`;
+                window.location.href = waLink;
+            })
+            .catch(err => {
+                alert("Booking Sent! Redirecting to WhatsApp...");
+                // Fallback redirect jika fetch error (tapi data mungkin blm masuk sheet)
+                const waMessage = `Halo, saya booking manual: ${nama}, Kamar ${roomName}, ${checkIn}-${checkOut}.`;
+                window.location.href = `https://wa.me/${HOTEL_WA_NUMBER}?text=${encodeURIComponent(waMessage)}`;
+            });
+        });
+    </script>
+</body>
+</html>
