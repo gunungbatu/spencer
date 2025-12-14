@@ -39,6 +39,23 @@
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
         .btn-book:hover { background: transparent; color: var(--gold); }
 
+        /* --- MOBILE MENU CSS (ADDED) --- */
+        .mobile-menu-btn {
+            display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
+        }
+        .mobile-nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s;
+        }
+        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-nav-link {
+            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
+            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
+        }
+
         /* --- 3. HERO SECTION --- */
         .hero-gallery {
             height: 50vh;
@@ -138,6 +155,8 @@
             .gallery-container { column-count: 2; }
             .hero-title { font-size: 2.5rem; }
             .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; } /* Show Hamburger */
+            .btn-book { display: none; } /* Hide Desktop Book Button */
             header { justify-content: center; }
         }
         @media (max-width: 600px) {
@@ -154,11 +173,24 @@
             <li><a href="index.html" class="nav-link">Home</a></li>
             <li><a href="dining.html" class="nav-link">Dining</a></li>
             <li><a href="meeting.html" class="nav-link">Meeting</a></li>
-			<li><a href="wedding.html" class="nav-link">Wedding</a></li>
+            <li><a href="wedding.html" class="nav-link">Wedding</a></li>
             <li><a href="gallery.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Gallery</a></li>
         </ul>
         <a href="index.html" class="btn-book">Book Your Stay</a>
+
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</div>
     </header>
+
+    <div class="mobile-nav-overlay" id="mobileNav">
+        <a href="index.html" class="mobile-nav-link">Home</a>
+        <a href="dining.html" class="mobile-nav-link">Dining</a>
+        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
+        <a href="wedding.html" class="mobile-nav-link">Weddings</a>
+        <a href="gallery.html" class="mobile-nav-link" style="color:var(--gold);">Gallery</a>
+        <a href="index.html" class="mobile-nav-link" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Your Stay</a>
+        
+        <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
+    </div>
 
     <section class="hero-gallery">
         <div>
@@ -273,6 +305,12 @@
                 lightbox.classList.remove('active');
                 document.body.style.overflow = 'auto'; // Resume scrolling
             }
+        }
+
+        // 3. MOBILE MENU TOGGLE
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileNav');
+            menu.classList.toggle('active');
         }
     </script>
 
