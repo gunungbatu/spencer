@@ -139,6 +139,34 @@
             .tab-nav { gap: 20px; }
             .tab-btn { font-size: 1rem; }
         }
+        /* --- MOBILE MENU HAMBURGER --- */
+        .mobile-menu-btn {
+            display: none; /* Hidden di Desktop */
+            font-size: 1.5rem; color: #fff; cursor: pointer;
+            z-index: 1001;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s;
+        }
+        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .mobile-nav-link {
+            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
+            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        /* TAMPILKAN DI HP */
+        @media (max-width: 900px) {
+            .nav-menu { display: none; } /* Hide menu biasa */
+            .mobile-menu-btn { display: block; } /* Show Hamburger */
+            .btn-book { display: none; } /* Opsional: Sembunyikan tombol book di header hp jika sempit */
+        }
+
     </style>
 </head>
 <body>
