@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting & Events | Spencer Green Hotel Batu</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. GLOBAL VARIABLES & RESET --- */
+        :root {
+            --gold: #D4AF37;
+            --emerald: #1B4D3E;
+            --dark-grey: #1a1a1a;
+            --light-bg: #F9F9F9;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Font Utama (Montserrat) untuk Body */
+        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background-color: var(--light-bg); line-height: 1.6; }
+
+        /* Font Mewah (Cormorant) untuk Judul */
+        h1, h2, h3, h4, h5, h6 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); font-weight: 600; }
+        
+        /* Memastikan Tombol & Input juga konsisten */
+        button, input, select, textarea { font-family: 'Montserrat', sans-serif; }
+
+        a { text-decoration: none; transition: 0.3s; }
+        
+        /* --- 2. NAVBAR (Copy dari Index.html agar Identik) --- */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; transition: 0.4s;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+        }
+        header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        /* Logo menggunakan Cormorant */
+        .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+        
+        .nav-menu { display: flex; gap: 30px; list-style: none; }
+        
+        /* Menu Link menggunakan Montserrat (Kecil, Kapital) */
+        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+        
+        .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
+        .btn-book:hover { background: transparent; color: var(--gold); }
+
+        /* --- 3. HERO SECTION --- */
+        .hero-meeting {
+            height: 60vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .hero-title {
+            color: #fff; font-size: 4rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            /* Font Cormorant otomatis dari h1 global */
+        }
+        .hero-subtitle {
+            color: var(--gold); font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 15px; font-weight: 600;
+            font-family: 'Montserrat', sans-serif; /* Subtitle pakai Montserrat agar terbaca jelas */
+        }
+
+        /* --- 4. TAB NAVIGATION (Tab menggunakan Cormorant agar Elegan) --- */
+        .tab-nav {
+            display: flex; justify-content: center; gap: 40px; 
+            padding: 30px 0; background: #fff; border-bottom: 1px solid #ddd;
+            position: sticky; top: 70px; z-index: 900;
+        }
+        .tab-btn {
+            background: none; border: none; 
+            font-family: 'Cormorant Garamond', serif; /* Font Mewah untuk Tab */
+            font-size: 1.3rem; color: #888; cursor: pointer; padding-bottom: 5px;
+            transition: 0.3s; letter-spacing: 1px;
+        }
+        .tab-btn.active, .tab-btn:hover { color: var(--emerald); border-bottom: 2px solid var(--gold); }
+
+        /* --- 5. CONTENT SECTIONS --- */
+        .tab-content { display: none; padding: 80px 50px; max-width: 1200px; margin: 0 auto; animation: fadeUp 0.8s; }
+        .tab-content.active { display: block; }
+
+        .split-layout { display: flex; gap: 60px; align-items: center; margin-bottom: 80px; }
+        .text-col { flex: 1; }
+        .img-col { flex: 1; }
+        .img-col img { width: 100%; height: 450px; object-fit: cover; }
+
+        .section-title { font-size: 3rem; margin-bottom: 20px; color: var(--dark-grey); line-height: 1.1; }
+        .section-desc { font-size: 1rem; color: #666; line-height: 1.8; margin-bottom: 30px; font-weight: 300; }
+
+        /* TABLE STYLE */
+        .capacity-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+        .capacity-table th { 
+            text-align: left; padding: 15px; border-bottom: 2px solid var(--emerald); 
+            color: var(--emerald); 
+            font-family: 'Cormorant Garamond', serif; /* Header Tabel Pakai Serif */
+            font-size: 1.2rem; 
+        }
+        .capacity-table td { padding: 15px; border-bottom: 1px solid #eee; color: #555; }
+        .capacity-table tr:hover { background: #fdfdfd; }
+
+        /* PACKAGE CARDS */
+        .package-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+        .package-card {
+            background: #fff; padding: 40px; text-align: center; border: 1px solid #eee; transition: 0.3s;
+        }
+        .package-card:hover { transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-color: var(--gold); }
+        
+        .pkg-title { font-size: 2rem; margin-bottom: 5px; } /* Cormorant */
+        .pkg-price { display: block; color: var(--gold); font-weight: 600; font-size: 1.1rem; margin-bottom: 25px; letter-spacing: 1px; font-family: 'Montserrat', sans-serif; }
+        
+        .pkg-list { list-style: none; text-align: left; font-size: 0.9rem; color: #666; margin-bottom: 30px; padding: 0; }
+        .pkg-list li { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; }
+        .pkg-list li::before { content: '•'; color: var(--gold); margin-right: 10px; font-size: 1.2rem; }
+        
+        .btn-outline {
+            display: inline-block; padding: 12px 30px; border: 1px solid var(--dark-grey);
+            color: var(--dark-grey); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 500;
+        }
+        .btn-outline:hover { background: var(--emerald); border-color: var(--emerald); color: #fff; }
+
+        /* FOOTER */
+        footer { background: var(--emerald); color: #fff; padding: 50px; text-align: center; margin-top: 50px; }
+
+        @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
+        
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero-title { font-size: 2.5rem; }
+            .split-layout { flex-direction: column; }
+            .package-grid { grid-template-columns: 1fr; }
+            .nav-menu { display: none; }
+            header { justify-content: center; }
+            .img-col img { height: 250px; }
+            .tab-nav { gap: 20px; }
+            .tab-btn { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="navbar">
+        <div class="logo">Spencer Green</div>
+        <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="dining.html" class="nav-link">Dining</a></li>
+            <li><a href="meeting.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Meeting</a></li>
+			<li><a href="wedding.html" class="nav-link">Wedding</a></li>
+            <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        </ul>
+        <a href="index.html" class="btn-book">Book Your Stay</a>
+    </header>
+
+    <section class="hero-meeting">
+        <div>
+            <p class="hero-subtitle">Business with Leisure</p>
+            <h1 class="hero-title">Meeting & Events</h1>
+        </div>
+    </section>
+
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="openTab('ballroom')">Grand Ballroom</button>
+        <button class="tab-btn" onclick="openTab('meeting')">Function Rooms</button>
+        <button class="tab-btn" onclick="openTab('packages')">Packages</button>
+    </div>
+
+    <div id="ballroom" class="tab-content active">
+        <div class="split-layout">
+            <div class="text-col">
+                <h2 class="section-title">The Arjuna Ballroom</h2>
+                <div style="width: 50px; height: 2px; background: var(--gold); margin-bottom: 20px;"></div>
+                <p class="section-desc">
+                    A majestic pillar-less ballroom designed for grand conferences and gala dinners. Featuring a 7-meter high ceiling and crystal chandeliers, The Arjuna Ballroom offers an atmosphere of grandeur and sophistication for up to 500 guests.
+                </p>
+                
+                <table class="capacity-table">
+                    <tr><th>Setup Style</th><th>Capacity</th></tr>
+                    <tr><td>Theatre</td><td>500 Pax</td></tr>
+                    <tr><td>Classroom</td><td>300 Pax</td></tr>
+                    <tr><td>Round Table</td><td>250 Pax</td></tr>
+                </table>
+                <br><br>
+                <a href="#" class="btn-outline">Inquire Ballroom</a>
+            </div>
+            <div class="img-col">
+                <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Ballroom">
+            </div>
+        </div>
+    </div>
+
+    <div id="meeting" class="tab-content">
+        <div class="split-layout">
+            <div class="img-col">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Meeting Room">
+            </div>
+            <div class="text-col">
+                <h2 class="section-title">Panderman Rooms</h2>
+                <div style="width: 50px; height: 2px; background: var(--gold); margin-bottom: 20px;"></div>
+                <p class="section-desc">
+                    Flexible meeting spaces bathed in natural light, offering panoramic views of Mount Panderman. Ideal for board meetings, training sessions, and intimate seminars. Equipped with state-of-the-art audiovisual technology.
+                </p>
+                <table class="capacity-table">
+                    <tr><th>Room</th><th>Size</th><th>U-Shape</th><th>Classroom</th></tr>
+                    <tr><td>Panderman 1</td><td>60 m²</td><td>25 Pax</td><td>40 Pax</td></tr>
+                    <tr><td>Panderman 2</td><td>60 m²</td><td>25 Pax</td><td>40 Pax</td></tr>
+                    <tr><td>Panderman 1+2</td><td>120 m²</td><td>60 Pax</td><td>100 Pax</td></tr>
+                </table>
+                <br><br>
+                <a href="#" class="btn-outline">Inquire Function Room</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="packages" class="tab-content">
+        <div style="text-align: center; margin-bottom: 50px;">
+            <h2 class="section-title">Curated Meeting Packages</h2>
+            <div style="width: 50px; height: 2px; background: var(--gold); margin: 0 auto 20px;"></div>
+            <p class="section-desc">Designed for efficiency, comfort, and seamless execution.</p>
+        </div>
+
+        <div class="package-grid">
+            <div class="package-card">
+                <h3 class="pkg-title">Half Day</h3>
+                <span class="pkg-price">IDR 350.000 / pax</span>
+                <ul class="pkg-list">
+                    <li>4-6 Hours Room Usage</li>
+                    <li>1x Coffee Break & Snacks</li>
+                    <li>1x Buffet Lunch or Dinner</li>
+                    <li>Standard Sound System</li>
+                    <li>Mints, Water & Notepad</li>
+                </ul>
+                <a href="#" class="btn-outline">Book Package</a>
+            </div>
+
+            <div class="package-card" style="border: 1px solid var(--gold);">
+                <h3 class="pkg-title">Full Day</h3>
+                <span class="pkg-price">IDR 450.000 / pax</span>
+                <ul class="pkg-list">
+                    <li>8-10 Hours Room Usage</li>
+                    <li>2x Coffee Break & Snacks</li>
+                    <li>1x Buffet Lunch or Dinner</li>
+                    <li>LCD Projector & Screen</li>
+                    <li>High Speed Dedicated WiFi</li>
+                </ul>
+                <a href="#" class="btn-outline" style="background: var(--gold); color: #fff; border-color: var(--gold);">Most Popular</a>
+            </div>
+
+            <div class="package-card">
+                <h3 class="pkg-title">Full Board</h3>
+                <span class="pkg-price">IDR 950.000 / pax</span>
+                <ul class="pkg-list">
+                    <li>1 Night Stay (Twin Share)</li>
+                    <li>International Breakfast</li>
+                    <li>12 Hours Meeting Usage</li>
+                    <li>2x Coffee Break</li>
+                    <li>Lunch & Dinner Included</li>
+                </ul>
+                <a href="#" class="btn-outline">Book Package</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Spencer Green Hotel Batu. MICE & Events.</p>
+    </footer>
+
+    <script>
+        // Scroll Navbar Effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('navbar');
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Tab Logic
+        function openTab(tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("tab-content");
+            for (i = 0; i < x.length; i++) {
+                x[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+    </script>
+
+</body>
+</html>

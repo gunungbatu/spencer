@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dining at Spencer Green Hotel | Gastronomy</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. GLOBAL VARIABLES & RESET --- */
+        :root {
+            --gold: #D4AF37;
+            --emerald: #1B4D3E;
+            --dark-grey: #1a1a1a;
+            --light-bg: #F9F9F9;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background-color: var(--light-bg); line-height: 1.6; }
+
+        h1, h2, h3, h4, h5, h6 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); font-weight: 600; }
+        
+        button, input, select, textarea { font-family: 'Montserrat', sans-serif; }
+        a { text-decoration: none; transition: 0.3s; }
+        
+        /* --- 2. NAVBAR --- */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; transition: 0.4s;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+        }
+        header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+        .nav-menu { display: flex; gap: 30px; list-style: none; }
+        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+        .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
+        .btn-book:hover { background: transparent; color: var(--gold); }
+
+        /* --- 3. HERO SECTION --- */
+        .hero-dining {
+            height: 70vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .hero-title {
+            color: #fff; font-size: 4rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .hero-subtitle {
+            color: var(--gold); font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 15px; font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- 4. TAB NAVIGATION --- */
+        .tab-nav {
+            display: flex; justify-content: center; gap: 40px; 
+            padding: 30px 0; background: #fff; border-bottom: 1px solid #ddd;
+            position: sticky; top: 70px; z-index: 900;
+        }
+        .tab-btn {
+            background: none; border: none; font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem; color: #888; cursor: pointer; padding-bottom: 5px;
+            transition: 0.3s; letter-spacing: 1px;
+        }
+        .tab-btn.active, .tab-btn:hover { color: var(--emerald); border-bottom: 2px solid var(--gold); }
+
+        /* --- 5. CONTENT SECTIONS --- */
+        .tab-content { display: none; padding: 80px 50px; max-width: 1200px; margin: 0 auto; animation: fadeUp 0.8s; }
+        .tab-content.active { display: block; }
+
+        .split-layout { display: flex; gap: 60px; align-items: center; margin-bottom: 80px; }
+        /* Reverse Layout Helper */
+        .reverse { flex-direction: row-reverse; }
+
+        .text-col { flex: 1; }
+        .img-col { flex: 1; }
+        .img-col img { width: 100%; height: 500px; object-fit: cover; }
+
+        .section-title { font-size: 3rem; margin-bottom: 10px; color: var(--dark-grey); line-height: 1.1; }
+        .section-sub { font-size: 1.2rem; color: var(--gold); margin-bottom: 20px; font-family: 'Cormorant Garamond', serif; font-style: italic; }
+        .section-desc { font-size: 1rem; color: #666; line-height: 1.8; margin-bottom: 30px; font-weight: 300; }
+
+        /* INFO BOX */
+        .info-box {
+            border-left: 3px solid var(--gold); padding-left: 20px; margin-bottom: 30px;
+        }
+        .info-label { font-size: 0.75rem; text-transform: uppercase; color: var(--emerald); font-weight: 600; letter-spacing: 1px; display: block; margin-bottom: 5px; }
+        .info-val { font-size: 1rem; color: #333; display: block; margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; }
+
+        .btn-outline {
+            display: inline-block; padding: 12px 30px; border: 1px solid var(--dark-grey);
+            color: var(--dark-grey); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 500;
+        }
+        .btn-outline:hover { background: var(--emerald); border-color: var(--emerald); color: #fff; }
+
+        /* FOOTER */
+        footer { background: var(--emerald); color: #fff; padding: 50px; text-align: center; margin-top: 50px; }
+
+        @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
+        
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero-title { font-size: 2.5rem; }
+            .split-layout, .reverse { flex-direction: column; }
+            .nav-menu { display: none; }
+            header { justify-content: center; }
+            .img-col img { height: 300px; }
+            .tab-nav { gap: 20px; }
+            .tab-btn { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="navbar">
+        <div class="logo">Spencer Green</div>
+        <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="dining.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Dining</a></li>
+            <li><a href="meeting.html" class="nav-link">Meeting</a></li>
+			<li><a href="wedding.html" class="nav-link">Wedding</a></li>
+            <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        </ul>
+        <a href="index.html" class="btn-book">Book Your Stay</a>
+    </header>
+
+    <section class="hero-dining">
+        <div>
+            <p class="hero-subtitle">Taste of The Heights</p>
+            <h1 class="hero-title">Culinary Journey</h1>
+        </div>
+    </section>
+
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="openTab('rooftop')">Rooftop Lounge</button>
+        <button class="tab-btn" onclick="openTab('botanica')">Botanica Restaurant</button>
+        <button class="tab-btn" onclick="openTab('candle')">Romantic Dinner</button>
+    </div>
+
+    <div id="rooftop" class="tab-content active">
+        <div class="split-layout">
+            <div class="text-col">
+                <h2 class="section-title">The Sky Lounge</h2>
+                <h3 class="section-sub">Cocktails & Sunset Views</h3>
+                <p class="section-desc">
+                    Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman. The perfect spot to enjoy artisan coffee or signature cocktails as the sun dips below the horizon.
+                </p>
+                
+                <div class="info-box">
+                    <span class="info-label">Opening Hours</span>
+                    <span class="info-val">Daily: 15.00 - 23.00 WIB</span>
+                    
+                    <span class="info-label">Location</span>
+                    <span class="info-val">Rooftop Level 5</span>
+                </div>
+                
+                <a href="#" class="btn-outline">Reserve Table</a>
+            </div>
+            <div class="img-col">
+                <img src="https://images.unsplash.com/photo-1572331165267-854da2b00dc1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Rooftop Bar">
+            </div>
+        </div>
+    </div>
+
+    <div id="botanica" class="tab-content">
+        <div class="split-layout reverse">
+            <div class="text-col">
+                <h2 class="section-title">Botanica Restaurant</h2>
+                <h3 class="section-sub">All Day Dining</h3>
+                <p class="section-desc">
+                    A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu for lunch and dinner. Our chefs use the freshest local produce from Batu's fertile lands to create culinary masterpieces.
+                </p>
+                
+                <div class="info-box">
+                    <span class="info-label">Cuisine</span>
+                    <span class="info-val">Asian, Western & Nusantara</span>
+                    
+                    <span class="info-label">Opening Hours</span>
+                    <span class="info-val">Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00</span>
+                </div>
+                
+                <a href="#" class="btn-outline">View Menu</a>
+            </div>
+            <div class="img-col">
+                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Restaurant Interior">
+            </div>
+        </div>
+    </div>
+
+    <div id="candle" class="tab-content">
+        <div class="split-layout">
+            <div class="text-col">
+                <h2 class="section-title">Intimate Dining</h2>
+                <h3 class="section-sub">Candle Light Experience</h3>
+                <p class="section-desc">
+                    Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight. Choose your sanctuary: a private balcony with mountain views or a secluded spot by the infinity pool.
+                </p>
+                <p class="section-desc">
+                    Our Executive Chef has crafted an exclusive 5-Course Set Menu, perfectly paired with a selection of fine wines.
+                </p>
+                
+                <div class="info-box">
+                    <span class="info-label">Reservation</span>
+                    <span class="info-val">Minimum H-1 Advance Booking</span>
+                    
+                    <span class="info-label">Starting Price</span>
+                    <span class="info-val">IDR 750.000++ / Couple</span>
+                </div>
+                
+                <a href="#" class="btn-outline">Book Experience</a>
+            </div>
+            <div class="img-col">
+                <img src="https://images.unsplash.com/photo-1514361892635-6b07e31e75f9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Romantic Dinner">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Spencer Green Hotel Batu. Gastronomy.</p>
+    </footer>
+
+    <script>
+        // Scroll Navbar Effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('navbar');
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Tab Logic
+        function openTab(tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("tab-content");
+            for (i = 0; i < x.length; i++) {
+                x[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+    </script>
+
+</body>
+</html>
