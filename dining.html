@@ -5,23 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dining | Spencer Green Hotel Batu</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <script src="assets/js/global-config.js"></script>
+
     <style>
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin:0; }
         h1, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
         
-        /* NAVBAR */
-        header { position:fixed; top:0; width:100%; padding:20px 50px; display:flex; justify-content:space-between; align-items:center; z-index:1000; transition:0.4s; background:linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); }
-        header.scrolled { background:var(--emerald); padding:15px 50px; }
-        .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.8rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; }
-        .nav-menu { display:flex; gap:30px; list-style:none; }
-        .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.75rem; letter-spacing:1px; }
-        .btn-book { padding:10px 20px; border:1px solid var(--gold); color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.75rem; }
+        /* --- HEADER & MENU STYLES (Global) --- */
+        header { 
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            padding: 15px 50px; 
+            display: flex; 
+            justify-content: space-between; /* Logo Kiri, Menu Kanan */
+            align-items: center; 
+            z-index: 1000; 
+            transition: 0.4s; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); 
+            box-sizing: border-box;
+        }
+        header.scrolled { background:var(--emerald); padding:15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
-        /* HERO */
-        .hero-dining { height:70vh; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; }
+        .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.8rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; z-index:1002; }
+        .nav-menu { display:flex; gap:30px; list-style:none; margin:0; padding:0; }
+        .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.75rem; letter-spacing:1px; font-weight:500; }
+        .btn-book { padding:10px 20px; border:1px solid var(--gold); color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.75rem; cursor:pointer; }
+        .btn-book:hover { background:transparent; color:var(--gold); }
+
+        /* MOBILE MENU STYLES */
+        .mobile-menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1002; }
+        .mobile-nav-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(27, 77, 62, 0.98); 
+            z-index: 1001; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            opacity: 0; pointer-events: none; transition: 0.4s; 
+        }
+        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-nav-link { color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none; font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* --- PAGE SPECIFIC STYLES --- */
+        .hero-dining { height:70vh; background:linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/dining-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; transition:0.5s; }
         .hero-title { color:#fff; font-size:4rem; margin:0; letter-spacing:3px; } 
         .hero-subtitle { color:var(--gold); letter-spacing:4px; font-weight:600; margin-bottom:10px; }
 
@@ -52,83 +82,106 @@
         .social-icon:hover { background: var(--gold); border-color: var(--gold); transform: translateY(-3px); }
 
         @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
-        @media(max-width:900px) { .nav-menu { display:none; } .split-layout, .reverse { flex-direction:column; } .img-col img { height:300px; } }
+        
+        /* RESPONSIVE */
+        @media(max-width:900px) { 
+            header { padding: 15px 20px; justify-content: space-between; }
+            .nav-menu, .btn-book { display: none; } 
+            .mobile-menu-btn { display: block; }
+            
+            .split-layout, .reverse { flex-direction:column; } 
+            .img-col img { height:300px; } 
+            .hero-title { font-size: 3rem; }
+        }
     </style>
 </head>
-<body>
+<body data-page="dining">
 
-    <header id="navbar">
-        <div class="logo">Spencer Green</div>
-        <ul class="nav-menu">
-            <li><a href="index.html" class="nav-link">Home</a></li>
-            <li><a href="dining.html" class="nav-link" style="color:var(--gold);">Dining</a></li>
-            <li><a href="meeting.html" class="nav-link">Meeting</a></li>
-            <li><a href="wedding.html" class="nav-link">Wedding</a></li>
-            <li><a href="gallery.html" class="nav-link">Gallery</a></li>
-        </ul>
-        <a href="index.html" class="btn-book">Book Now</a>
-    </header>
+    <div id="global-header-container"></div>
 
     <section class="hero-dining" id="img_dining_hero">
         <div>
-            <p class="hero-subtitle" id="dining_subtitle"></p>
-            <h1 class="hero-title" id="dining_title"></h1>
+            <p class="hero-subtitle" id="dining_subtitle">Taste of The Heights</p>
+            <h1 class="hero-title" id="dining_title">Culinary Journey</h1>
         </div>
     </section>
 
     <div class="tab-nav">
-        <button class="tab-btn active" onclick="openTab('rooftop')" id="dining_rooftop_subtitle"></button>
-        <button class="tab-btn" onclick="openTab('botanica')" id="dining_botanica_subtitle"></button>
-        <button class="tab-btn" onclick="openTab('candle')" id="dining_candle_subtitle"></button>
+        <button class="tab-btn active" onclick="openTab('rooftop')" id="dining_rooftop_subtitle">Rooftop Lounge</button>
+        <button class="tab-btn" onclick="openTab('botanica')" id="dining_botanica_subtitle">Botanica Restaurant</button>
+        <button class="tab-btn" onclick="openTab('candle')" id="dining_candle_subtitle">Romantic Dinner</button>
     </div>
 
     <div id="rooftop" class="tab-content active">
         <div class="split-layout">
             <div class="text-col">
-                <h2 class="section-title" id="dining_rooftop_title"></h2>
-                <p class="section-desc" id="dining_rooftop_desc"></p>
-                <div class="info-box"><span id="dining_rooftop_info"></span></div>
+                <h2 class="section-title" id="dining_rooftop_title">The Sky Lounge</h2>
+                <p class="section-desc" id="dining_rooftop_desc">
+                    Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman.
+                </p>
+                
+                <div class="info-box">
+                    <span id="dining_rooftop_info">Open Daily: 15.00 - 23.00 WIB</span>
+                </div>
+                
                 <a href="#" class="btn-outline" id="dining_rooftop_btn_link" target="_blank">
-                    <span id="dining_rooftop_btn_text"></span>
+                    <span id="dining_rooftop_btn_text">Reserve Table</span>
                 </a>
             </div>
-            <div class="img-col"><img id="img_dining_rooftop" src="assets/rooftop.jpg" alt="Rooftop"></div>
+            <div class="img-col">
+                <img id="img_dining_rooftop" src="assets/rooftop.jpg" alt="Rooftop">
+            </div>
         </div>
     </div>
 
     <div id="botanica" class="tab-content">
         <div class="split-layout reverse">
             <div class="text-col">
-                <h2 class="section-title" id="dining_botanica_title"></h2>
-                <p class="section-desc" id="dining_botanica_desc"></p>
-                <div class="info-box"><span id="dining_botanica_info"></span></div>
+                <h2 class="section-title" id="dining_botanica_title">Botanica Restaurant</h2>
+                <p class="section-desc" id="dining_botanica_desc">
+                    A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu.
+                </p>
+                
+                <div class="info-box">
+                    <span id="dining_botanica_info">Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00</span>
+                </div>
+                
                 <a href="#" class="btn-outline" id="dining_botanica_btn_link" target="_blank">
-                    <span id="dining_botanica_btn_text"></span>
+                    <span id="dining_botanica_btn_text">View Menu</span>
                 </a>
             </div>
-            <div class="img-col"><img id="img_dining_botanica" src="assets/dining-bg.jpg" alt="Restaurant"></div>
+            <div class="img-col">
+                <img id="img_dining_botanica" src="assets/dining-bg.jpg" alt="Restaurant">
+            </div>
         </div>
     </div>
 
     <div id="candle" class="tab-content">
         <div class="split-layout">
             <div class="text-col">
-                <h2 class="section-title" id="dining_candle_title"></h2>
-                <p class="section-desc" id="dining_candle_desc"></p>
-                <div class="info-box"><span id="dining_candle_info"></span></div>
+                <h2 class="section-title" id="dining_candle_title">Intimate Dining</h2>
+                <p class="section-desc" id="dining_candle_desc">
+                    Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight.
+                </p>
+                
+                <div class="info-box">
+                    <span id="dining_candle_info">Start IDR 750.000++ / Couple</span>
+                </div>
+                
                 <a href="#" class="btn-outline" id="dining_candle_btn_link" target="_blank">
-                    <span id="dining_candle_btn_text"></span>
+                    <span id="dining_candle_btn_text">Book Experience</span>
                 </a>
             </div>
-            <div class="img-col"><img id="img_dining_candle" src="assets/dining-bg.jpg" alt="Romantic Dinner"></div>
+            <div class="img-col">
+                <img id="img_dining_candle" src="assets/dining-bg.jpg" alt="Romantic Dinner">
+            </div>
         </div>
     </div>
 
     <footer id="global-footer"></footer>
 
     <script>
-        window.addEventListener('scroll', ()=>document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50));
-        
+        // Tab Logic
         function openTab(name) {
             document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
