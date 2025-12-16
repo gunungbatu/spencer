@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <script src="assets/js/global-config.js"></script>
+
     <style>
         /* --- 1. GLOBAL VARIABLES & RESET --- */
         :root {
@@ -22,7 +24,6 @@
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background-color: var(--light-bg); line-height: 1.6; }
 
         h1, h2, h3, h4, h5, h6 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); font-weight: 600; }
-        
         button, input, select, textarea { font-family: 'Montserrat', sans-serif; }
         a { text-decoration: none; transition: 0.3s; }
         
@@ -35,20 +36,18 @@
         }
         header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
-        
         .nav-menu { display: flex; gap: 30px; list-style: none; }
         .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
-        
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
         .btn-book:hover { background: transparent; color: var(--gold); }
 
-        /* --- MOBILE MENU --- */
+        /* --- MOBILE MENU CSS --- */
         .mobile-menu-btn {
             display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
         }
         .mobile-nav-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            background: rgba(27, 77, 62, 0.95);
             z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.4s;
@@ -62,9 +61,10 @@
         /* --- 3. HERO SECTION --- */
         .hero-meeting {
             height: 60vh;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/meeting-bg.jpg'); /* Default */
             background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center; text-align: center;
+            transition: background-image 0.5s ease;
         }
         .hero-title {
             color: #fff; font-size: 4rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
@@ -156,9 +156,9 @@
         
         <ul class="nav-menu">
             <li><a href="index.html" class="nav-link">Home</a></li>
-            <li><a href="dining.html" class="nav-link">Gastronomy</a></li>
+            <li><a href="dining.html" class="nav-link">Dining</a></li>
             <li><a href="meeting.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Meeting</a></li>
-            <li><a href="wedding.html" class="nav-link">Weddings</a></li>
+            <li><a href="wedding.html" class="nav-link">Wedding</a></li>
             <li><a href="gallery.html" class="nav-link">Gallery</a></li>
         </ul>
 
@@ -169,7 +169,7 @@
 
     <div class="mobile-nav-overlay" id="mobileNav">
         <a href="index.html" class="mobile-nav-link">Home</a>
-        <a href="dining.html" class="mobile-nav-link">Gastronomy</a>
+        <a href="dining.html" class="mobile-nav-link">Dining</a>
         <a href="meeting.html" class="mobile-nav-link" style="color:var(--gold);">Meeting</a>
         <a href="wedding.html" class="mobile-nav-link">Weddings</a>
         <a href="gallery.html" class="mobile-nav-link">Gallery</a>
@@ -180,8 +180,8 @@
 
     <section class="hero-meeting">
         <div>
-            <p class="hero-subtitle">Business with Leisure</p>
-            <h1 class="hero-title">Meeting & Events</h1>
+            <p class="hero-subtitle" id="meetingSubtitle">Business with Leisure</p>
+            <h1 class="hero-title" id="meetingTitle">Meeting & Events</h1>
         </div>
     </section>
 
@@ -196,7 +196,7 @@
             <div class="text-col">
                 <h2 class="section-title">The Arjuna Ballroom</h2>
                 <div style="width: 50px; height: 2px; background: var(--gold); margin-bottom: 20px;"></div>
-                <p class="section-desc">
+                <p class="section-desc" id="meetingDesc">
                     A majestic pillar-less ballroom designed for grand conferences and gala dinners. Featuring a 7-meter high ceiling and crystal chandeliers, The Arjuna Ballroom offers an atmosphere of grandeur and sophistication for up to 500 guests.
                 </p>
                 
@@ -292,7 +292,25 @@
     </footer>
 
     <script>
-        // Scroll Navbar Effect
+        // --- 1. DYNAMIC CONTENT LOADER ---
+        fetch('data.json')
+        .then(r => r.json())
+        .then(data => {
+            // Update Hero Text
+            if(data.meeting_title) document.getElementById('meetingTitle').innerText = data.meeting_title;
+            if(data.meeting_subtitle) document.getElementById('meetingSubtitle').innerText = data.meeting_subtitle;
+            
+            // Update Description (Main)
+            if(data.meeting_desc) document.getElementById('meetingDesc').innerText = data.meeting_desc;
+
+            // Update Background Hero
+            if(data.img_meeting_hero) {
+                document.querySelector('.hero-meeting').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data.img_meeting_hero}')`;
+            }
+        })
+        .catch(err => console.log('Data Load Error:', err));
+
+        // --- 2. UI INTERACTIONS ---
         window.addEventListener('scroll', function() {
             const header = document.getElementById('navbar');
             header.classList.toggle('scrolled', window.scrollY > 50);
