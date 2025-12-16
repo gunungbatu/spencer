@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <script src="assets/js/global-config.js"></script>
+
     <style>
         /* --- 1. GLOBAL VARIABLES & RESET --- */
         :root {
@@ -39,13 +41,13 @@
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
         .btn-book:hover { background: transparent; color: var(--gold); }
 
-        /* --- MOBILE MENU CSS (ADDED) --- */
+        /* --- MOBILE MENU CSS --- */
         .mobile-menu-btn {
             display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
         }
         .mobile-nav-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            background: rgba(27, 77, 62, 0.95);
             z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.4s;
@@ -59,9 +61,10 @@
         /* --- 3. HERO SECTION --- */
         .hero-gallery {
             height: 50vh;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/gallery-bg.jpg'); /* Default */
             background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center; text-align: center;
+            transition: background-image 0.5s ease;
         }
         .hero-title {
             color: #fff; font-size: 4rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
@@ -101,7 +104,6 @@
             cursor: zoom-in; opacity: 1; transition: opacity 0.4s ease, transform 0.4s ease;
         }
         
-        /* Animasi Filter */
         .gallery-item.hide { display: none; }
         .gallery-item.show { display: block; animation: fadeIn 0.5s; }
 
@@ -110,10 +112,9 @@
             transition: transform 0.6s ease;
         }
 
-        /* Hover Overlay */
         .gallery-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.4); /* Emerald Transparent */
+            background: rgba(27, 77, 62, 0.4);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; transition: 0.4s;
         }
@@ -155,8 +156,8 @@
             .gallery-container { column-count: 2; }
             .hero-title { font-size: 2.5rem; }
             .nav-menu { display: none; }
-            .mobile-menu-btn { display: block; } /* Show Hamburger */
-            .btn-book { display: none; } /* Hide Desktop Book Button */
+            .mobile-menu-btn { display: block; }
+            .btn-book { display: none; }
             header { justify-content: center; }
         }
         @media (max-width: 600px) {
@@ -194,20 +195,20 @@
 
     <section class="hero-gallery">
         <div>
-            <p class="hero-subtitle">Explore The Beauty</p>
-            <h1 class="hero-title">Visual Journey</h1>
+            <p class="hero-subtitle" id="gallerySubtitle">Explore The Beauty</p>
+            <h1 class="hero-title" id="galleryTitle">Visual Journey</h1>
         </div>
     </section>
 
     <div class="filter-bar">
         <button class="filter-btn active" onclick="filterGallery('all')">All</button>
         <button class="filter-btn" onclick="filterGallery('rooms')">Suites</button>
-        <button class="filter-btn" onclick="filterGallery('dining')">Gastronomy</button>
+        <button class="filter-btn" onclick="filterGallery('dining')">Dining</button>
         <button class="filter-btn" onclick="filterGallery('facilities')">Wellness</button>
         <button class="filter-btn" onclick="filterGallery('events')">Events</button>
     </div>
 
-    <div class="gallery-container">
+    <div class="gallery-container" id="galleryGrid">
         
         <div class="gallery-item rooms" onclick="openLightbox(this)">
             <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800" alt="Deluxe Room">
@@ -261,7 +262,47 @@
     </footer>
 
     <script>
-        // Scroll Navbar Effect
+        // --- 1. DYNAMIC CONTENT LOADER ---
+        fetch('data.json')
+        .then(r => r.json())
+        .then(data => {
+            // Update Text Hero
+            if(data.gallery_title) document.getElementById('galleryTitle').innerText = data.gallery_title;
+            if(data.gallery_subtitle) document.getElementById('gallerySubtitle').innerText = data.gallery_subtitle;
+            
+            // Update Background Hero
+            if(data.img_gallery_hero) {
+                document.querySelector('.hero-gallery').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data.img_gallery_hero}')`;
+            }
+
+            // OPTIONAL: Load Dynamic Images from Dashboard (jika ada di data.json)
+            // Logic: Cari key yang berawalan 'img_gallery_'
+            // Ini memungkinkan admin mengupload foto baru via dashboard
+            const container = document.getElementById('galleryGrid');
+            Object.keys(data).forEach(key => {
+                if(key.startsWith('img_gallery_') && key !== 'img_gallery_hero') {
+                    // Cek kategori dari nama key (misal: img_gallery_rooms_1)
+                    let category = 'rooms'; // default
+                    if(key.includes('_dining_')) category = 'dining';
+                    if(key.includes('_events_')) category = 'events';
+                    if(key.includes('_facilities_')) category = 'facilities';
+
+                    let div = document.createElement('div');
+                    div.className = `gallery-item ${category} show`;
+                    div.setAttribute('onclick', 'openLightbox(this)');
+                    div.innerHTML = `
+                        <img src="${data[key]}" alt="Gallery Image">
+                        <div class="gallery-overlay"><span>View Image</span></div>
+                    `;
+                    // Tambahkan ke grid (append)
+                    container.appendChild(div);
+                }
+            });
+        })
+        .catch(err => console.log('Data Load Error:', err));
+
+
+        // --- 2. UI INTERACTIONS ---
         window.addEventListener('scroll', function() {
             const header = document.getElementById('navbar');
             header.classList.toggle('scrolled', window.scrollY > 50);
