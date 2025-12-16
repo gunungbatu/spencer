@@ -3,173 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dining at Spencer Green Hotel | Dining</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+    <title>Dining | Spencer Green Hotel Batu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="assets/js/global-config.js"></script>
-
     <style>
-        /* --- 1. GLOBAL VARIABLES & RESET --- */
-        :root {
-            --gold: #D4AF37;
-            --emerald: #1B4D3E;
-            --dark-grey: #1a1a1a;
-            --light-bg: #F9F9F9;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); }
+        h1, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
+        a { text-decoration:none; transition:0.3s; }
         
-        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background-color: var(--light-bg); line-height: 1.6; }
-
-        h1, h2, h3, h4, h5, h6 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); font-weight: 600; }
+        /* HEADER & HERO SAMA SEPERTI SEBELUMNYA */
+        header { position:fixed; top:0; width:100%; padding:20px 50px; display:flex; justify-content:space-between; align-items:center; z-index:1000; transition:0.4s; background:linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); }
+        header.scrolled { background:var(--emerald); padding:15px 50px; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+        .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.8rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; }
+        .nav-menu { display:flex; gap:30px; list-style:none; }
+        .nav-link { color:#fff; font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; font-weight:500; }
+        .btn-book { background:var(--gold); color:#fff; padding:10px 25px; font-size:0.75rem; border:1px solid var(--gold); cursor:pointer; text-transform:uppercase; }
         
-        button, input, select, textarea { font-family: 'Montserrat', sans-serif; }
-        a { text-decoration: none; transition: 0.3s; }
+        /* HERO DINING */
+        .hero-dining { height:70vh; background:linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/dining-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; }
+        .hero-title { color:#fff; font-size:4rem; text-transform:uppercase; letter-spacing:3px; }
+        .hero-subtitle { color:var(--gold); font-size:0.9rem; letter-spacing:4px; text-transform:uppercase; margin-bottom:15px; font-weight:600; }
+
+        /* CONTENT */
+        .tab-nav { display:flex; justify-content:center; gap:40px; padding:30px 0; background:#fff; position:sticky; top:70px; z-index:900; }
+        .tab-btn { background:none; border:none; font-family:'Cormorant Garamond', serif; font-size:1.3rem; color:#888; cursor:pointer; padding-bottom:5px; }
+        .tab-btn.active { color:var(--emerald); border-bottom:2px solid var(--gold); }
         
-        /* --- 2. NAVBAR --- */
-        header {
-            position: fixed; top: 0; width: 100%; padding: 20px 50px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; transition: 0.4s;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
-        }
-        header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+        .tab-content { display:none; padding:80px 50px; max-width:1200px; margin:0 auto; animation:fadeUp 0.8s; }
+        .tab-content.active { display:block; }
+        .split-layout { display:flex; gap:60px; align-items:center; margin-bottom:80px; }
+        .reverse { flex-direction:row-reverse; }
+        .text-col { flex:1; } .img-col { flex:1; } .img-col img { width:100%; height:500px; object-fit:cover; }
+        .section-title { font-size:3rem; margin-bottom:10px; }
+        .section-desc { font-size:1rem; color:#666; line-height:1.8; margin-bottom:30px; }
+        .info-box { border-left:3px solid var(--gold); padding-left:20px; margin-bottom:30px; }
+        .btn-outline { padding:12px 30px; border:1px solid var(--dark); color:var(--dark); text-transform:uppercase; font-size:0.8rem; letter-spacing:2px; }
         
-        /* Desktop Menu */
-        .nav-menu { display: flex; gap: 30px; list-style: none; }
-        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
-        .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
-        .btn-book:hover { background: transparent; color: var(--gold); }
-
-        /* --- MOBILE MENU --- */
-        .mobile-menu-btn {
-            display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
-        }
-        .mobile-nav-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.95);
-            z-index: 1000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: 0.4s;
-        }
-        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
-        .mobile-nav-link {
-            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
-            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        /* --- 3. HERO SECTION --- */
-        .hero-dining {
-            height: 70vh;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/dining-bg.jpg'); /* Default Image */
-            background-size: cover; background-position: center;
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            transition: background-image 0.5s ease;
-        }
-        .hero-title {
-            color: #fff; font-size: 4rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .hero-subtitle {
-            color: var(--gold); font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 15px; font-weight: 600;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        /* --- 4. TAB NAVIGATION --- */
-        .tab-nav {
-            display: flex; justify-content: center; gap: 40px; 
-            padding: 30px 0; background: #fff; border-bottom: 1px solid #ddd;
-            position: sticky; top: 70px; z-index: 900;
-        }
-        .tab-btn {
-            background: none; border: none; font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem; color: #888; cursor: pointer; padding-bottom: 5px;
-            transition: 0.3s; letter-spacing: 1px;
-        }
-        .tab-btn.active, .tab-btn:hover { color: var(--emerald); border-bottom: 2px solid var(--gold); }
-
-        /* --- 5. CONTENT SECTIONS --- */
-        .tab-content { display: none; padding: 80px 50px; max-width: 1200px; margin: 0 auto; animation: fadeUp 0.8s; }
-        .tab-content.active { display: block; }
-
-        .split-layout { display: flex; gap: 60px; align-items: center; margin-bottom: 80px; }
-        .reverse { flex-direction: row-reverse; }
-
-        .text-col { flex: 1; }
-        .img-col { flex: 1; }
-        .img-col img { width: 100%; height: 500px; object-fit: cover; }
-
-        .section-title { font-size: 3rem; margin-bottom: 10px; color: var(--dark-grey); line-height: 1.1; }
-        .section-sub { font-size: 1.2rem; color: var(--gold); margin-bottom: 20px; font-family: 'Cormorant Garamond', serif; font-style: italic; }
-        .section-desc { font-size: 1rem; color: #666; line-height: 1.8; margin-bottom: 30px; font-weight: 300; }
-
-        /* INFO BOX */
-        .info-box {
-            border-left: 3px solid var(--gold); padding-left: 20px; margin-bottom: 30px;
-        }
-        .info-label { font-size: 0.75rem; text-transform: uppercase; color: var(--emerald); font-weight: 600; letter-spacing: 1px; display: block; margin-bottom: 5px; }
-        .info-val { font-size: 1rem; color: #333; display: block; margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; }
-
-        .btn-outline {
-            display: inline-block; padding: 12px 30px; border: 1px solid var(--dark-grey);
-            color: var(--dark-grey); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 500;
-        }
-        .btn-outline:hover { background: var(--emerald); border-color: var(--emerald); color: #fff; }
-
-        /* FOOTER */
-        footer { background: var(--emerald); color: #fff; padding: 50px; text-align: center; margin-top: 50px; }
-
+        footer { background:var(--emerald); color:#fff; padding:50px; text-align:center; }
         @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
-        
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .hero-title { font-size: 2.5rem; }
-            .split-layout, .reverse { flex-direction: column; }
-            .nav-menu { display: none; }
-            .mobile-menu-btn { display: block; }
-            .btn-book { display: none; }
-            header { justify-content: center; }
-            .img-col img { height: 300px; }
-            .tab-nav { gap: 20px; }
-            .tab-btn { font-size: 1rem; }
-        }
+        @media(max-width:900px) { .nav-menu { display:none; } .split-layout, .reverse { flex-direction:column; } }
     </style>
 </head>
 <body>
 
     <header id="navbar">
         <div class="logo">Spencer Green</div>
-        
         <ul class="nav-menu">
             <li><a href="index.html" class="nav-link">Home</a></li>
-            <li><a href="dining.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Dining</a></li>
+            <li><a href="dining.html" class="nav-link" style="color:var(--gold);">Dining</a></li>
             <li><a href="meeting.html" class="nav-link">Meeting</a></li>
             <li><a href="wedding.html" class="nav-link">Wedding</a></li>
             <li><a href="gallery.html" class="nav-link">Gallery</a></li>
         </ul>
-        
-        <a href="index.html" class="btn-book">Book Your Stay</a>
-
-        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</div>
+        <a href="index.html" class="btn-book">Book Now</a>
     </header>
-
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <a href="index.html" class="mobile-nav-link">Home</a>
-        <a href="dining.html" class="mobile-nav-link" style="color:var(--gold);">Dining</a>
-        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
-        <a href="wedding.html" class="mobile-nav-link">Wedding</a>
-        <a href="gallery.html" class="mobile-nav-link">Gallery</a>
-        <a href="index.html" class="mobile-nav-link" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Your Stay</a>
-        
-        <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
-    </div>
 
     <section class="hero-dining">
         <div>
-            <p class="hero-subtitle" id="diningSubtitle">Taste of The Heights</p>
-            <h1 class="hero-title" id="diningTitle">Culinary Journey</h1>
+            <p class="hero-subtitle" id="dining_subtitle">Taste of The Heights</p>
+            <h1 class="hero-title" id="dining_title">Culinary Journey</h1>
         </div>
     </section>
 
@@ -182,24 +76,15 @@
     <div id="rooftop" class="tab-content active">
         <div class="split-layout">
             <div class="text-col">
-                <h2 class="section-title">The Sky Lounge</h2>
-                <h3 class="section-sub">Cocktails & Sunset Views</h3>
-                <p class="section-desc">
-                    Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman. The perfect spot to enjoy artisan coffee or signature cocktails as the sun dips below the horizon.
+                <h2 class="section-title" id="facil_rooftop_title">The Sky Lounge</h2>
+                <p class="section-desc" id="facil_rooftop_desc">
+                    Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman.
                 </p>
-                
-                <div class="info-box">
-                    <span class="info-label">Opening Hours</span>
-                    <span class="info-val">Daily: 15.00 - 23.00 WIB</span>
-                    
-                    <span class="info-label">Location</span>
-                    <span class="info-val">Rooftop Level 5</span>
-                </div>
-                
+                <div class="info-box"><span>Open Daily: 15.00 - 23.00 WIB</span></div>
                 <a href="#" class="btn-outline">Reserve Table</a>
             </div>
             <div class="img-col">
-                <img src="https://images.unsplash.com/photo-1572331165267-854da2b00dc1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Rooftop Bar">
+                <img id="img_facil_rooftop" src="assets/rooftop.jpg" alt="Rooftop">
             </div>
         </div>
     </div>
@@ -208,23 +93,14 @@
         <div class="split-layout reverse">
             <div class="text-col">
                 <h2 class="section-title">Botanica Restaurant</h2>
-                <h3 class="section-sub">All Day Dining</h3>
                 <p class="section-desc">
-                    A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu for lunch and dinner. Our chefs use the freshest local produce from Batu's fertile lands to create culinary masterpieces.
+                    A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu.
                 </p>
-                
-                <div class="info-box">
-                    <span class="info-label">Cuisine</span>
-                    <span class="info-val">Asian, Western & Nusantara</span>
-                    
-                    <span class="info-label">Opening Hours</span>
-                    <span class="info-val">Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00</span>
-                </div>
-                
+                <div class="info-box"><span>Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00</span></div>
                 <a href="#" class="btn-outline">View Menu</a>
             </div>
             <div class="img-col">
-                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Restaurant Interior">
+                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800" alt="Restaurant">
             </div>
         </div>
     </div>
@@ -232,78 +108,48 @@
     <div id="candle" class="tab-content">
         <div class="split-layout">
             <div class="text-col">
-                <h2 class="section-title">Intimate Dining</h2>
-                <h3 class="section-sub">Candle Light Experience</h3>
-                <p class="section-desc">
-                    Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight. Choose your sanctuary: a private balcony with mountain views or a secluded spot by the infinity pool.
+                <h2 class="section-title" id="facil_dinner_title">Intimate Dining</h2>
+                <p class="section-desc" id="facil_dinner_desc">
+                    Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight.
                 </p>
-                <p class="section-desc">
-                    Our Executive Chef has crafted an exclusive 5-Course Set Menu, perfectly paired with a selection of fine wines.
-                </p>
-                
-                <div class="info-box">
-                    <span class="info-label">Reservation</span>
-                    <span class="info-val">Minimum H-1 Advance Booking</span>
-                    
-                    <span class="info-label">Starting Price</span>
-                    <span class="info-val">IDR 750.000++ / Couple</span>
-                </div>
-                
+                <div class="info-box"><span>Start IDR 750.000++ / Couple</span></div>
                 <a href="#" class="btn-outline">Book Experience</a>
             </div>
             <div class="img-col">
-                <img src="https://images.unsplash.com/photo-1514361892635-6b07e31e75f9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Romantic Dinner">
+                <img id="img_facil_dinner" src="assets/dining-bg.jpg" alt="Romantic Dinner">
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2024 Spencer Green Hotel Batu. Dining.</p>
-    </footer>
+    <footer><p>&copy; 2025 Spencer Green Hotel Batu. Dining.</p></footer>
 
     <script>
-        // --- 1. DYNAMIC CONTENT LOADER ---
-        fetch('data.json')
-        .then(r => r.json())
-        .then(data => {
-            // Update Text Hero
-            if(data.dining_title) document.getElementById('diningTitle').innerText = data.dining_title;
-            if(data.dining_subtitle) document.getElementById('diningSubtitle').innerText = data.dining_subtitle;
-            
-            // Update Background Hero
-            if(data.img_dining_hero) {
-                document.querySelector('.hero-dining').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data.img_dining_hero}')`;
-            }
-        })
-        .catch(err => console.log('Data Load Error:', err));
-
-        // --- 2. UI INTERACTIONS ---
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('navbar');
-            header.classList.toggle('scrolled', window.scrollY > 50);
+        // --- 1. MAGIC CONTENT LOADER ---
+        fetch('data.json?t='+Date.now()).then(r=>r.json()).then(data=>{
+            // Logic: Cek ID di HTML, jika ada key yg sama di JSON, ganti isinya.
+            Object.keys(data).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (key.startsWith('img_')) {
+                        el.src = data[key]; // Ganti Gambar
+                        if(key === 'img_dining_hero') { // Khusus BG Hero Dining
+                            document.querySelector('.hero-dining').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
+                        }
+                    } else {
+                        el.innerText = data[key]; // Ganti Teks
+                    }
+                }
+            });
         });
 
-        // Tab Logic
-        function openTab(tabName) {
-            var i, x, tablinks;
-            x = document.getElementsByClassName("tab-content");
-            for (i = 0; i < x.length; i++) {
-                x[i].classList.remove("active");
-            }
-            tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
-            document.getElementById(tabName).classList.add("active");
-            event.currentTarget.classList.add("active");
-        }
-
-        // Toggle Mobile Menu
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileNav');
-            menu.classList.toggle('active');
+        // UI Interactions
+        window.addEventListener('scroll', ()=>document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50));
+        function openTab(name) {
+            document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
     </script>
-
 </body>
 </html>
