@@ -46,28 +46,26 @@ function getServerImages($dir) {
 }
 $server_images = getServerImages($upload_dir);
 
-// 4. SAVE KONTEN WEBSITE (LOGIKA MEDIA MANAGER)
+// 4. SAVE KONTEN WEBSITE
 $current_data = json_decode(file_get_contents($json_file), true);
 if (!$current_data) $current_data = [];
 
 if (isset($_POST['save_content'])) {
-    // A. Simpan dari Input Text (Link Manual/Browse) DULU
+    // A. Simpan Input Text/Link Manual
     foreach ($current_data as $key => $val) {
         if (isset($_POST[$key])) {
             $current_data[$key] = $_POST[$key];
         }
     }
     
-    // B. Simpan dari Upload File (KEMUDIAN - Prioritas lebih tinggi)
+    // B. Simpan Upload File (Prioritas)
     foreach ($_FILES as $key => $file) {
-        // Cek apakah ada file yang diupload dengan sukses
         if ($file['name'] && $file['error'] === 0) {
             $target_file = $upload_dir . basename($file['name']);
-            // Cek tipe file agar aman (optional, tapi disarankan)
             $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
             if(in_array($fileType, ['jpg','jpeg','png','gif','webp','avif','mp4'])) {
                  if (move_uploaded_file($file['tmp_name'], $target_file)) {
-                    $current_data[$key] = $target_file; // Timpa path dengan file baru
+                    $current_data[$key] = $target_file;
                 }
             }
         }
@@ -77,7 +75,7 @@ if (isset($_POST['save_content'])) {
     $msg = "Konten Website Berhasil Diupdate!";
 }
 
-// 5. SAVE REVIEW (Sama seperti sebelumnya)
+// 5. SAVE REVIEW
 $reviews = json_decode(file_get_contents($review_file), true);
 if (!$reviews) $reviews = [];
 if (isset($_POST['save_reviews'])) {
@@ -96,7 +94,6 @@ if (isset($_POST['save_reviews'])) {
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* STYLES SAMA SEPERTI SEBELUMNYA */
         :root { --primary: #1B4D3E; --gold: #C5A059; --bg: #f8f9fa; --white: #ffffff; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 250px; background: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
@@ -132,7 +129,8 @@ if (isset($_POST['save_reviews'])) {
     // DAFTAR MENU DASHBOARD
     $pages = [
         'home'=>['icon'=>'fa-home','title'=>'Home (Hero & Intro)','prefixes'=>['hero','home_intro']],
-        'rooms'=>['icon'=>'fa-bed','title'=>'Home (Rooms)','prefixes'=>['room_deluxe','room_superior','room_executive','img_room']], // PERHATIKAN PREFIX INI
+        // Prefix img_room ditambahkan
+        'rooms'=>['icon'=>'fa-bed','title'=>'Home (Rooms)','prefixes'=>['room_deluxe','room_superior','room_executive','img_room']], 
         'facilities'=>['icon'=>'fa-concierge-bell','title'=>'Home (Facilities)','prefixes'=>['home_facil','facil_rooftop','facil_dinner','img_wedding_venue','wedding_title','wedding_desc','img_meeting_hero','meeting_title','meeting_desc','meeting_subtitle','wedding_subtitle']],
         'dining'=>['icon'=>'fa-utensils','title'=>'Dining Page','prefixes'=>['dining_subtitle','dining_title','dining_rooftop','dining_botanica','dining_candle','img_dining']],
         'wedding'=>['icon'=>'fa-heart','title'=>'Wedding Page','prefixes'=>['wedding_intro','wedding_venue','wedding_spec','img_wedding_gal','wedding_form']],
@@ -186,9 +184,7 @@ if (isset($_POST['save_reviews'])) {
                     if ($show) {
                         $parts = explode('_', $key);
                         $prefix = $parts[0]; 
-                        // LOGIC GROUPING ROOMS DIPERBAIKI
                         if($prefix == 'room' && isset($parts[1])) $prefix = 'room_' . $parts[1]; 
-                        
                         if($prefix == 'img' && isset($parts[1])) $prefix = $parts[1];
                         if($prefix == 'facil' && isset($parts[1])) $prefix = 'facilities_' . $parts[1];
                         if($key == 'wedding_title' || $key == 'wedding_desc' || $key == 'img_wedding_venue') $prefix = 'wedding_teaser';
@@ -210,6 +206,9 @@ if (isset($_POST['save_reviews'])) {
                             <?php foreach($items as $item): 
                                 $k = $item['key']; $v = $item['val']; 
                                 $label = ucwords(str_replace(['_', 'img', 'facil', 'room'], [' ', '', '', ''], $k));
+
+                                // DETEKSI FIELD MEDIA (GAMBAR/VIDEO) YANG LEBIH KUAT
+                                $is_media = (strpos($k, 'img_') === 0) || (strpos($k, 'video') !== false) || (substr($k, -4) === '_img');
                             ?>
                                 <label><?php echo $label; ?></label>
                                 
@@ -219,7 +218,7 @@ if (isset($_POST['save_reviews'])) {
                                 <?php elseif(strpos($k, 'social_') === 0 || strpos($k, 'header_') === 0 || strpos($k, '_link') !== false): ?>
                                     <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
 
-                                <?php elseif(strpos($k, 'img_') === 0 || strpos($k, 'video') !== false || strpos($k, 'img_room_') === 0): ?>
+                                <?php elseif($is_media): ?>
                                     <div style="background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:6px;">
                                         <?php if(pathinfo($v, PATHINFO_EXTENSION) == 'mp4'): ?>
                                             <video src="<?php echo $v; ?>" style="height:150px; width:100%; object-fit:cover; border-radius:4px; margin-bottom:10px;"></video>
