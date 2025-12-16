@@ -1,0 +1,11 @@
+[
+    {
+        "id": "rev_sample",
+        "name": "Admin",
+        "rating": 5,
+        "comment": "Welcome to Spencer Green Hotel Reviews",
+        "source": "website",
+        "visible": true,
+        "date": "2025-01-01"
+    }
+]
