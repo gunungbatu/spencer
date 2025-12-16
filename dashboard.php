@@ -129,9 +129,11 @@ if (isset($_POST['save_reviews'])) {
 <body>
 
     <?php 
-    // DAFTAR MENU DASHBOARD
+    // DAFTAR MENU DASHBOARD - PERBAIKAN KRUSIAL DI SINI
     $pages = [
-        'home'=>['icon'=>'fa-home','title'=>'Home (Hero & Intro)','prefixes'=>['hero','home_intro']],
+        // PERHATIKAN: Prefix 'img_hero' DITAMBAHKAN di sini agar slider terdeteksi
+        'home'=>['icon'=>'fa-home','title'=>'Home (Hero & Intro)','prefixes'=>['hero','img_hero','home_intro']],
+        
         'rooms'=>['icon'=>'fa-bed','title'=>'Home (Rooms)','prefixes'=>['room_deluxe','room_superior','room_executive','img_room']], 
         'facilities'=>['icon'=>'fa-concierge-bell','title'=>'Home (Facilities)','prefixes'=>['home_facil','facil_rooftop','facil_dinner','img_wedding_venue','wedding_title','wedding_desc','img_meeting_hero','meeting_title','meeting_desc','meeting_subtitle','wedding_subtitle']],
         'dining'=>['icon'=>'fa-utensils','title'=>'Dining Page','prefixes'=>['dining_subtitle','dining_title','dining_rooftop','dining_botanica','dining_candle','img_dining']],
@@ -216,8 +218,8 @@ if (isset($_POST['save_reviews'])) {
                                 
                                 <?php if($k === 'hero_type'): ?>
                                     <select name="<?php echo $k; ?>">
-                                        <option value="video" <?php if($v=='video')echo'selected'; ?>>Video Background</option>
-                                        <option value="slider" <?php if($v=='slider')echo'selected'; ?>>Image Slider</option>
+                                        <option value="video" <?php echo ($v === 'video') ? 'selected' : ''; ?>>Video Background</option>
+                                        <option value="slider" <?php echo ($v === 'slider') ? 'selected' : ''; ?>>Image Slider</option>
                                     </select>
 
                                 <?php elseif($is_media): ?>
