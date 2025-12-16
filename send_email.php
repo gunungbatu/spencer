@@ -1,9 +1,14 @@
 <?php
 // send_email.php
+// Mengaktifkan Error Reporting untuk Debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
 
-// 1. Ambil Data JSON dari Javascript
+// 1. Ambil Data
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
@@ -12,91 +17,66 @@ if (!$data) {
     exit;
 }
 
-// 2. Setup Variabel dari Data Tamu
-$booking_id = "SPN-" . date("Y") . "-" . rand(1000, 9999);
+// 2. Setup Variabel
+// PENTING: Ganti domain di bawah ini sesuai domain asli Anda!
+$domain_anda = "spencergreenhotel.com"; 
+$email_pengirim = "reservasi@" . $domain_anda; // Pastikan email ini ADA di cPanel
+$email_penerima_hotel = "reservasi@" . $domain_anda; // Email hotel untuk terima notifikasi
+
+$booking_id = "SPN-" . date("ymd") . "-" . rand(100, 999);
 $guest_name = htmlspecialchars($data['nama']);
 $guest_email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
 $room_type  = htmlspecialchars($data['kamar']);
 $check_in   = htmlspecialchars($data['checkIn']);
 $check_out  = htmlspecialchars($data['checkOut']);
-$total_price= htmlspecialchars($data['totalHarga']); // Sudah diformat Rp di JS
-$hotel_wa   = "https://wa.me/6281234567890"; // Ganti No WA Hotel
-$hotel_map  = "https://goo.gl/maps/PlaceHolder"; // Ganti Link Maps
+$total_price= htmlspecialchars($data['totalHarga']); 
+$wa_guest   = htmlspecialchars($data['whatsapp']);
 
-// Hitung Malam (Opsional, kasar)
-$d1 = new DateTime($check_in);
-$d2 = new DateTime($check_out);
-$interval = $d1->diff($d2);
-$nights = $interval->days . " Nights";
+// 3. Template Email (HTML)
+$subject_guest = "Booking Confirmation: $booking_id - Spencer Green Hotel";
 
-// 3. Siapkan Template Email (HTML)
-// Kita masukkan HTML voucher kemarin ke dalam variabel $message
-ob_start();
-?>
-<!DOCTYPE html>
+$message_guest = "
 <html>
-<body style="background-color:#f4f4f4; padding:20px; font-family:Arial, sans-serif;">
-    <div style="max-width:600px; margin:0 auto; background:#fff; border-radius:8px; overflow:hidden;">
-        <div style="background:#1B4D3E; padding:30px; text-align:center;">
-            <h1 style="color:#fff; margin:0;">SPENCER GREEN</h1>
-            <p style="color:#C5A059; margin:5px 0 0;">Booking Confirmation</p>
-        </div>
-        
-        <div style="padding:30px;">
-            <h2 style="color:#333;">Halo, <?php echo $guest_name; ?></h2>
-            <p style="color:#666;">Terima kasih telah memesan. Berikut detail reservasi Anda:</p>
-            
-            <table style="width:100%; border-collapse:collapse; margin-top:20px;">
-                <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px; color:#999;">Booking ID</td>
-                    <td style="padding:10px; font-weight:bold;"><?php echo $booking_id; ?></td>
-                </tr>
-                <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px; color:#999;">Kamar</td>
-                    <td style="padding:10px; font-weight:bold;"><?php echo $room_type; ?></td>
-                </tr>
-                <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px; color:#999;">Check-In</td>
-                    <td style="padding:10px; font-weight:bold;"><?php echo $check_in; ?></td>
-                </tr>
-                <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px; color:#999;">Check-Out</td>
-                    <td style="padding:10px; font-weight:bold;"><?php echo $check_out; ?> (<?php echo $nights; ?>)</td>
-                </tr>
-                <tr>
-                    <td style="padding:10px; color:#999;">Total</td>
-                    <td style="padding:10px; font-weight:bold; color:#C5A059; font-size:18px;"><?php echo $total_price; ?></td>
-                </tr>
-            </table>
-
-            <div style="text-align:center; margin-top:30px;">
-                <a href="<?php echo $hotel_wa; ?>" style="background:#1B4D3E; color:#fff; text-decoration:none; padding:12px 25px; border-radius:5px; font-weight:bold;">Hubungi Resepsionis</a>
-            </div>
-        </div>
+<head><title>Booking Confirmation</title></head>
+<body style='font-family:sans-serif; color:#333;'>
+    <div style='max-width:600px; margin:0 auto; border:1px solid #ddd; padding:20px;'>
+        <h2 style='color:#1B4D3E;'>Booking Confirmed</h2>
+        <p>Dear $guest_name,</p>
+        <p>Terima kasih telah melakukan pemesanan. Berikut detailnya:</p>
+        <table style='width:100%; text-align:left;'>
+            <tr><th>Booking ID</th><td>$booking_id</td></tr>
+            <tr><th>Kamar</th><td>$room_type</td></tr>
+            <tr><th>Check-In</th><td>$check_in</td></tr>
+            <tr><th>Check-Out</th><td>$check_out</td></tr>
+            <tr><th>Total</th><td>$total_price</td></tr>
+        </table>
+        <br>
+        <p>Silakan selesaikan pembayaran melalui WhatsApp Admin.</p>
     </div>
 </body>
 </html>
-<?php
-$message = ob_get_clean();
+";
 
-// 4. Kirim Email ke TAMU
-$subject = "Booking Confirmation: $booking_id";
+// 4. Headers (Sangat Penting untuk menghindari blokir server)
 $headers = "MIME-Version: 1.0" . "\r\n";
 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-$headers .= "From: Spencer Reservation <reservasi@spencergreen.com>" . "\r\n"; // Pastikan email ini ada di cPanel
+$headers .= "From: Spencer Reservation <$email_pengirim>" . "\r\n";
+$headers .= "Reply-To: $email_pengirim" . "\r\n";
+$headers .= "X-Mailer: PHP/" . phpversion();
 
-$mail_guest = mail($guest_email, $subject, $message, $headers);
+// 5. Eksekusi Kirim ke TAMU
+$mail_guest_status = mail($guest_email, $subject_guest, $message_guest, $headers);
 
-// 5. Kirim Email ke HOTEL (Notifikasi Sederhana)
-$hotel_subject = "[NEW BOOKING] $guest_name - $room_type";
-$hotel_msg = "Tamu baru: $guest_name\nCheckIn: $check_in\nWA: $data[whatsapp]";
-$hotel_headers = "From: System <noreply@spencergreen.com>";
-// Ganti email penerima notifikasi hotel di bawah ini
-$mail_hotel = mail("reservasi@spencergreen.com", $hotel_subject, $hotel_msg, $hotel_headers);
+// 6. Eksekusi Kirim Notif ke HOTEL (Text polos saja biar cepat)
+$msg_hotel = "New Booking!\nNama: $guest_name\nKamar: $room_type\nIn: $check_in\nOut: $check_out\nWA: $wa_guest";
+$mail_hotel_status = mail($email_penerima_hotel, "[NEW BOOKING] $guest_name", $msg_hotel, "From: System <$email_pengirim>");
 
-if($mail_guest) {
-    echo json_encode(["status" => "success"]);
+// 7. Response ke Javascript
+if($mail_guest_status) {
+    echo json_encode(["status" => "success", "message" => "Email sent"]);
 } else {
-    echo json_encode(["status" => "error", "message" => "Mail server error"]);
+    // Jika gagal, catat error di file error_log di hosting
+    error_log("Gagal kirim email ke $guest_email");
+    echo json_encode(["status" => "error", "message" => "Server refused to send email"]);
 }
 ?>
