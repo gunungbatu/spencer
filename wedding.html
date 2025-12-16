@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <script src="assets/js/global-config.js"></script>
+
     <style>
         /* --- 1. GLOBAL VARIABLES & RESET --- */
         :root {
@@ -42,13 +44,13 @@
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
         .btn-book:hover { background: transparent; color: var(--gold); }
 
-        /* --- MOBILE MENU CSS (ADDED) --- */
+        /* --- MOBILE MENU CSS --- */
         .mobile-menu-btn {
             display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
         }
         .mobile-nav-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            background: rgba(27, 77, 62, 0.95);
             z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.4s;
@@ -62,9 +64,10 @@
         /* --- 3. HERO SECTION --- */
         .hero-wedding {
             height: 80vh;
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('assets/wedding-bg.jpg'); /* Default */
             background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center; text-align: center;
+            transition: background-image 0.5s ease;
         }
         .hero-title {
             color: #fff; font-size: 5rem; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 4px 15px rgba(0,0,0,0.5); line-height: 1;
@@ -79,7 +82,7 @@
         .intro-text { font-size: 1.1rem; color: #666; font-weight: 300; }
         .divider { width: 60px; height: 2px; background: var(--gold); margin: 30px auto; }
 
-        /* --- 5. VENUE SHOWCASE (Asymmetrical Layout) --- */
+        /* --- 5. VENUE SHOWCASE --- */
         .venue-section { display: flex; align-items: center; padding: 50px 0; max-width: 1200px; margin: 0 auto; gap: 60px; }
         .venue-text { flex: 1; padding: 0 20px; }
         .venue-img { flex: 1.2; position: relative; }
@@ -123,8 +126,6 @@
             .venue-section { flex-direction: column; padding: 40px 20px; }
             .venue-img img { height: 300px; }
             .gallery-strip { grid-template-columns: 1fr; }
-            
-            /* Mobile Nav Logic */
             .nav-menu { display: none; }
             .mobile-menu-btn { display: block; }
             .btn-book { display: none; }
@@ -163,15 +164,15 @@
 
     <section class="hero-wedding">
         <div>
-            <p class="hero-subtitle">The Perfect Union</p>
-            <h1 class="hero-title">The Sky Chapel</h1>
+            <p class="hero-subtitle" id="weddingSubtitle">The Perfect Union</p>
+            <h1 class="hero-title" id="weddingTitle">The Sky Chapel</h1>
         </div>
     </section>
 
     <section class="intro-section">
         <h2 class="intro-headline">A Sacred Vow Above The Clouds</h2>
         <div class="divider"></div>
-        <p class="intro-text">
+        <p class="intro-text" id="weddingDesc">
             Imagine saying "I Do" with the majestic Mount Panderman as your backdrop. Spencer Green Hotel offers an intimate, elegant, and unforgettable wedding experience. Our glass architecture allows natural light to embrace your most precious moment.
         </p>
     </section>
@@ -238,19 +239,36 @@
     </footer>
 
     <script>
-        // Scroll Navbar
+        // --- 1. DYNAMIC CONTENT LOADER ---
+        fetch('data.json')
+        .then(r => r.json())
+        .then(data => {
+            // Update Text Hero
+            if(data.wedding_title) document.getElementById('weddingTitle').innerText = data.wedding_title;
+            if(data.wedding_subtitle) document.getElementById('weddingSubtitle').innerText = data.wedding_subtitle;
+            
+            // Update Intro Desc
+            if(data.wedding_desc) document.getElementById('weddingDesc').innerText = data.wedding_desc;
+
+            // Update Background Hero
+            if(data.img_wedding_hero) {
+                document.querySelector('.hero-wedding').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('${data.img_wedding_hero}')`;
+            }
+        })
+        .catch(err => console.log('Data Load Error:', err));
+
+        // --- 2. UI INTERACTIONS ---
         window.addEventListener('scroll', function() {
             const header = document.getElementById('navbar');
             header.classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // Toggle Mobile Menu
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileNav');
             menu.classList.toggle('active');
         }
 
-        // WhatsApp Logic
+        // --- 3. WHATSAPP LOGIC (Auto Number from Config) ---
         function kirimWa(e) {
             e.preventDefault();
             const name = document.getElementById('name').value;
@@ -258,17 +276,11 @@
             const pax = document.getElementById('pax').value;
             const msg = document.getElementById('message').value;
 
-            const text = `Halo Spencer Green Wedding, saya tertarik mengadakan acara:
----------------------------
-🤵 Nama: ${name}
-📅 Tanggal: ${date}
-👥 Tamu: ${pax} Pax
-📝 Pesan: ${msg}
----------------------------
-Mohon info paket weddingnya.`;
+            const text = `Halo Spencer Wedding, saya tertarik mengadakan acara:\n---------------------------\n🤵 Nama: ${name}\n📅 Tanggal: ${date}\n👥 Tamu: ${pax} Pax\n📝 Pesan: ${msg}\n---------------------------\nMohon info paket weddingnya.`;
 
-            // Ganti Nomor WA Di Sini
-            window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(text)}`, '_blank');
+            // Gunakan nomor WA dari Config jika ada, fallback ke default
+            const waNum = (typeof CONFIG !== 'undefined' && CONFIG.WA) ? CONFIG.WA : "6281234567890";
+            window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
 
