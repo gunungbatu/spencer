@@ -1,10 +1,11 @@
 /**
  * GLOBAL CONFIGURATION, HEADER & FOOTER MANAGER
+ * Update: Header & Tombol Book Now terpusat.
  */
 
 var CONFIG = { API_URL: "", WA: "" };
 
-// Pastikan Font Awesome load
+// Load Font Awesome jika belum ada
 if (!document.querySelector('link[href*="font-awesome"]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -20,15 +21,18 @@ function loadGlobalData() {
     fetch('data.json?t=' + new Date().getTime())
     .then(response => response.json())
     .then(data => {
+        // 1. CONFIG UTAMA
         if(data.social_whatsapp) CONFIG.WA = cleanWaNumber(data.social_whatsapp);
+        if(data.api_url) CONFIG.API_URL = data.api_url;
         
-        // 1. GENERATE HEADER & FOOTER
-        // Ambil nama halaman dari atribut body data-page (nanti kita set di HTML)
+        // 2. GENERATE HEADER (Kirim data json ke fungsi ini)
         const activePage = document.body.getAttribute('data-page') || 'home';
-        generateGlobalHeader(activePage);
+        generateGlobalHeader(activePage, data); // <--- Update disini
+
+        // 3. GENERATE FOOTER
         generateGlobalFooter(data);
 
-        // 2. MAGIC CONTENT LOADER (Isi teks/gambar halaman)
+        // 4. MAGIC CONTENT LOADER
         Object.keys(data).forEach(key => {
             const el = document.getElementById(key);
             if (el) {
@@ -49,10 +53,13 @@ function loadGlobalData() {
     .catch(err => console.error("Data Load Error:", err));
 }
 
-// --- FUNGSI GENERATE HEADER (BARU) ---
-function generateGlobalHeader(activePage) {
+// --- FUNGSI GENERATE HEADER ---
+function generateGlobalHeader(activePage, data) {
     const headerContainer = document.getElementById('global-header-container');
     if (!headerContainer) return;
+
+    // Ambil Teks Tombol dari JSON (Default: Book Now)
+    const bookText = data.header_btn_text || "Book Now";
 
     // Daftar Menu
     const menus = [
@@ -63,40 +70,36 @@ function generateGlobalHeader(activePage) {
         { id: 'gallery', name: 'Gallery', link: 'gallery.html' }
     ];
 
-    // Buat HTML Menu Desktop
     let navHTML = '';
     let mobileNavHTML = '';
 
     menus.forEach(m => {
-        // Cek aktif
         let activeStyle = (m.id === activePage) ? 'style="color:var(--gold); border-bottom:1px solid var(--gold);"' : '';
         let activeClass = (m.id === activePage) ? 'style="color:var(--gold);"' : '';
 
         navHTML += `<li><a href="${m.link}" class="nav-link" ${activeStyle}>${m.name}</a></li>`;
-        
-        // Buat Menu Mobile sekalian
         mobileNavHTML += `<a href="${m.link}" class="mobile-nav-link" ${activeClass}>${m.name}</a>`;
     });
 
-    // Injeksi HTML Header Lengkap
+    // Inject HTML (Tombol Book Now memakai variabel bookText)
     headerContainer.innerHTML = `
         <header id="navbar">
             <div class="logo">Spencer Green</div>
             <ul class="nav-menu">
                 ${navHTML}
             </ul>
-            <a href="javascript:void(0)" onclick="openBooking()" class="btn-book">Book Your Stay</a>
+            <a href="javascript:void(0)" onclick="openBooking()" class="btn-book">${bookText}</a>
             <div class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</div>
         </header>
 
         <div class="mobile-nav-overlay" id="mobileNav">
             ${mobileNavHTML}
-            <a href="javascript:void(0)" onclick="toggleMobileMenu(); openBooking()" class="mobile-nav-link" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Now</a>
+            <a href="javascript:void(0)" onclick="toggleMobileMenu(); openBooking()" class="mobile-nav-link" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">${bookText}</a>
             <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
         </div>
     `;
 
-    // Pasang Event Listener Scroll (Karena elemen baru dibuat, listener harus dipasang disini)
+    // Event Listener Scroll
     window.addEventListener('scroll', function() {
         const header = document.getElementById('navbar');
         if(header) header.classList.toggle('scrolled', window.scrollY > 50);
