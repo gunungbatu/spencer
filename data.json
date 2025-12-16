@@ -2,13 +2,26 @@
     "hero_type": "video",
     "hero_video": "assets/hero-video.mp4",
     "img_hero_slide_1": "assets/slide1.jpg",
-    "img_hero_slide_2": "assets/slide2.jpg",
-    "img_hero_slide_3": "assets/slide3.jpg",
     "hero_title": "SPENCER GREEN HOTEL",
     "hero_subtitle": "The Majestic Highland Sanctuary",
+    
     "social_instagram": "https://instagram.com/",
     "social_tiktok": "https://tiktok.com/",
     "social_youtube": "https://youtube.com/",
-    "social_facebook": "",
-    "social_whatsapp": "https://wa.me/628123456789"
+    "social_whatsapp": "https://wa.me/628123456789",
+
+    "dining_title": "Exquisite Dining",
+    "dining_subtitle": "Taste the Local Heritage",
+    "dining_desc": "Nikmati sajian kuliner lokal dan internasional dengan pemandangan pegunungan.",
+    "img_dining_hero": "assets/dining-bg.jpg",
+    "img_dining_menu_1": "assets/menu1.jpg",
+
+    "wedding_title": "Dream Wedding",
+    "wedding_desc": "Wujudkan pernikahan impian Anda di atas awan.",
+    "img_wedding_hero": "assets/wedding-bg.jpg",
+    "wedding_package_price": "Mulai dari Rp 50.000.000",
+
+    "meeting_title": "Corporate Events",
+    "meeting_desc": "Ruang meeting modern dengan kapasitas hingga 200 pax.",
+    "img_meeting_hero": "assets/meeting-bg.jpg"
 }
