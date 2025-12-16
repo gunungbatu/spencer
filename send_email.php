@@ -14,7 +14,7 @@ header("Access-Control-Allow-Origin: *");
 // 2. Konfigurasi Akun Email (SESUAIKAN INI!)
 $smtp_host = 'mail.spencergreenhotel.com'; // Biasanya mail.namadomain.com
 $smtp_user = 'reservasi@spencergreenhotel.com'; // Email lengkap
-$smtp_pass = 'PasswordEmailAnda123'; // PASSWORD EMAIL (Bukan password cPanel!)
+$smtp_pass = '%%t~RY0tN-I2w.}!'; // PASSWORD EMAIL (Bukan password cPanel!)
 $smtp_port = 465; // Port SSL biasanya 465, jika gagal coba 587 (TLS)
 
 // 3. Ambil Data dari Javascript
