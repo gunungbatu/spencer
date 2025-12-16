@@ -211,7 +211,45 @@
     </div>
 
     <script>
-        // 1. DATA LOADER (Content & Settings)
+        // --- 1. LOGIKA VALIDASI TANGGAL (BARU DITAMBAHKAN) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const elCheckIn = document.getElementById('checkIn');
+            const elCheckOut = document.getElementById('checkOut');
+
+            // Set minimal tanggal hari ini
+            elCheckIn.setAttribute('min', today);
+            
+            // Matikan CheckOut sebelum CheckIn dipilih
+            elCheckOut.disabled = true;
+
+            // Saat CheckIn dipilih
+            elCheckIn.addEventListener('change', function() {
+                if (this.value) {
+                    elCheckOut.disabled = false;
+
+                    // Ambil tanggal check-in & tambah 1 hari
+                    let dateIn = new Date(this.value);
+                    dateIn.setDate(dateIn.getDate() + 1);
+                    
+                    // Format ke YYYY-MM-DD
+                    let minOut = dateIn.toISOString().split('T')[0];
+                    
+                    // Set minimal CheckOut
+                    elCheckOut.setAttribute('min', minOut);
+                    
+                    // Reset CheckOut jika tanggalnya tidak valid (kurang dari minOut)
+                    if(elCheckOut.value && elCheckOut.value < minOut) {
+                        elCheckOut.value = minOut;
+                    }
+                } else {
+                    elCheckOut.disabled = true;
+                    elCheckOut.value = '';
+                }
+            });
+        });
+
+        // --- 2. DATA LOADER ---
         fetch('data.json')
         .then(r => r.json())
         .then(data => {
@@ -219,7 +257,7 @@
             if(data.hero_title) document.querySelector('.hero-title').innerHTML = data.hero_title;
             if(data.hero_subtitle) document.querySelector('.hero-subtitle').innerText = data.hero_subtitle;
             
-            // Hero Logic (Video vs Slider)
+            // Hero Logic
             const vid = document.getElementById('heroVideo');
             const slider = document.getElementById('heroSlider');
             
@@ -260,7 +298,7 @@
             }, 5000);
         }
 
-        // 2. REVIEWS LOADER
+        // --- 3. REVIEWS LOADER ---
         fetch('reviews.json')
         .then(r => r.json())
         .then(data => {
@@ -299,15 +337,14 @@
             });
         }
 
-        // 3. UI INTERACTIONS
+        // --- 4. UI INTERACTIONS ---
         window.onscroll = () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
         function toggleMobileMenu() { document.getElementById('mobileNav').classList.toggle('active'); }
         function openBooking() { document.getElementById('bookingModal').classList.add('active'); }
         function closeBooking() { document.getElementById('bookingModal').classList.remove('active'); }
 
-        // 4. BOOKING ENGINE
+        // --- 5. BOOKING ENGINE ---
         function checkRooms() {
-            // Cek Config dulu
             if(typeof CONFIG === 'undefined' || !CONFIG.API_URL) {
                 loadConfig().then(() => checkRooms());
                 return;
@@ -359,12 +396,10 @@
         }
 
         function submitBooking() {
-            // 1. AMBIL DATA DARI FORM
             const roomVal = document.getElementById('roomSelect').value;
             const sel = document.getElementById('roomSelect');
             const priceRaw = sel.options[sel.selectedIndex].dataset.price;
             
-            // Format Harga jadi Rp (misal: "Rp 1.500.000") untuk email
             const priceFormatted = "Rp " + parseInt(priceRaw).toLocaleString('id-ID');
 
             const name = document.getElementById('guestName').value;
@@ -373,16 +408,13 @@
             const cin = document.getElementById('checkIn').value;
             const cout = document.getElementById('checkOut').value;
 
-            // Validasi
             if(!roomVal || !name || !wa || !email) return alert("Mohon lengkapi Nama, WA, dan Email.");
 
-            // Tombol Loading
             const btn = document.getElementById('btnFinal');
             btn.disabled = true;
             btn.innerText = "Processing...";
 
-            // 2. KIRIM KE GOOGLE SHEETS (Backend Database)
-            // Gunakan API URL dari Config
+            // Kirim ke Google Sheets
             if(CONFIG.API_URL) {
                 fetch(CONFIG.API_URL, {
                     method: 'POST',
@@ -394,12 +426,12 @@
                         checkIn: cin, 
                         checkOut: cout, 
                         kamar: roomVal, 
-                        totalHarga: priceRaw // Ke Sheet kirim angka murni
+                        totalHarga: priceRaw 
                     })
                 });
             }
 
-            // 3. KIRIM EMAIL (Panggil send_email.php)
+            // Kirim Email
             fetch('send_email.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -410,7 +442,7 @@
                     checkIn: cin,
                     checkOut: cout,
                     kamar: roomVal,
-                    totalHarga: priceFormatted // Ke Email kirim format Rupiah
+                    totalHarga: priceFormatted
                 })
             })
             .then(response => response.json())
@@ -419,7 +451,7 @@
             })
             .catch(err => console.error("Email Error:", err));
 
-            // 4. REDIRECT KE WHATSAPP (Setelah jeda 1 detik agar fetch jalan dulu)
+            // Redirect WA
             setTimeout(() => {
                 const msg = `Halo Spencer Green, saya mau konfirmasi booking:\n\nNama: ${name}\nKamar: ${roomVal}\nIn: ${cin}\nOut: ${cout}\nTotal: ${priceFormatted}\n\nMohon info pembayaran.`;
                 const waNum = (CONFIG.WA) ? CONFIG.WA : "6281234567890";
