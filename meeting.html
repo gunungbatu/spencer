@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meeting | Spencer Green Hotel Batu</title>
+    <title>Meeting & Events | Spencer Green Hotel Batu</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="assets/js/global-config.js"></script>
     <style>
-        /* (Style sama seperti sebelumnya, diringkas) */
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin:0; }
-        h1, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
         header { position:fixed; top:0; width:100%; padding:20px 50px; display:flex; justify-content:space-between; align-items:center; z-index:1000; transition:0.4s; background:linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); }
         header.scrolled { background:var(--emerald); padding:15px 50px; }
         .nav-menu { display:flex; gap:30px; list-style:none; } .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; }
@@ -23,12 +22,26 @@
         .tab-nav { display:flex; justify-content:center; gap:20px; padding:20px; background:#fff; position:sticky; top:70px; z-index:900; }
         .tab-btn { background:none; border:none; font-size:1.2rem; font-family:'Cormorant Garamond', serif; cursor:pointer; color:#888; }
         .tab-btn.active { color:var(--emerald); border-bottom:2px solid var(--gold); }
-        .tab-content { display:none; padding:50px; max-width:1200px; margin:0 auto; } .tab-content.active { display:block; }
         
-        .split-layout { display:flex; gap:50px; align-items:center; } .text-col, .img-col { flex:1; } .img-col img { width:100%; height:400px; object-fit:cover; }
-        .pkg-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; text-align:center; }
-        .pkg-card { background:#fff; padding:30px; border:1px solid #eee; } .pkg-price { color:var(--gold); font-weight:bold; display:block; margin:10px 0; }
+        .tab-content { display:none; padding:80px 50px; max-width:1200px; margin:0 auto; animation:fadeUp 0.8s; } 
+        .tab-content.active { display:block; }
+        
+        .split-layout { display:flex; gap:60px; align-items:center; margin-bottom:80px; } .text-col, .img-col { flex:1; } .img-col img { width:100%; height:450px; object-fit:cover; }
+        .section-title { font-size:3rem; margin-bottom:10px; } .section-desc { font-size:1rem; color:#666; margin-bottom:20px; }
+        
+        .capacity-table { width:100%; border-collapse:collapse; margin-bottom:30px; } 
+        .capacity-table th { text-align:left; border-bottom:2px solid var(--emerald); padding:10px; color:var(--emerald); } 
+        .capacity-table td { border-bottom:1px solid #eee; padding:10px; }
+        
+        .pkg-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
+        .pkg-card { background:#fff; padding:40px; text-align:center; border:1px solid #eee; transition:0.3s; }
+        .pkg-card:hover { transform:translateY(-5px); border-color:var(--gold); }
+        .pkg-price { color:var(--gold); font-weight:bold; display:block; margin:15px 0; font-size:1.1rem; }
+        
+        .btn-outline { display:inline-block; padding:12px 30px; border:1px solid var(--dark); color:var(--dark); text-transform:uppercase; letter-spacing:1px; font-size:0.8rem; }
+        
         footer { background:var(--emerald); color:#fff; padding:50px; text-align:center; }
+        @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
         @media(max-width:900px) { .nav-menu { display:none; } .split-layout { flex-direction:column; } .pkg-grid { grid-template-columns:1fr; } }
     </style>
 </head>
@@ -61,31 +74,61 @@
     <div id="ballroom" class="tab-content active">
         <div class="split-layout">
             <div class="text-col">
-                <h2 class="section-title">The Arjuna Ballroom</h2>
-                <p id="meeting_desc">
-                    A majestic pillar-less ballroom designed for grand conferences and gala dinners. Featuring a 7-meter high ceiling and crystal chandeliers.
-                </p>
-                <button class="btn-book" style="color:var(--dark); border-color:var(--dark);">Inquire Ballroom</button>
+                <h2 class="section-title" id="meeting_ballroom_title">The Arjuna Ballroom</h2>
+                <p class="section-desc" id="meeting_ballroom_desc">A majestic pillar-less ballroom designed for grand conferences.</p>
+                <table class="capacity-table">
+                    <tr><th>Setup</th><th>Capacity</th></tr>
+                    <tr><td>Theatre</td><td id="meeting_ballroom_cap1">500 Pax</td></tr>
+                    <tr><td>Classroom</td><td id="meeting_ballroom_cap2">300 Pax</td></tr>
+                    <tr><td>Round Table</td><td id="meeting_ballroom_cap3">250 Pax</td></tr>
+                </table>
+                <a href="#" class="btn-outline" id="meeting_ballroom_btn_text">Inquire Ballroom</a>
             </div>
-            <div class="img-col"><img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=800" alt="Ballroom"></div>
+            <div class="img-col"><img id="img_meeting_ballroom" src="assets/meeting-bg.jpg" alt="Ballroom"></div>
         </div>
     </div>
 
     <div id="meeting" class="tab-content">
         <div class="split-layout">
-            <div class="img-col"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800" alt="Meeting"></div>
+            <div class="img-col"><img id="img_meeting_func" src="assets/meeting-room.jpg" alt="Meeting"></div>
             <div class="text-col">
-                <h2 class="section-title">Panderman Rooms</h2>
-                <p>Flexible meeting spaces bathed in natural light, offering panoramic views of Mount Panderman. Ideal for board meetings.</p>
+                <h2 class="section-title" id="meeting_func_title">Panderman Rooms</h2>
+                <p class="section-desc" id="meeting_func_desc">Flexible meeting spaces bathed in natural light.</p>
+                <table class="capacity-table">
+                    <tr><th>Room</th><th>Capacity</th></tr>
+                    <tr><td>Panderman 1</td><td id="meeting_func_cap1">25 Pax</td></tr>
+                    <tr><td>Panderman 2</td><td id="meeting_func_cap2">40 Pax</td></tr>
+                    <tr><td>Combined</td><td id="meeting_func_cap3">100 Pax</td></tr>
+                </table>
+                <a href="#" class="btn-outline" id="meeting_func_btn_text">Inquire Room</a>
             </div>
         </div>
     </div>
 
     <div id="packages" class="tab-content">
+        <div style="text-align:center; margin-bottom:50px;">
+            <h2 class="section-title" id="meeting_pkg_title">Curated Meeting Packages</h2>
+            <p id="meeting_pkg_desc">Designed for efficiency and comfort.</p>
+        </div>
         <div class="pkg-grid">
-            <div class="pkg-card"><h3>Half Day</h3><span class="pkg-price">IDR 350.000</span><p>1x Coffee Break + Lunch</p></div>
-            <div class="pkg-card" style="border:1px solid var(--gold);"><h3>Full Day</h3><span class="pkg-price">IDR 450.000</span><p>2x Coffee Break + Lunch</p></div>
-            <div class="pkg-card"><h3>Full Board</h3><span class="pkg-price">IDR 950.000</span><p>Meeting + Room + Dinner</p></div>
+            <div class="pkg-card">
+                <h3 id="meeting_pkg1_name">Half Day</h3>
+                <span class="pkg-price" id="meeting_pkg1_price">IDR 350.000 / pax</span>
+                <p>1x Coffee Break + Lunch</p>
+                <a href="#" class="btn-outline" id="meeting_pkg1_btn_text">Book Package</a>
+            </div>
+            <div class="pkg-card" style="border:1px solid var(--gold);">
+                <h3 id="meeting_pkg2_name">Full Day</h3>
+                <span class="pkg-price" id="meeting_pkg2_price">IDR 450.000 / pax</span>
+                <p>2x Coffee Break + Lunch</p>
+                <a href="#" class="btn-outline" style="background:var(--gold); color:#fff;" id="meeting_pkg2_btn_text">Book Package</a>
+            </div>
+            <div class="pkg-card">
+                <h3 id="meeting_pkg3_name">Full Board</h3>
+                <span class="pkg-price" id="meeting_pkg3_price">IDR 950.000 / pax</span>
+                <p>Meeting + Room + Dinner</p>
+                <a href="#" class="btn-outline" id="meeting_pkg3_btn_text">Book Package</a>
+            </div>
         </div>
     </div>
 
@@ -95,12 +138,22 @@
         // MAGIC LOADER
         fetch('data.json?t='+Date.now()).then(r=>r.json()).then(data=>{
             Object.keys(data).forEach(key => {
-                const el = document.getElementById(key);
-                if (el) {
-                    if (key.startsWith('img_')) {
-                        el.src = data[key];
-                        if(key === 'img_meeting_hero') document.querySelector('.hero-meeting').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
-                    } else el.innerText = data[key];
+                // Gambar
+                if (key.startsWith('img_')) {
+                    const el = document.getElementById(key);
+                    if(el) el.src = data[key];
+                    if(key === 'img_meeting_hero') document.querySelector('.hero-meeting').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
+                } 
+                // Link Tombol
+                else if (key.endsWith('_btn_link')) {
+                    const btnId = key.replace('_link', '_text'); // cari ID tombol textnya
+                    const el = document.getElementById(btnId);
+                    if(el) el.href = data[key];
+                }
+                // Teks Biasa
+                else {
+                    const el = document.getElementById(key);
+                    if(el) el.innerText = data[key];
                 }
             });
         });
