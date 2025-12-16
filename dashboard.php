@@ -46,29 +46,24 @@ function getServerImages($dir) {
 }
 $server_images = getServerImages($upload_dir);
 
-// 4. SAVE KONTEN WEBSITE (LOGIKA MEDIA MANAGER)
+// 4. SAVE KONTEN WEBSITE
 $current_data = json_decode(file_get_contents($json_file), true);
 if (!$current_data) $current_data = [];
 
 if (isset($_POST['save_content'])) {
-    // A. Simpan dari Input Text (Link Manual/Browse) DULU
+    // A. Simpan Input Text/Link Manual
     foreach ($current_data as $key => $val) {
         if (isset($_POST[$key])) {
             $current_data[$key] = $_POST[$key];
         }
     }
     
-    // B. Simpan dari Upload File (KEMUDIAN - Prioritas lebih tinggi)
+    // B. Simpan Upload File (Prioritas)
     foreach ($_FILES as $key => $file) {
-        // Cek apakah ada file yang diupload dengan sukses
         if ($file['name'] && $file['error'] === 0) {
             $target_file = $upload_dir . basename($file['name']);
-            // Cek tipe file agar aman (optional, tapi disarankan)
-            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-            if(in_array($fileType, ['jpg','jpeg','png','gif','webp','avif','mp4'])) {
-                 if (move_uploaded_file($file['tmp_name'], $target_file)) {
-                    $current_data[$key] = $target_file; // Timpa path dengan file baru
-                }
+            if (move_uploaded_file($file['tmp_name'], $target_file)) {
+                $current_data[$key] = $target_file;
             }
         }
     }
@@ -77,7 +72,7 @@ if (isset($_POST['save_content'])) {
     $msg = "Konten Website Berhasil Diupdate!";
 }
 
-// 5. SAVE REVIEW (Sama seperti sebelumnya)
+// 5. SAVE REVIEW
 $reviews = json_decode(file_get_contents($review_file), true);
 if (!$reviews) $reviews = [];
 if (isset($_POST['save_reviews'])) {
@@ -96,7 +91,6 @@ if (isset($_POST['save_reviews'])) {
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* STYLES SAMA SEPERTI SEBELUMNYA */
         :root { --primary: #1B4D3E; --gold: #C5A059; --bg: #f8f9fa; --white: #ffffff; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 250px; background: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
@@ -211,25 +205,32 @@ if (isset($_POST['save_reviews'])) {
                             ?>
                                 <label><?php echo $label; ?></label>
                                 
-                                <?php if(strpos($k, 'img_') === 0 || strpos($k, 'video') !== false): ?>
+                                <?php if($k == 'hero_type'): ?>
+                                    <select name="<?php echo $k; ?>">
+                                        <option value="video" <?php if($v=='video')echo'selected'; ?>>Video Background</option>
+                                        <option value="slider" <?php if($v=='slider')echo'selected'; ?>>Image Slider</option>
+                                    </select>
+
+                                <?php elseif(strpos($k, 'social_') === 0 || strpos($k, 'header_') === 0 || strpos($k, '_link') !== false): ?>
+                                    <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
+
+                                <?php elseif(strpos($k, 'img_') === 0 || strpos($k, 'video') !== false): ?>
                                     <div style="background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:6px;">
                                         <?php if(pathinfo($v, PATHINFO_EXTENSION) == 'mp4'): ?>
                                             <video src="<?php echo $v; ?>" style="height:150px; width:100%; object-fit:cover; border-radius:4px; margin-bottom:10px;"></video>
                                         <?php else: ?>
                                             <img src="<?php echo $v; ?>?t=<?php echo time(); ?>" id="preview_<?php echo $k; ?>" class="media-preview" onclick="openMediaModal('<?php echo $k; ?>')">
                                         <?php endif; ?>
-                                        
                                         <div class="media-control">
                                             <input type="text" name="<?php echo $k; ?>" id="input_<?php echo $k; ?>" value="<?php echo $v; ?>" placeholder="Link file / Pilih dari server..." style="margin-bottom:0; flex:1;">
                                             <button type="button" class="btn-browse" onclick="openMediaModal('<?php echo $k; ?>')"><i class="fas fa-folder-open"></i> Pilih</button>
                                         </div>
-
                                         <div style="font-size:0.8rem; color:#666; margin-top:5px;">Atau Upload Baru: <input type="file" name="<?php echo $k; ?>" style="font-size:0.8rem;"></div>
                                     </div>
+
                                 <?php elseif(strpos($k, 'desc') !== false || strlen($v) > 50): ?>
                                     <textarea name="<?php echo $k; ?>"><?php echo $v; ?></textarea>
-                                <?php elseif($k == 'hero_type'): ?>
-                                    <select name="<?php echo $k; ?>"><option value="video" <?php if($v=='video')echo'selected'; ?>>Video Background</option><option value="slider" <?php if($v=='slider')echo'selected'; ?>>Image Slider</option></select>
+
                                 <?php else: ?>
                                     <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
                                 <?php endif; ?>
