@@ -13,11 +13,11 @@
     <script src="assets/js/global-config.js"></script>
 
     <style>
-        /* --- CORE CSS --- */
+        /* --- 1. GLOBAL VARIABLES & RESET --- */
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; }
-        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); }
+        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background: var(--light); }
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
         a { text-decoration: none; transition: 0.3s; }
         
         /* NAVBAR */
@@ -229,7 +229,7 @@
         <div class="content-card reverse">
             <div class="card-image-box"><img id="facil_rooftop_img" src="assets/rooftop.jpg" alt="Rooftop" class="card-img"></div>
             <div class="card-info-box">
-                <span class="card-cat">Gastronomy</span>
+                <span class="card-cat" id="facil_rooftop_cat">Gastronomy</span>
                 <h3 class="card-title" id="facil_rooftop_title">Rooftop Cafe</h3>
                 <p class="card-desc" id="facil_rooftop_desc">Sip on artisan coffee while embraced by the misty clouds. Our rooftop sanctuary offers a selection of local blends and light bites.</p>
                 <div class="card-specs">
@@ -243,7 +243,7 @@
         <div class="content-card">
             <div class="card-image-box"><img id="facil_dinner_img" src="assets/dining-bg.jpg" alt="Dinner" class="card-img"></div>
             <div class="card-info-box">
-                <span class="card-cat">Romantic Experience</span>
+                <span class="card-cat" id="facil_dinner_cat">Romantic Experience</span>
                 <h3 class="card-title" id="facil_dinner_title">Candle Light Dinner</h3>
                 <p class="card-desc" id="facil_dinner_desc">An intimate culinary journey under the stars. Curated private dining experience with a bespoke menu and floral arrangements.</p>
                 <div class="card-specs">
