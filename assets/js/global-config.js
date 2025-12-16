@@ -4,9 +4,15 @@
  */
 
 var CONFIG = {
-    API_URL: "", // Akan diisi otomatis dari data.json
-    WA: ""       // Akan diisi otomatis dari data.json
+    API_URL: "", 
+    WA: ""      
 };
+
+// Pastikan Font Awesome (Sosmed Icons) tersedia
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+document.head.appendChild(link);
 
 document.addEventListener('DOMContentLoaded', function() {
     loadGlobalData();
@@ -17,15 +23,14 @@ function loadGlobalData() {
     fetch('data.json?t=' + new Date().getTime())
     .then(response => response.json())
     .then(data => {
-        // 1. SIMPAN CONFIG UTAMA
-        if(data.api_url) CONFIG.API_URL = data.api_url;
+        
+        // 1. SIMPAN CONFIG UTAMA (WA Number)
         if(data.social_whatsapp) CONFIG.WA = cleanWaNumber(data.social_whatsapp);
 
         // 2. GENERATE FOOTER OTOMATIS
         generateGlobalFooter(data);
 
-        // 3. UPDATE KONTEN HALAMAN (Jika ada ID yang cocok)
-        // Ini script "Magic" yang kemarin, dipindah kesini agar ringkas
+        // 3. UPDATE KONTEN HALAMAN (Magic Loader)
         Object.keys(data).forEach(key => {
             const el = document.getElementById(key);
             if (el) {
@@ -49,7 +54,7 @@ function loadGlobalData() {
 
 function generateGlobalFooter(data) {
     const footerEl = document.getElementById('global-footer');
-    if (!footerEl) return; // Jika tidak ada tag footer, stop.
+    if (!footerEl) return; 
 
     // Mapping Data JSON ke Icon FontAwesome
     const socialMap = [
@@ -64,11 +69,10 @@ function generateGlobalFooter(data) {
     
     socialMap.forEach(item => {
         const link = data[item.key];
-        // Hanya tampilkan jika link diisi di dashboard
+        // Hanya tampilkan jika link diisi di database
         if (link && link !== "" && link !== "#") {
-            // Khusus WA, pastikan formatnya benar
             let finalLink = link;
-            if(item.key === 'social_whatsapp' && !link.includes('http')) {
+            if(item.key === 'social_whatsapp') {
                 finalLink = `https://wa.me/${cleanWaNumber(link)}`;
             }
             
@@ -89,7 +93,6 @@ function generateGlobalFooter(data) {
     `;
 }
 
-// Helper: Bersihkan nomor WA (buang +, -, spasi, ganti 08 jadi 628)
 function cleanWaNumber(str) {
     if(!str) return "";
     let num = str.toString().replace(/[^0-9]/g, ''); // Hapus non-angka
