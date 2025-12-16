@@ -2,14 +2,17 @@
     "hero_type": "video",
     "hero_video": "assets/hero-video.mp4",
     "img_hero_slide_1": "assets/slide1.jpg",
+    "img_hero_slide_2": "assets/slide2.jpg",
+    "img_hero_slide_3": "assets/slide3.jpg",
     "hero_title": "SPENCER GREEN HOTEL",
     "hero_subtitle": "THE MAJESTIC HIGHLAND SANCTUARY",
 
     "home_intro_title": "Refined Luxury in Nature",
     "home_intro_desc": "Inspired by the majesty of Indonesia, Spencer Green offers a collection of rooms & facilities designed to harmonize with the breathtaking landscape of Mount Panderman.",
-
     "home_accom_title": "Accommodation",
     "home_accom_subtitle": "A Collection of Rooms",
+    "home_facil_title": "Facilities",
+    "home_facil_subtitle": "Curated Experiences For Every Occasion",
 
     "room_deluxe_img": "assets/room1.jpg",
     "room_deluxe_cat": "Comfort & Style",
@@ -35,16 +38,31 @@
     "room_executive_spec2": "🛁 Bathtub",
     "room_executive_spec3": "🍸 Lounge Access",
 
-    "home_facil_title": "Facilities",
-    "home_facil_subtitle": "Curated Experiences For Every Occasion",
-
-    "facil_rooftop_img": "assets/rooftop.jpg",
-    "facil_rooftop_title": "Rooftop Cafe",
-    "facil_rooftop_desc": "Sip on artisan coffee while embraced by the misty clouds. Our rooftop sanctuary offers a selection of local blends and light bites.",
+    "dining_title": "Culinary Journey",
+    "dining_subtitle": "Taste of The Heights",
+    "img_dining_hero": "assets/dining-bg.jpg",
     
-    "facil_dinner_img": "assets/dining-bg.jpg",
-    "facil_dinner_title": "Candle Light Dinner",
-    "facil_dinner_desc": "An intimate culinary journey under the stars. Curated private dining experience with a bespoke menu and floral arrangements.",
+    "facil_rooftop_title": "The Sky Lounge",
+    "facil_rooftop_desc": "Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman.",
+    "img_facil_rooftop": "assets/rooftop.jpg",
+
+    "facil_dinner_title": "Intimate Dining",
+    "facil_dinner_desc": "Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight.",
+    "img_facil_dinner": "assets/dining-bg.jpg",
+
+    "meeting_title": "Meeting & Events",
+    "meeting_subtitle": "Business with Leisure",
+    "meeting_desc": "A majestic pillar-less ballroom designed for grand conferences and gala dinners. Featuring a 7-meter high ceiling and crystal chandeliers.",
+    "img_meeting_hero": "assets/meeting-bg.jpg",
+
+    "wedding_title": "The Sky Chapel",
+    "wedding_subtitle": "The Perfect Union",
+    "wedding_desc": "Imagine saying 'I Do' with the majestic Mount Panderman as your backdrop. Spencer Green Hotel offers an intimate, elegant, and unforgettable wedding experience.",
+    "img_wedding_hero": "assets/wedding-bg.jpg",
+
+    "gallery_title": "Visual Journey",
+    "gallery_subtitle": "Explore The Beauty",
+    "img_gallery_hero": "assets/gallery-bg.jpg",
 
     "social_instagram": "https://instagram.com/",
     "social_tiktok": "https://tiktok.com/",
