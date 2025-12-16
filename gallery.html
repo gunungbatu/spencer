@@ -3,171 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery - Visual Journey | Spencer Green Hotel Batu</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+    <title>Gallery | Spencer Green Hotel Batu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="assets/js/global-config.js"></script>
-
     <style>
-        /* --- 1. GLOBAL VARIABLES & RESET --- */
-        :root {
-            --gold: #D4AF37;
-            --emerald: #1B4D3E;
-            --dark-grey: #1a1a1a;
-            --light-bg: #F9F9F9;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* (Style diringkas) */
+        :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--light); margin:0; }
+        header { position:fixed; top:0; width:100%; padding:20px 50px; display:flex; justify-content:space-between; align-items:center; z-index:1000; transition:0.4s; background:linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); }
+        header.scrolled { background:var(--emerald); padding:15px 50px; }
+        .nav-menu { display:flex; gap:30px; list-style:none; } .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; }
+        .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.5rem; font-weight:bold; letter-spacing:2px; }
+        .btn-book { padding:10px 20px; border:1px solid var(--gold); color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; }
         
-        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background-color: var(--light-bg); line-height: 1.6; }
-
-        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); font-weight: 600; }
-        button { font-family: 'Montserrat', sans-serif; }
-        a { text-decoration: none; transition: 0.3s; }
+        .hero-gallery { height:50vh; background:linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/gallery-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; }
+        .hero-title { color:#fff; font-size:4rem; margin:0; font-family:'Cormorant Garamond', serif; } 
         
-        /* --- 2. NAVBAR --- */
-        header {
-            position: fixed; top: 0; width: 100%; padding: 20px 50px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; transition: 0.4s;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
-        }
-        header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
-        .nav-menu { display: flex; gap: 30px; list-style: none; }
-        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
-        .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
-        .btn-book:hover { background: transparent; color: var(--gold); }
-
-        /* --- MOBILE MENU CSS --- */
-        .mobile-menu-btn {
-            display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
-        }
-        .mobile-nav-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.95);
-            z-index: 1000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: 0.4s;
-        }
-        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
-        .mobile-nav-link {
-            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
-            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        /* --- 3. HERO SECTION --- */
-        .hero-gallery {
-            height: 50vh;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/gallery-bg.jpg'); /* Default */
-            background-size: cover; background-position: center;
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            transition: background-image 0.5s ease;
-        }
-        .hero-title {
-            color: #fff; font-size: 4rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .hero-subtitle {
-            color: var(--gold); font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 15px; font-weight: 600;
-        }
-
-        /* --- 4. FILTER BUTTONS --- */
-        .filter-bar {
-            text-align: center; padding: 40px 0;
-            position: sticky; top: 70px; background: rgba(255,255,255,0.95); z-index: 900;
-            border-bottom: 1px solid #eee; backdrop-filter: blur(5px);
-        }
-        .filter-btn {
-            background: transparent; border: none;
-            color: #888; padding: 8px 20px; margin: 0 5px;
-            cursor: pointer; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s; position: relative;
-        }
-        .filter-btn::after {
-            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 0; height: 2px; background: var(--gold); transition: 0.3s;
-        }
-        .filter-btn:hover, .filter-btn.active { color: var(--emerald); font-weight: 600; }
-        .filter-btn.active::after { width: 60%; }
-
-        /* --- 5. GALLERY MASONRY --- */
-        .gallery-container {
-            max-width: 1200px; margin: 40px auto; padding: 0 20px;
-            column-count: 3; column-gap: 20px;
-        }
+        .gallery-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; padding:50px; max-width:1200px; margin:0 auto; }
+        .gallery-item { height:300px; overflow:hidden; cursor:pointer; } .gallery-item img { width:100%; height:100%; object-fit:cover; transition:0.5s; }
+        .gallery-item:hover img { transform:scale(1.1); }
         
-        .gallery-item {
-            margin-bottom: 20px; break-inside: avoid;
-            position: relative; overflow: hidden;
-            cursor: zoom-in; opacity: 1; transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-        
-        .gallery-item.hide { display: none; }
-        .gallery-item.show { display: block; animation: fadeIn 0.5s; }
-
-        .gallery-item img {
-            width: 100%; height: auto; display: block;
-            transition: transform 0.6s ease;
-        }
-
-        .gallery-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.4);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; transition: 0.4s;
-        }
-        .gallery-overlay span {
-            color: #fff; border: 1px solid #fff; padding: 10px 20px;
-            text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px;
-        }
-
-        .gallery-item:hover img { transform: scale(1.05); }
-        .gallery-item:hover .gallery-overlay { opacity: 1; }
-
-        /* --- 6. LIGHTBOX --- */
-        .lightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 2000;
-            display: none; justify-content: center; align-items: center;
-            animation: fadeIn 0.3s;
-        }
-        .lightbox.active { display: flex; }
-        
-        .lightbox img {
-            max-width: 90%; max-height: 85vh;
-            border: 2px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .close-btn {
-            position: absolute; top: 20px; right: 30px;
-            color: #fff; font-size: 3rem; cursor: pointer; transition: 0.3s;
-            font-family: 'Cormorant Garamond', serif;
-        }
-        .close-btn:hover { color: var(--gold); transform: rotate(90deg); }
-
-        /* FOOTER */
-        footer { background: var(--emerald); color: #fff; padding: 50px; text-align: center; margin-top: 50px; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .gallery-container { column-count: 2; }
-            .hero-title { font-size: 2.5rem; }
-            .nav-menu { display: none; }
-            .mobile-menu-btn { display: block; }
-            .btn-book { display: none; }
-            header { justify-content: center; }
-        }
-        @media (max-width: 600px) {
-            .gallery-container { column-count: 1; }
-            .filter-bar { white-space: nowrap; overflow-x: auto; justify-content: flex-start; padding: 20px; }
-        }
+        footer { background:var(--emerald); color:#fff; padding:50px; text-align:center; }
+        @media(max-width:900px) { .nav-menu { display:none; } .gallery-grid { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
-
     <header id="navbar">
         <div class="logo">Spencer Green</div>
         <ul class="nav-menu">
@@ -175,185 +35,59 @@
             <li><a href="dining.html" class="nav-link">Dining</a></li>
             <li><a href="meeting.html" class="nav-link">Meeting</a></li>
             <li><a href="wedding.html" class="nav-link">Wedding</a></li>
-            <li><a href="gallery.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Gallery</a></li>
+            <li><a href="gallery.html" class="nav-link" style="color:var(--gold);">Gallery</a></li>
         </ul>
-        <a href="index.html" class="btn-book">Book Your Stay</a>
-
-        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</div>
+        <a href="index.html" class="btn-book">Book Now</a>
     </header>
-
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <a href="index.html" class="mobile-nav-link">Home</a>
-        <a href="dining.html" class="mobile-nav-link">Dining</a>
-        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
-        <a href="wedding.html" class="mobile-nav-link">Weddings</a>
-        <a href="gallery.html" class="mobile-nav-link" style="color:var(--gold);">Gallery</a>
-        <a href="index.html" class="mobile-nav-link" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Book Your Stay</a>
-        
-        <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
-    </div>
 
     <section class="hero-gallery">
         <div>
-            <p class="hero-subtitle" id="gallerySubtitle">Explore The Beauty</p>
-            <h1 class="hero-title" id="galleryTitle">Visual Journey</h1>
+            <p style="color:var(--gold); letter-spacing:3px;" id="gallery_subtitle">Explore The Beauty</p>
+            <h1 class="hero-title" id="gallery_title">Visual Journey</h1>
         </div>
     </section>
 
-    <div class="filter-bar">
-        <button class="filter-btn active" onclick="filterGallery('all')">All</button>
-        <button class="filter-btn" onclick="filterGallery('rooms')">Suites</button>
-        <button class="filter-btn" onclick="filterGallery('dining')">Dining</button>
-        <button class="filter-btn" onclick="filterGallery('facilities')">Wellness</button>
-        <button class="filter-btn" onclick="filterGallery('events')">Events</button>
+    <div class="gallery-grid" id="galleryContainer">
+        <div class="gallery-item"><img src="assets/room1.jpg"></div>
+        <div class="gallery-item"><img src="assets/room2.jpg"></div>
+        <div class="gallery-item"><img src="assets/room3.avif"></div>
+        <div class="gallery-item"><img src="assets/dining-bg.jpg"></div>
+        <div class="gallery-item"><img src="assets/rooftop.jpg"></div>
+        <div class="gallery-item"><img src="assets/wedding-bg.jpg"></div>
     </div>
 
-    <div class="gallery-container" id="galleryGrid">
-        
-        <div class="gallery-item rooms" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800" alt="Deluxe Room">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-        <div class="gallery-item rooms" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1590490359683-658d3d23f972?q=80&w=800" alt="Suite">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-        
-        <div class="gallery-item dining" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800" alt="Rooftop Bar">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-        <div class="gallery-item dining" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800" alt="Fine Dining">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-        
-        <div class="gallery-item facilities" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1572331165267-854da2b00dc1?q=80&w=800" alt="Infinity Pool">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-        <div class="gallery-item facilities" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=800" alt="Spa">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-
-        <div class="gallery-item events" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800" alt="Wedding">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-        <div class="gallery-item events" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800" alt="Ballroom">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-
-        <div class="gallery-item rooms" onclick="openLightbox(this)">
-            <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=800" alt="Villa">
-            <div class="gallery-overlay"><span>View Image</span></div>
-        </div>
-    </div>
-
-    <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-        <span class="close-btn" onclick="closeLightbox(event)">&times;</span>
-        <img id="lightbox-img" src="">
-    </div>
-
-    <footer>
-        <p>&copy; 2024 Spencer Green Hotel Batu. Gallery.</p>
-    </footer>
+    <footer><p>&copy; 2025 Spencer Green Hotel. Gallery.</p></footer>
 
     <script>
-        // --- 1. DYNAMIC CONTENT LOADER ---
-        fetch('data.json')
-        .then(r => r.json())
-        .then(data => {
-            // Update Text Hero
-            if(data.gallery_title) document.getElementById('galleryTitle').innerText = data.gallery_title;
-            if(data.gallery_subtitle) document.getElementById('gallerySubtitle').innerText = data.gallery_subtitle;
-            
-            // Update Background Hero
-            if(data.img_gallery_hero) {
-                document.querySelector('.hero-gallery').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data.img_gallery_hero}')`;
-            }
+        // MAGIC LOADER
+        fetch('data.json?t='+Date.now()).then(r=>r.json()).then(data=>{
+            // Basic Text Update
+            Object.keys(data).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (key.startsWith('img_')) {
+                        el.src = data[key];
+                        if(key === 'img_gallery_hero') document.querySelector('.hero-gallery').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
+                    } else el.innerText = data[key];
+                }
+            });
 
-            // OPTIONAL: Load Dynamic Images from Dashboard (jika ada di data.json)
-            // Logic: Cari key yang berawalan 'img_gallery_'
-            // Ini memungkinkan admin mengupload foto baru via dashboard
-            const container = document.getElementById('galleryGrid');
+            // DYNAMIC GALLERY INJECTION
+            // Jika ada key di JSON yang namanya 'img_gallery_1', 'img_gallery_2', dsb.
+            const container = document.getElementById('galleryContainer');
+            let hasDynamic = false;
+            
             Object.keys(data).forEach(key => {
                 if(key.startsWith('img_gallery_') && key !== 'img_gallery_hero') {
-                    // Cek kategori dari nama key (misal: img_gallery_rooms_1)
-                    let category = 'rooms'; // default
-                    if(key.includes('_dining_')) category = 'dining';
-                    if(key.includes('_events_')) category = 'events';
-                    if(key.includes('_facilities_')) category = 'facilities';
-
-                    let div = document.createElement('div');
-                    div.className = `gallery-item ${category} show`;
-                    div.setAttribute('onclick', 'openLightbox(this)');
-                    div.innerHTML = `
-                        <img src="${data[key]}" alt="Gallery Image">
-                        <div class="gallery-overlay"><span>View Image</span></div>
-                    `;
-                    // Tambahkan ke grid (append)
+                    if(!hasDynamic) { container.innerHTML = ''; hasDynamic = true; } // Bersihkan static images jika ada dynamic
+                    const div = document.createElement('div');
+                    div.className = 'gallery-item';
+                    div.innerHTML = `<img src="${data[key]}" alt="Gallery">`;
                     container.appendChild(div);
                 }
             });
-        })
-        .catch(err => console.log('Data Load Error:', err));
-
-
-        // --- 2. UI INTERACTIONS ---
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('navbar');
-            header.classList.toggle('scrolled', window.scrollY > 50);
         });
-
-        // 1. FILTER FUNCTION
-        function filterGallery(category) {
-            const items = document.querySelectorAll('.gallery-item');
-            const buttons = document.querySelectorAll('.filter-btn');
-
-            // Active Button State
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            // Show/Hide Logic
-            items.forEach(item => {
-                if (category === 'all' || item.classList.contains(category)) {
-                    item.classList.remove('hide');
-                    item.classList.add('show');
-                } else {
-                    item.classList.remove('show');
-                    item.classList.add('hide');
-                }
-            });
-        }
-
-        // 2. LIGHTBOX FUNCTION
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-
-        function openLightbox(element) {
-            const imgSrc = element.querySelector('img').src;
-            // Gunakan gambar resolusi tinggi (hapus parameter w=800 jika perlu)
-            lightboxImg.src = imgSrc.replace("w=800", "w=1600"); 
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Stop scrolling
-        }
-
-        function closeLightbox(e) {
-            if (e.target !== lightboxImg) {
-                lightbox.classList.remove('active');
-                document.body.style.overflow = 'auto'; // Resume scrolling
-            }
-        }
-
-        // 3. MOBILE MENU TOGGLE
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileNav');
-            menu.classList.toggle('active');
-        }
+        window.addEventListener('scroll', ()=>document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50));
     </script>
-
 </body>
 </html>
