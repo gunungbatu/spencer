@@ -13,7 +13,6 @@
         h1, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
         a { text-decoration:none; transition:0.3s; }
         
-        /* HEADER & HERO SAMA SEPERTI SEBELUMNYA */
         header { position:fixed; top:0; width:100%; padding:20px 50px; display:flex; justify-content:space-between; align-items:center; z-index:1000; transition:0.4s; background:linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); }
         header.scrolled { background:var(--emerald); padding:15px 50px; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
         .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.8rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; }
@@ -21,12 +20,10 @@
         .nav-link { color:#fff; font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; font-weight:500; }
         .btn-book { background:var(--gold); color:#fff; padding:10px 25px; font-size:0.75rem; border:1px solid var(--gold); cursor:pointer; text-transform:uppercase; }
         
-        /* HERO DINING */
         .hero-dining { height:70vh; background:linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/dining-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; }
         .hero-title { color:#fff; font-size:4rem; text-transform:uppercase; letter-spacing:3px; }
         .hero-subtitle { color:var(--gold); font-size:0.9rem; letter-spacing:4px; text-transform:uppercase; margin-bottom:15px; font-weight:600; }
 
-        /* CONTENT */
         .tab-nav { display:flex; justify-content:center; gap:40px; padding:30px 0; background:#fff; position:sticky; top:70px; z-index:900; }
         .tab-btn { background:none; border:none; font-family:'Cormorant Garamond', serif; font-size:1.3rem; color:#888; cursor:pointer; padding-bottom:5px; }
         .tab-btn.active { color:var(--emerald); border-bottom:2px solid var(--gold); }
@@ -37,6 +34,7 @@
         .reverse { flex-direction:row-reverse; }
         .text-col { flex:1; } .img-col { flex:1; } .img-col img { width:100%; height:500px; object-fit:cover; }
         .section-title { font-size:3rem; margin-bottom:10px; }
+        .section-sub { font-size:1.2rem; color:var(--gold); margin-bottom:20px; font-family:'Cormorant Garamond', serif; font-style:italic; }
         .section-desc { font-size:1rem; color:#666; line-height:1.8; margin-bottom:30px; }
         .info-box { border-left:3px solid var(--gold); padding-left:20px; margin-bottom:30px; }
         .btn-outline { padding:12px 30px; border:1px solid var(--dark); color:var(--dark); text-transform:uppercase; font-size:0.8rem; letter-spacing:2px; }
@@ -68,23 +66,21 @@
     </section>
 
     <div class="tab-nav">
-        <button class="tab-btn active" onclick="openTab('rooftop')">Rooftop Lounge</button>
-        <button class="tab-btn" onclick="openTab('botanica')">Botanica Restaurant</button>
-        <button class="tab-btn" onclick="openTab('candle')">Romantic Dinner</button>
+        <button class="tab-btn active" onclick="openTab('rooftop')" id="dining_rooftop_subtitle">Rooftop Lounge</button>
+        <button class="tab-btn" onclick="openTab('botanica')" id="dining_botanica_subtitle">Botanica Restaurant</button>
+        <button class="tab-btn" onclick="openTab('candle')" id="dining_candle_subtitle">Romantic Dinner</button>
     </div>
 
     <div id="rooftop" class="tab-content active">
         <div class="split-layout">
             <div class="text-col">
-                <h2 class="section-title" id="facil_rooftop_title">The Sky Lounge</h2>
-                <p class="section-desc" id="facil_rooftop_desc">
-                    Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman.
-                </p>
-                <div class="info-box"><span>Open Daily: 15.00 - 23.00 WIB</span></div>
-                <a href="#" class="btn-outline">Reserve Table</a>
+                <h2 class="section-title" id="dining_rooftop_title">The Sky Lounge</h2>
+                <p class="section-desc" id="dining_rooftop_desc">Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman.</p>
+                <div class="info-box"><span id="dining_rooftop_info">Open Daily: 15.00 - 23.00 WIB</span></div>
+                <a href="#" class="btn-outline" id="dining_rooftop_btn">Reserve Table</a>
             </div>
             <div class="img-col">
-                <img id="img_facil_rooftop" src="assets/rooftop.jpg" alt="Rooftop">
+                <img id="img_dining_rooftop" src="assets/rooftop.jpg" alt="Rooftop">
             </div>
         </div>
     </div>
@@ -92,15 +88,13 @@
     <div id="botanica" class="tab-content">
         <div class="split-layout reverse">
             <div class="text-col">
-                <h2 class="section-title">Botanica Restaurant</h2>
-                <p class="section-desc">
-                    A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu.
-                </p>
-                <div class="info-box"><span>Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00</span></div>
-                <a href="#" class="btn-outline">View Menu</a>
+                <h2 class="section-title" id="dining_botanica_title">Botanica Restaurant</h2>
+                <p class="section-desc" id="dining_botanica_desc">A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu.</p>
+                <div class="info-box"><span id="dining_botanica_info">Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00</span></div>
+                <a href="#" class="btn-outline" id="dining_botanica_btn">View Menu</a>
             </div>
             <div class="img-col">
-                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800" alt="Restaurant">
+                <img id="img_dining_botanica" src="assets/dining-bg.jpg" alt="Restaurant">
             </div>
         </div>
     </div>
@@ -108,15 +102,13 @@
     <div id="candle" class="tab-content">
         <div class="split-layout">
             <div class="text-col">
-                <h2 class="section-title" id="facil_dinner_title">Intimate Dining</h2>
-                <p class="section-desc" id="facil_dinner_desc">
-                    Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight.
-                </p>
-                <div class="info-box"><span>Start IDR 750.000++ / Couple</span></div>
-                <a href="#" class="btn-outline">Book Experience</a>
+                <h2 class="section-title" id="dining_candle_title">Intimate Dining</h2>
+                <p class="section-desc" id="dining_candle_desc">Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight.</p>
+                <div class="info-box"><span id="dining_candle_info">Start IDR 750.000++ / Couple</span></div>
+                <a href="#" class="btn-outline" id="dining_candle_btn">Book Experience</a>
             </div>
             <div class="img-col">
-                <img id="img_facil_dinner" src="assets/dining-bg.jpg" alt="Romantic Dinner">
+                <img id="img_dining_candle" src="assets/dining-bg.jpg" alt="Romantic Dinner">
             </div>
         </div>
     </div>
@@ -126,18 +118,28 @@
     <script>
         // --- 1. MAGIC CONTENT LOADER ---
         fetch('data.json?t='+Date.now()).then(r=>r.json()).then(data=>{
-            // Logic: Cek ID di HTML, jika ada key yg sama di JSON, ganti isinya.
             Object.keys(data).forEach(key => {
-                const el = document.getElementById(key);
-                if (el) {
-                    if (key.startsWith('img_')) {
-                        el.src = data[key]; // Ganti Gambar
-                        if(key === 'img_dining_hero') { // Khusus BG Hero Dining
-                            document.querySelector('.hero-dining').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
-                        }
-                    } else {
-                        el.innerText = data[key]; // Ganti Teks
-                    }
+                // Update Gambar
+                if (key.startsWith('img_')) {
+                    const el = document.getElementById(key);
+                    if (el) el.src = data[key];
+                    if(key === 'img_dining_hero') document.querySelector('.hero-dining').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
+                } 
+                // Update Tombol Link & Teks (Special Case)
+                else if (key.endsWith('_btn_text')) {
+                    const btnId = key.replace('_text', ''); // dining_rooftop_btn
+                    const el = document.getElementById(btnId);
+                    if(el) el.innerText = data[key];
+                }
+                else if (key.endsWith('_btn_link')) {
+                    const btnId = key.replace('_link', ''); // dining_rooftop_btn
+                    const el = document.getElementById(btnId);
+                    if(el) el.href = data[key];
+                }
+                // Update Teks Biasa
+                else {
+                    const el = document.getElementById(key);
+                    if(el) el.innerText = data[key];
                 }
             });
         });
