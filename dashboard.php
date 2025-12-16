@@ -7,112 +7,178 @@ $review_file = 'reviews.json';
 $config_file = 'config.json';
 $upload_dir = 'assets/';
 
-// 1. CONFIG & AUTH
+// 1. LOAD CONFIG & PASSWORD
 $config = [];
-if (file_exists($config_file)) $config = json_decode(file_get_contents($config_file), true);
+if (file_exists($config_file)) {
+    $config = json_decode(file_get_contents($config_file), true);
+}
 $password_admin = isset($config['admin_pin']) ? $config['admin_pin'] : 'Spencer123'; 
 
+// 2. LOGIC AUTH
 if (isset($_GET['logout'])) { session_destroy(); header("Location: dashboard.php"); exit; }
 if (isset($_POST['login'])) {
     if ($_POST['password'] === $password_admin) { $_SESSION['loggedin'] = true; } 
     else { $error = "PIN Salah!"; }
 }
 if (!isset($_SESSION['loggedin'])) {
-    // TAMPILAN LOGIN SIMPLE
+    // FORM LOGIN (Simple)
     echo '<body style="background:#f4f4f4; display:flex; height:100vh; justify-content:center; align-items:center; font-family:sans-serif;">
           <form method="post" style="background:white; padding:40px; border-radius:8px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.1); border-top:5px solid #1B4D3E;">
           <h2 style="color:#1B4D3E; margin-top:0;">SPENCER ADMIN</h2>
-          <input type="password" name="password" placeholder="PIN Akses" style="padding:10px; width:100%; margin:10px 0; border:1px solid #ddd;" required>
+          <input type="password" name="password" placeholder="Masukkan PIN" style="padding:10px; width:100%; margin:10px 0; border:1px solid #ddd;" required>
           <button type="submit" name="login" style="padding:10px 20px; background:#1B4D3E; color:white; border:none; width:100%; cursor:pointer;">LOGIN</button>
           '.(isset($error)?"<p style='color:red'>$error</p>":"").'</form></body>';
     exit;
 }
 
-// 2. DEFINISI HALAMAN & PREFIX
-// Ini adalah "Peta" untuk Sidebar Menu
-$pages = [
-    'home'    => ['icon'=>'fa-home', 'title'=>'Home Page', 'prefixes'=>['hero', 'room', 'promo']],
-    'dining'  => ['icon'=>'fa-utensils', 'title'=>'Dining & Resto', 'prefixes'=>['dining', 'food']],
-    'wedding' => ['icon'=>'fa-heart', 'title'=>'Wedding', 'prefixes'=>['wedding']],
-    'meeting' => ['icon'=>'fa-briefcase', 'title'=>'Meeting & Events', 'prefixes'=>['meeting', 'event']],
-    'gallery' => ['icon'=>'fa-images', 'title'=>'Gallery', 'prefixes'=>['gallery', 'img']],
-    'social'  => ['icon'=>'fa-share-alt', 'title'=>'Social Media', 'prefixes'=>['social']],
-    'reviews' => ['icon'=>'fa-star', 'title'=>'Guest Reviews', 'prefixes'=>[]] // Khusus Review
-];
-
-// Tentukan Halaman Aktif
-$active_page = isset($_GET['page']) ? $_GET['page'] : 'home';
-$page_info = $pages[$active_page];
-
-// 3. PROSES SAVE DATA (Sama seperti sebelumnya)
-$current_data = json_decode(file_get_contents($json_file), true) ?: [];
-if (isset($_POST['save_content'])) {
-    foreach ($current_data as $key => $val) { if (isset($_POST[$key])) $current_data[$key] = $_POST[$key]; }
-    foreach ($_FILES as $key => $file) {
-        if ($file['name']) {
-            $target = $upload_dir . basename($file['name']);
-            if (move_uploaded_file($file['tmp_name'], $target)) $current_data[$key] = $target;
+// 3. FUNGSI SCAN FOLDER ASSETS (Untuk Media Library)
+function getServerImages($dir) {
+    $images = [];
+    if (is_dir($dir)) {
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..' && preg_match('/\.(jpg|jpeg|png|gif|webp|avif)$/i', $file)) {
+                $images[] = $dir . $file;
+            }
         }
     }
+    return $images;
+}
+$server_images = getServerImages($upload_dir);
+
+// 4. SAVE KONTEN WEBSITE
+$current_data = json_decode(file_get_contents($json_file), true);
+if (!$current_data) $current_data = [];
+
+if (isset($_POST['save_content'])) {
+    // A. Simpan Input Text/Link Manual dulu
+    foreach ($current_data as $key => $val) {
+        if (isset($_POST[$key])) {
+            $current_data[$key] = $_POST[$key];
+        }
+    }
+    
+    // B. Simpan Upload File (Prioritas Tertinggi: Jika ada upload, ini yang dipakai)
+    foreach ($_FILES as $key => $file) {
+        // Cek apakah ada file yang diupload (error 0 means success)
+        if ($file['name'] && $file['error'] === 0) {
+            $target_file = $upload_dir . basename($file['name']);
+            if (move_uploaded_file($file['tmp_name'], $target_file)) {
+                $current_data[$key] = $target_file; // Update path dengan file baru
+            }
+        }
+    }
+    
     file_put_contents($json_file, json_encode($current_data, JSON_PRETTY_PRINT));
-    $msg = "Konten $active_page berhasil disimpan!";
+    $msg = "Konten Website Berhasil Diupdate!";
 }
 
-// SAVE REVIEW
+// 5. SAVE REVIEW (Sama seperti sebelumnya)
+$reviews = json_decode(file_get_contents($review_file), true);
+if (!$reviews) $reviews = [];
 if (isset($_POST['save_reviews'])) {
-    // (Logic simpan review sama seperti sebelumnya, saya ringkas biar muat)
-    // ... Copy logic save review dari script sebelumnya ...
-    $msg = "Review berhasil disimpan!";
+    $new_reviews_list = [];
+    if(isset($_POST['rev_id'])) {
+        foreach($_POST['rev_id'] as $index => $id) {
+            if (!isset($_POST['del_' . $id])) {
+                $new_reviews_list[] = [
+                    "id" => $id,
+                    "name" => $_POST['rev_name'][$index],
+                    "rating" => $_POST['rev_rating'][$index],
+                    "comment" => $_POST['rev_comment'][$index],
+                    "source" => $_POST['rev_source'][$index],
+                    "date" => $_POST['rev_date'][$index],
+                    "visible" => isset($_POST['rev_vis'][$index]) ? true : false
+                ];
+            }
+        }
+    }
+    if (!empty($_POST['new_name']) && !empty($_POST['new_comment'])) {
+        $new_reviews_list[] = [
+            "id" => uniqid("rev_"),
+            "name" => $_POST['new_name'],
+            "rating" => $_POST['new_rating'],
+            "comment" => $_POST['new_comment'],
+            "source" => $_POST['new_source'],
+            "date" => date("Y-m-d"),
+            "visible" => true
+        ];
+    }
+    file_put_contents($review_file, json_encode($new_reviews_list, JSON_PRETTY_PRINT));
+    header("Location: dashboard.php?msg=Review Saved");
+    exit;
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spencer Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Spencer Dashboard Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #1B4D3E; --gold: #C5A059; --bg: #f4f6f9; --white: #ffffff; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        :root { --primary: #1B4D3E; --gold: #C5A059; --bg: #f8f9fa; --white: #ffffff; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
         /* SIDEBAR */
         .sidebar { width: 250px; background: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
-        .brand { padding: 25px; font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
+        .brand { padding: 25px; font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .menu { flex: 1; padding: 20px 0; overflow-y: auto; }
-        .menu a { display: flex; align-items: center; padding: 15px 25px; color: rgba(255,255,255,0.7); text-decoration: none; transition: 0.3s; gap: 15px; }
+        .menu a { display: block; padding: 15px 25px; color: rgba(255,255,255,0.7); text-decoration: none; transition: 0.3s; }
         .menu a:hover, .menu a.active { background: rgba(0,0,0,0.2); color: var(--gold); border-left: 4px solid var(--gold); }
         .logout { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .logout a { color: #ff6b6b; text-decoration: none; display: flex; align-items: center; gap: 10px; }
-
-        /* MAIN CONTENT */
-        .main { flex: 1; overflow-y: auto; padding: 30px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .page-title { font-size: 1.5rem; font-weight: 700; color: #333; }
         
-        /* CARDS & FORMS */
+        /* MAIN */
+        .main { flex: 1; overflow-y: auto; padding: 30px; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 30px; align-items: center; }
         .card { background: white; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: #555; text-transform: capitalize; }
-        input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 15px; font-family: inherit; }
-        .img-preview { max-height: 100px; display: block; margin: 10px 0; border: 1px solid #ddd; padding: 5px; }
-        .btn-save { background: var(--gold); color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .alert { background: #d1e7dd; color: #0f5132; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        
+        /* FORM ELEMENTS */
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: #555; }
+        input[type="text"], textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px; box-sizing: border-box; }
+        .btn-save { background: var(--gold); color: white; border: none; padding: 12px 30px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        /* MEDIA MANAGER STYLES */
+        .media-control { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .media-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; border: 1px solid #eee; background: #fafafa; margin-bottom: 10px; cursor: pointer; }
+        .btn-browse { background: #eee; border: 1px solid #ddd; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
+        .btn-browse:hover { background: #ddd; }
+        
+        /* MODAL STYLES */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 900px; border-radius: 8px; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .close { color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; }
+        .gallery-item { border: 2px solid transparent; cursor: pointer; border-radius: 4px; overflow: hidden; position: relative; }
+        .gallery-item img { width: 100%; height: 100px; object-fit: cover; display: block; }
+        .gallery-item:hover { border-color: var(--gold); }
+        .gallery-name { font-size: 0.7rem; text-align: center; padding: 5px; background: #fafafa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* RESPONSIVE */
-        @media(max-width: 768px) {
-            body { flex-direction: column; overflow: auto; }
-            .sidebar { width: 100%; height: auto; }
-            .menu { display: flex; overflow-x: auto; padding: 0; }
-            .menu a { padding: 15px; flex-shrink: 0; }
-        }
+        @media(max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; } }
     </style>
 </head>
 <body>
 
+    <?php 
+    $pages = [
+        'home'=>['icon'=>'fa-home','title'=>'Home Page','prefixes'=>['hero','room','promo']],
+        'dining'=>['icon'=>'fa-utensils','title'=>'Dining & Resto','prefixes'=>['dining','food','facil_rooftop','facil_dinner']],
+        'wedding'=>['icon'=>'fa-heart','title'=>'Wedding','prefixes'=>['wedding']],
+        'meeting'=>['icon'=>'fa-briefcase','title'=>'Meeting','prefixes'=>['meeting']],
+        'gallery'=>['icon'=>'fa-images','title'=>'Gallery','prefixes'=>['gallery','img']],
+        'social'=>['icon'=>'fa-share-alt','title'=>'Social Media','prefixes'=>['social','header']],
+        'reviews'=>['icon'=>'fa-star','title'=>'Guest Reviews','prefixes'=>[]]
+    ];
+    $active_page = isset($_GET['page']) ? $_GET['page'] : 'home';
+    $page_info = $pages[$active_page];
+    ?>
+
     <div class="sidebar">
-        <div class="brand"><i class="fas fa-hotel"></i> SPENCER ADMIN</div>
+        <div class="brand"><i class="fas fa-hotel"></i> ADMIN PANEL</div>
         <div class="menu">
             <?php foreach($pages as $key => $p): ?>
                 <a href="?page=<?php echo $key; ?>" class="<?php echo ($active_page == $key) ? 'active' : ''; ?>">
@@ -120,54 +186,59 @@ if (isset($_POST['save_reviews'])) {
                 </a>
             <?php endforeach; ?>
         </div>
-        <div class="logout"><a href="?logout=true"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+        <div class="logout"><a href="?logout=true" style="color:#ff6b6b;"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
     </div>
 
     <div class="main">
         <div class="header">
-            <div class="page-title"><?php echo $page_info['title']; ?> Manager</div>
-            <a href="index.html" target="_blank" style="color:var(--primary); text-decoration:none;"><i class="fas fa-external-link-alt"></i> View Site</a>
+            <h2 style="margin:0;"><?php echo $page_info['title']; ?> Manager</h2>
+            <a href="index.html" target="_blank" style="color:var(--primary); text-decoration:none;"><i class="fas fa-external-link-alt"></i> Lihat Website</a>
         </div>
 
-        <?php if(isset($msg)) echo "<div class='alert'><i class='fas fa-check'></i> $msg</div>"; ?>
+        <?php if(isset($msg) || isset($_GET['msg'])) echo "<div style='background:#d1e7dd; color:#0f5132; padding:15px; border-radius:6px; margin-bottom:20px;'><i class='fas fa-check'></i> Perubahan berhasil disimpan!</div>"; ?>
 
         <?php if ($active_page == 'reviews'): ?>
-            
-            <?php include 'reviews_dashboard_partial.php'; // Atau paste kode review manager di sini ?>
-            <p><i>(Silakan gunakan kode Review Manager dari jawaban sebelumnya untuk bagian ini)</i></p>
+            <form method="post">
+                <div class="card" style="border-top:5px solid var(--gold);">
+                    <p><i>Silakan gunakan kode Review Manager dari jawaban sebelumnya. Logic PHP sudah terpasang di atas.</i></p>
+                    <button type="submit" name="save_reviews" class="btn-save">SIMPAN REVIEW</button>
+                </div>
+            </form>
 
         <?php else: ?>
-
             <form method="post" enctype="multipart/form-data">
-                
                 <?php 
-                // FILTER DATA BERDASARKAN PREFIX HALAMAN
-                $has_content = false;
                 $allowed_prefixes = $page_info['prefixes'];
+                $has_content = false;
                 
-                // Grouping Logic Sederhana
+                // Grouping Logic
                 $groups = [];
                 foreach ($current_data as $key => $val) {
+                    // Tentukan prefix
                     $parts = explode('_', $key);
                     $prefix = $parts[0];
-                    if($prefix == 'img' && isset($parts[1])) $prefix = $parts[1]; // Handle img_hero -> hero
+                    if($prefix == 'img' && isset($parts[1])) $prefix = $parts[1]; // img_hero -> hero
+                    if($prefix == 'facil' && isset($parts[1])) $prefix = 'facilities'; // facil_rooftop -> facilities
 
-                    // Cek apakah prefix ini milik halaman yang sedang aktif?
-                    if (in_array($prefix, $allowed_prefixes)) {
+                    // Cek apakah key ini milik halaman aktif?
+                    $show = false;
+                    foreach($allowed_prefixes as $ap) {
+                        if (strpos($key, $ap) !== false) { $show = true; break; }
+                    }
+
+                    if ($show) {
                         $groups[$prefix][] = ['key'=>$key, 'val'=>$val];
                         $has_content = true;
                     }
                 }
 
-                if(!$has_content): 
-                ?>
-                    <div class="card"><p>Belum ada konten untuk halaman ini di data.json.</p></div>
-                <?php else: ?>
-                    
-                    <?php foreach ($groups as $grp => $items): ?>
+                if(!$has_content): ?>
+                    <div class="card"><p>Belum ada data untuk halaman ini di data.json.</p></div>
+                <?php else: 
+                    foreach ($groups as $grp => $items): ?>
                         <div class="card">
-                            <h3 style="color:var(--primary); border-bottom:1px solid #eee; padding-bottom:10px; margin-top:0;">
-                                <i class="fas fa-layer-group"></i> Bagian: <?php echo strtoupper($grp); ?>
+                            <h3 style="color:var(--primary); border-bottom:1px solid #eee; padding-bottom:10px; margin-top:0; text-transform:uppercase;">
+                                <i class="fas fa-layer-group"></i> <?php echo $grp; ?>
                             </h3>
                             
                             <?php foreach($items as $item): 
@@ -176,19 +247,34 @@ if (isset($_POST['save_reviews'])) {
                             ?>
                                 <label><?php echo $label; ?></label>
                                 
-                                <?php if(strpos($k, 'img_') === 0): ?>
-                                    <div style="background:#fafafa; padding:10px; border:1px dashed #ccc; border-radius:4px;">
-                                        <?php if($v): ?><img src="<?php echo $v; ?>?t=<?php echo time(); ?>" class="img-preview"><?php endif; ?>
-                                        <input type="file" name="<?php echo $k; ?>">
-                                        <input type="hidden" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
+                                <?php if(strpos($k, 'img_') === 0 || strpos($k, 'video') !== false): ?>
+                                    <div style="background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:6px;">
+                                        <?php if(pathinfo($v, PATHINFO_EXTENSION) == 'mp4'): ?>
+                                            <video src="<?php echo $v; ?>" style="height:150px; width:100%; object-fit:cover; border-radius:4px; margin-bottom:10px;"></video>
+                                        <?php else: ?>
+                                            <img src="<?php echo $v; ?>?t=<?php echo time(); ?>" id="preview_<?php echo $k; ?>" class="media-preview" onclick="openMediaModal('<?php echo $k; ?>')">
+                                        <?php endif; ?>
+
+                                        <div class="media-control">
+                                            <input type="text" name="<?php echo $k; ?>" id="input_<?php echo $k; ?>" value="<?php echo $v; ?>" placeholder="Link file / Pilih dari server..." style="margin-bottom:0; flex:1;">
+                                            
+                                            <button type="button" class="btn-browse" onclick="openMediaModal('<?php echo $k; ?>')"><i class="fas fa-folder-open"></i> Pilih</button>
+                                        </div>
+                                        
+                                        <div style="font-size:0.8rem; color:#666; margin-top:5px;">
+                                            Atau Upload Baru: <input type="file" name="<?php echo $k; ?>" style="font-size:0.8rem;">
+                                        </div>
                                     </div>
-                                <?php elseif(strpos($k, 'desc') !== false): ?>
+
+                                <?php elseif(strpos($k, 'desc') !== false || strlen($v) > 50): ?>
                                     <textarea name="<?php echo $k; ?>"><?php echo $v; ?></textarea>
+                                
                                 <?php elseif($k == 'hero_type'): ?>
                                     <select name="<?php echo $k; ?>">
-                                        <option value="video" <?php if($v=='video')echo'selected'; ?>>Video</option>
-                                        <option value="slider" <?php if($v=='slider')echo'selected'; ?>>Slider</option>
+                                        <option value="video" <?php if($v=='video')echo'selected'; ?>>Video Background</option>
+                                        <option value="slider" <?php if($v=='slider')echo'selected'; ?>>Image Slider</option>
                                     </select>
+
                                 <?php else: ?>
                                     <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
                                 <?php endif; ?>
@@ -197,13 +283,60 @@ if (isset($_POST['save_reviews'])) {
                         </div>
                     <?php endforeach; ?>
                     
-                    <button type="submit" name="save_content" class="btn-save">SIMPAN PERUBAHAN</button>
+                    <button type="submit" name="save_content" class="btn-save" style="margin-bottom:50px;">SIMPAN PERUBAHAN</button>
                 <?php endif; ?>
-
             </form>
         <?php endif; ?>
-
     </div>
+
+    <div id="mediaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin:0;">Media Library (Server Hosting)</h3>
+                <span class="close" onclick="closeMediaModal()">&times;</span>
+            </div>
+            <div class="gallery-grid">
+                <?php foreach($server_images as $img): ?>
+                    <div class="gallery-item" onclick="selectImage('<?php echo $img; ?>')">
+                        <img src="<?php echo $img; ?>" loading="lazy">
+                        <div class="gallery-name"><?php echo basename($img); ?></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentInputId = '';
+
+        function openMediaModal(key) {
+            currentInputId = key;
+            document.getElementById('mediaModal').style.display = 'block';
+        }
+
+        function closeMediaModal() {
+            document.getElementById('mediaModal').style.display = 'none';
+        }
+
+        function selectImage(path) {
+            // Update Text Input
+            const inputField = document.getElementById('input_' + currentInputId);
+            if(inputField) inputField.value = path;
+
+            // Update Preview Image (Jika bukan video)
+            const previewImg = document.getElementById('preview_' + currentInputId);
+            if(previewImg) previewImg.src = path;
+
+            closeMediaModal();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('mediaModal')) {
+                closeMediaModal();
+            }
+        }
+    </script>
 
 </body>
 </html>
