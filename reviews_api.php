@@ -16,6 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     ];
     array_unshift($data, $new_review);
     file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
-    echo json_encode(["status" => "success", "message" => "Review terkirim! Menunggu moderasi."]);
+    // GANTI PESAN JADI LEBIH HOSPITALITY
+    echo json_encode([
+        "status" => "success", 
+        "message" => "Terima kasih! Cerita pengalaman Anda sangat berarti bagi kami. Semoga kami dapat menyambut Anda kembali segera di Spencer Green."
+    ]);
 }
 ?>
