@@ -49,12 +49,14 @@
     "dining_rooftop_btn_link": "#",
     "img_dining_rooftop": "assets/rooftop.jpg",
     "dining_botanica_title": "Botanica Restaurant",
+    "dining_botanica_subtitle": "Botanica Restaurant",
     "dining_botanica_desc": "A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu.",
     "dining_botanica_info": "Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00",
     "dining_botanica_btn_text": "View Menu",
     "dining_botanica_btn_link": "#",
     "img_dining_botanica": "assets/dining-bg.jpg",
     "dining_candle_title": "Intimate Dining",
+    "dining_candle_subtitle": "Romantic Dinner",
     "dining_candle_desc": "Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight.",
     "dining_candle_info": "Start IDR 750.000++ / Couple",
     "dining_candle_btn_text": "Book Experience",
@@ -135,10 +137,14 @@
     "gallery_title": "Visual Journey",
     "gallery_subtitle": "Explore The Beauty",
     "img_gallery_hero": "assets/gallery-bg.jpg",
+    "gallery_cat_all": "All Photos",
+    "gallery_cat_rooms": "Rooms",
+    "gallery_cat_dining": "Dining",
+    "gallery_cat_meetings": "MICE",
 
-    "social_instagram": "https://instagram.com/",
-    "social_tiktok": "https://tiktok.com/",
-    "social_youtube": "https://youtube.com/",
+    "social_instagram": "https://instagram.com/spencerhotel",
+    "social_tiktok": "https://tiktok.com/@spencerhotel",
+    "social_youtube": "",
     "social_facebook": "",
-    "social_whatsapp": "https://wa.me/628123456789"
+    "social_whatsapp": "6281234567890" 
 }
