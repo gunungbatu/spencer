@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="assets/js/global-config.js"></script>
     <style>
+        /* (Style diringkas) */
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin:0; }
         h1, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
@@ -16,15 +17,20 @@
         .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.5rem; font-weight:bold; letter-spacing:2px; }
         .btn-book { padding:10px 20px; border:1px solid var(--gold); color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; }
         
-        .hero-wedding { height:80vh; background:linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/wedding-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; }
+        .hero-wedding { height:80vh; background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('assets/wedding-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; }
         .hero-title { color:#fff; font-size:5rem; margin:0; } .hero-subtitle { color:var(--gold); letter-spacing:3px; }
         
         .intro { padding:80px 20px; text-align:center; max-width:800px; margin:0 auto; }
-        .venue-section { display:flex; padding:50px; gap:50px; align-items:center; } .venue-text, .venue-img { flex:1; } .venue-img img { width:100%; }
+        .venue-section { display:flex; padding:50px 0; gap:50px; align-items:center; max-width:1200px; margin:0 auto; } .venue-text, .venue-img { flex:1; } .venue-img img { width:100%; height:500px; object-fit:cover; }
+        .specs-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px; border-top:1px solid #ddd; padding-top:20px; }
+        .spec-item span { display:block; color:#888; font-size:0.9rem; } .spec-item h4 { margin:0; }
+        
+        .gallery-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:50px 0; } .gallery-strip img { width:100%; height:300px; object-fit:cover; }
         .form-section { background:#fff; padding:50px; text-align:center; }
-        input, textarea { width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; }
+        input, textarea { width:100%; padding:15px; margin:10px 0; border:1px solid #ddd; background:#fafafa; }
+        .btn-submit { background:var(--dark); color:#fff; padding:15px 50px; border:none; text-transform:uppercase; cursor:pointer; }
         footer { background:var(--emerald); color:#fff; padding:50px; text-align:center; }
-        @media(max-width:900px) { .nav-menu { display:none; } .venue-section { flex-direction:column; } }
+        @media(max-width:900px) { .nav-menu { display:none; } .venue-section { flex-direction:column; padding:20px; } .gallery-strip { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
@@ -48,27 +54,46 @@
     </section>
 
     <section class="intro">
-        <h2>A Sacred Vow Above The Clouds</h2>
-        <p id="wedding_desc">Imagine saying "I Do" with the majestic Mount Panderman as your backdrop. Spencer Green Hotel offers an intimate, elegant, and unforgettable wedding experience.</p>
+        <h2 id="wedding_intro_title">A Sacred Vow Above The Clouds</h2>
+        <div style="width:50px; height:2px; background:var(--gold); margin:20px auto;"></div>
+        <p id="wedding_intro_desc">Imagine saying "I Do" with the majestic Mount Panderman as your backdrop.</p>
     </section>
 
     <section class="venue-section">
         <div class="venue-text">
-            <h2>Glass Chapel & Rooftop</h2>
-            <p>Located on the highest floor, The Sky Chapel offers a 360-degree panoramic view of Batu City.</p>
-            <p><strong>Capacity:</strong> Up to 100 Guests</p>
+            <span style="color:var(--gold); text-transform:uppercase; letter-spacing:2px;" id="wedding_venue_subtitle">The Venue</span>
+            <h2 style="font-size:2.5rem; margin-top:5px;" id="wedding_venue_title">Glass Chapel & Rooftop</h2>
+            <p id="wedding_venue_desc">Located on the highest floor, The Sky Chapel offers a 360-degree panoramic view of Batu City.</p>
+            
+            <div class="specs-grid">
+                <div class="spec-item"><h4>Capacity</h4><span id="wedding_spec_cap">Up to 100 Guests</span></div>
+                <div class="spec-item"><h4>Location</h4><span id="wedding_spec_loc">Rooftop Level 5</span></div>
+                <div class="spec-item"><h4>View</h4><span id="wedding_spec_view">Mountain & City</span></div>
+                <div class="spec-item"><h4>Style</h4><span id="wedding_spec_style">Intimate & Luxury</span></div>
+            </div>
         </div>
-        <div class="venue-img"><img src="https://images.unsplash.com/photo-1544592500-e2cb29559c5d?w=800" alt="Chapel"></div>
+        <div class="venue-img"><img id="img_wedding_venue" src="assets/wedding-bg.jpg" alt="Chapel"></div>
+    </section>
+
+    <section class="gallery-strip">
+        <img id="img_wedding_gal_1" src="assets/room1.jpg" alt="Detail">
+        <img id="img_wedding_gal_2" src="assets/room2.jpg" alt="Couple">
+        <img id="img_wedding_gal_3" src="assets/room3.avif" alt="Setup">
     </section>
 
     <section class="form-section" id="inquire">
         <div style="max-width:600px; margin:0 auto;">
-            <h2>Request Proposal</h2>
+            <span style="color:var(--emerald); text-transform:uppercase;" id="wedding_form_subtitle">Start Your Journey</span>
+            <h2 id="wedding_form_title">Request Proposal</h2>
             <form onsubmit="kirimWa(event)">
                 <input type="text" id="name" placeholder="Couple Names" required>
-                <input type="date" id="date" required>
-                <input type="number" id="pax" placeholder="Guests" required>
-                <button type="submit" class="btn-book" style="background:var(--dark); width:100%; border:none;">Submit</button>
+                <div style="display:flex; gap:10px;">
+                    <input type="date" id="date" required>
+                    <input type="number" id="pax" placeholder="Guests" required>
+                </div>
+                <input type="tel" id="phone" placeholder="WhatsApp Number" required>
+                <textarea rows="4" id="message" placeholder="Special Requests / Vision"></textarea>
+                <button type="submit" class="btn-submit">Submit Inquiry</button>
             </form>
         </div>
     </section>
@@ -95,7 +120,8 @@
             const name = document.getElementById('name').value;
             const date = document.getElementById('date').value;
             const pax = document.getElementById('pax').value;
-            const text = `Halo Spencer Wedding, saya tertarik:\nNama: ${name}\nTanggal: ${date}\nTamu: ${pax} pax`;
+            const msg = document.getElementById('message').value;
+            const text = `Halo Spencer Wedding, inquiry:\nNama: ${name}\nTanggal: ${date}\nTamu: ${pax}\nPesan: ${msg}`;
             const waNum = (CONFIG && CONFIG.WA) ? CONFIG.WA : "6281234567890";
             window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`, '_blank');
         }
