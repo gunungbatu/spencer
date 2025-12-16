@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dining at Spencer Green Hotel | Gastronomy</title>
+    <title>Dining at Spencer Green Hotel | Dining</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script src="assets/js/global-config.js"></script>
 
     <style>
         /* --- 1. GLOBAL VARIABLES & RESET --- */
@@ -42,13 +44,13 @@
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
         .btn-book:hover { background: transparent; color: var(--gold); }
 
-        /* --- MOBILE MENU CSS (ADDED) --- */
+        /* --- MOBILE MENU --- */
         .mobile-menu-btn {
             display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
         }
         .mobile-nav-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.95); /* Emerald Background */
+            background: rgba(27, 77, 62, 0.95);
             z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.4s;
@@ -62,9 +64,10 @@
         /* --- 3. HERO SECTION --- */
         .hero-dining {
             height: 70vh;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/dining-bg.jpg'); /* Default Image */
             background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center; text-align: center;
+            transition: background-image 0.5s ease;
         }
         .hero-title {
             color: #fff; font-size: 4rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
@@ -92,7 +95,6 @@
         .tab-content.active { display: block; }
 
         .split-layout { display: flex; gap: 60px; align-items: center; margin-bottom: 80px; }
-        /* Reverse Layout Helper */
         .reverse { flex-direction: row-reverse; }
 
         .text-col { flex: 1; }
@@ -126,8 +128,8 @@
             .hero-title { font-size: 2.5rem; }
             .split-layout, .reverse { flex-direction: column; }
             .nav-menu { display: none; }
-            .mobile-menu-btn { display: block; } /* Tampilkan Hamburger */
-            .btn-book { display: none; } /* Sembunyikan Tombol Book di Header */
+            .mobile-menu-btn { display: block; }
+            .btn-book { display: none; }
             header { justify-content: center; }
             .img-col img { height: 300px; }
             .tab-nav { gap: 20px; }
@@ -166,8 +168,8 @@
 
     <section class="hero-dining">
         <div>
-            <p class="hero-subtitle">Taste of The Heights</p>
-            <h1 class="hero-title">Culinary Journey</h1>
+            <p class="hero-subtitle" id="diningSubtitle">Taste of The Heights</p>
+            <h1 class="hero-title" id="diningTitle">Culinary Journey</h1>
         </div>
     </section>
 
@@ -256,11 +258,26 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Spencer Green Hotel Batu. Gastronomy.</p>
+        <p>&copy; 2024 Spencer Green Hotel Batu. Dining.</p>
     </footer>
 
     <script>
-        // Scroll Navbar Effect
+        // --- 1. DYNAMIC CONTENT LOADER ---
+        fetch('data.json')
+        .then(r => r.json())
+        .then(data => {
+            // Update Text Hero
+            if(data.dining_title) document.getElementById('diningTitle').innerText = data.dining_title;
+            if(data.dining_subtitle) document.getElementById('diningSubtitle').innerText = data.dining_subtitle;
+            
+            // Update Background Hero
+            if(data.img_dining_hero) {
+                document.querySelector('.hero-dining').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data.img_dining_hero}')`;
+            }
+        })
+        .catch(err => console.log('Data Load Error:', err));
+
+        // --- 2. UI INTERACTIONS ---
         window.addEventListener('scroll', function() {
             const header = document.getElementById('navbar');
             header.classList.toggle('scrolled', window.scrollY > 50);
