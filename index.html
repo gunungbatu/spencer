@@ -359,32 +359,72 @@
         }
 
         function submitBooking() {
-            const room = document.getElementById('roomSelect').value;
+            // 1. AMBIL DATA DARI FORM
+            const roomVal = document.getElementById('roomSelect').value;
             const sel = document.getElementById('roomSelect');
-            const price = sel.options[sel.selectedIndex].dataset.price;
+            const priceRaw = sel.options[sel.selectedIndex].dataset.price;
+            
+            // Format Harga jadi Rp (misal: "Rp 1.500.000") untuk email
+            const priceFormatted = "Rp " + parseInt(priceRaw).toLocaleString('id-ID');
+
             const name = document.getElementById('guestName').value;
             const wa = document.getElementById('guestWA').value;
             const email = document.getElementById('guestEmail').value;
             const cin = document.getElementById('checkIn').value;
             const cout = document.getElementById('checkOut').value;
 
-            if(!room || !name || !wa) return alert("Please fill all details");
+            // Validasi
+            if(!roomVal || !name || !wa || !email) return alert("Mohon lengkapi Nama, WA, dan Email.");
 
-            document.getElementById('btnFinal').disabled = true;
-            document.getElementById('btnFinal').innerText = "Processing...";
+            // Tombol Loading
+            const btn = document.getElementById('btnFinal');
+            btn.disabled = true;
+            btn.innerText = "Processing...";
 
-            // Send to Google Sheet
-            fetch(CONFIG.API_URL, {
+            // 2. KIRIM KE GOOGLE SHEETS (Backend Database)
+            // Gunakan API URL dari Config
+            if(CONFIG.API_URL) {
+                fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ 
+                        action: "book", 
+                        nama: name, 
+                        email: email, 
+                        whatsapp: wa, 
+                        checkIn: cin, 
+                        checkOut: cout, 
+                        kamar: roomVal, 
+                        totalHarga: priceRaw // Ke Sheet kirim angka murni
+                    })
+                });
+            }
+
+            // 3. KIRIM EMAIL (Panggil send_email.php)
+            fetch('send_email.php', {
                 method: 'POST',
-                body: JSON.stringify({ action: "book", nama: name, email: email, whatsapp: wa, checkIn: cin, checkOut: cout, kamar: room, totalHarga: price })
-            });
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nama: name,
+                    email: email,
+                    whatsapp: wa,
+                    checkIn: cin,
+                    checkOut: cout,
+                    kamar: roomVal,
+                    totalHarga: priceFormatted // Ke Email kirim format Rupiah
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Email Status:", data.status);
+            })
+            .catch(err => console.error("Email Error:", err));
 
-            // Redirect WA
-            const msg = `Halo Spencer Green, I would like to book:\n\nName: ${name}\nRoom: ${room}\nCheck-In: ${cin}\nCheck-Out: ${cout}\nTotal Price: Rp ${parseInt(price).toLocaleString()}\n\nPlease provide payment details.`;
-            
-            // Gunakan WA dari Config
-            const waNum = (typeof CONFIG !== 'undefined' && CONFIG.WA) ? CONFIG.WA : "6281234567890";
-            window.location.href = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+            // 4. REDIRECT KE WHATSAPP (Setelah jeda 1 detik agar fetch jalan dulu)
+            setTimeout(() => {
+                const msg = `Halo Spencer Green, saya mau konfirmasi booking:\n\nNama: ${name}\nKamar: ${roomVal}\nIn: ${cin}\nOut: ${cout}\nTotal: ${priceFormatted}\n\nMohon info pembayaran.`;
+                const waNum = (CONFIG.WA) ? CONFIG.WA : "6281234567890";
+                window.location.href = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+            }, 1500);
         }
     </script>
 </body>
