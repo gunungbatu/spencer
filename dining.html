@@ -5,43 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dining | Spencer Green Hotel Batu</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <script src="assets/js/global-config.js"></script>
+
     <style>
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); }
+        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin:0; }
         h1, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
-        a { text-decoration:none; transition:0.3s; }
         
+        /* NAVBAR */
         header { position:fixed; top:0; width:100%; padding:20px 50px; display:flex; justify-content:space-between; align-items:center; z-index:1000; transition:0.4s; background:linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); }
-        header.scrolled { background:var(--emerald); padding:15px 50px; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+        header.scrolled { background:var(--emerald); padding:15px 50px; }
         .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.8rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; }
         .nav-menu { display:flex; gap:30px; list-style:none; }
-        .nav-link { color:#fff; font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; font-weight:500; }
-        .btn-book { background:var(--gold); color:#fff; padding:10px 25px; font-size:0.75rem; border:1px solid var(--gold); cursor:pointer; text-transform:uppercase; }
+        .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.75rem; letter-spacing:1px; }
+        .btn-book { padding:10px 20px; border:1px solid var(--gold); color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.75rem; }
         
+        /* HERO */
         .hero-dining { height:70vh; background:linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/dining-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; }
-        .hero-title { color:#fff; font-size:4rem; text-transform:uppercase; letter-spacing:3px; }
-        .hero-subtitle { color:var(--gold); font-size:0.9rem; letter-spacing:4px; text-transform:uppercase; margin-bottom:15px; font-weight:600; }
+        .hero-title { color:#fff; font-size:4rem; margin:0; letter-spacing:3px; } 
+        .hero-subtitle { color:var(--gold); letter-spacing:4px; font-weight:600; margin-bottom:10px; }
 
-        .tab-nav { display:flex; justify-content:center; gap:40px; padding:30px 0; background:#fff; position:sticky; top:70px; z-index:900; }
-        .tab-btn { background:none; border:none; font-family:'Cormorant Garamond', serif; font-size:1.3rem; color:#888; cursor:pointer; padding-bottom:5px; }
+        /* TABS */
+        .tab-nav { display:flex; justify-content:center; gap:30px; padding:25px; background:#fff; position:sticky; top:70px; z-index:900; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+        .tab-btn { background:none; border:none; font-family:'Cormorant Garamond', serif; font-size:1.2rem; color:#888; cursor:pointer; padding-bottom:5px; transition:0.3s; }
         .tab-btn.active { color:var(--emerald); border-bottom:2px solid var(--gold); }
         
+        /* CONTENT */
         .tab-content { display:none; padding:80px 50px; max-width:1200px; margin:0 auto; animation:fadeUp 0.8s; }
         .tab-content.active { display:block; }
-        .split-layout { display:flex; gap:60px; align-items:center; margin-bottom:80px; }
+        .split-layout { display:flex; gap:60px; align-items:center; }
         .reverse { flex-direction:row-reverse; }
-        .text-col { flex:1; } .img-col { flex:1; } .img-col img { width:100%; height:500px; object-fit:cover; }
-        .section-title { font-size:3rem; margin-bottom:10px; }
-        .section-sub { font-size:1.2rem; color:var(--gold); margin-bottom:20px; font-family:'Cormorant Garamond', serif; font-style:italic; }
-        .section-desc { font-size:1rem; color:#666; line-height:1.8; margin-bottom:30px; }
-        .info-box { border-left:3px solid var(--gold); padding-left:20px; margin-bottom:30px; }
-        .btn-outline { padding:12px 30px; border:1px solid var(--dark); color:var(--dark); text-transform:uppercase; font-size:0.8rem; letter-spacing:2px; }
+        .text-col, .img-col { flex:1; } 
+        .img-col img { width:100%; height:500px; object-fit:cover; border-radius:4px; }
         
-        footer { background:var(--emerald); color:#fff; padding:50px; text-align:center; }
+        .section-title { font-size:3rem; margin-bottom:15px; line-height:1.1; }
+        .section-desc { font-size:1rem; color:#666; line-height:1.8; margin-bottom:30px; }
+        .info-box { border-left:3px solid var(--gold); padding-left:20px; margin-bottom:30px; font-family:'Cormorant Garamond', serif; font-size:1.1rem; color:#333; font-style:italic; }
+        
+        .btn-outline { padding:12px 30px; border:1px solid var(--dark); color:var(--dark); text-decoration:none; text-transform:uppercase; font-size:0.8rem; letter-spacing:2px; display:inline-block; transition:0.3s; }
+        .btn-outline:hover { background:var(--emerald); color:#fff; border-color:var(--emerald); }
+        
+        footer { background:var(--emerald); color:#fff; padding:50px; text-align:center; margin-top:50px; }
         @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
-        @media(max-width:900px) { .nav-menu { display:none; } .split-layout, .reverse { flex-direction:column; } }
+        @media(max-width:900px) { .nav-menu { display:none; } .split-layout, .reverse { flex-direction:column; } .img-col img { height:300px; } }
     </style>
 </head>
 <body>
@@ -75,9 +83,15 @@
         <div class="split-layout">
             <div class="text-col">
                 <h2 class="section-title" id="dining_rooftop_title">The Sky Lounge</h2>
-                <p class="section-desc" id="dining_rooftop_desc">Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman.</p>
-                <div class="info-box"><span id="dining_rooftop_info">Open Daily: 15.00 - 23.00 WIB</span></div>
-                <a href="#" class="btn-outline" id="dining_rooftop_btn">Reserve Table</a>
+                <p class="section-desc" id="dining_rooftop_desc">
+                    Experience dining at the highest point of Spencer Green. The Sky Lounge offers a 360-degree panoramic view of Batu City and Mount Panderman.
+                </p>
+                
+                <div class="info-box">
+                    <span id="dining_rooftop_info">Open Daily: 15.00 - 23.00 WIB</span>
+                </div>
+                
+                <a href="#" class="btn-outline" id="dining_rooftop_btn_text">Reserve Table</a>
             </div>
             <div class="img-col">
                 <img id="img_dining_rooftop" src="assets/rooftop.jpg" alt="Rooftop">
@@ -89,9 +103,15 @@
         <div class="split-layout reverse">
             <div class="text-col">
                 <h2 class="section-title" id="dining_botanica_title">Botanica Restaurant</h2>
-                <p class="section-desc" id="dining_botanica_desc">A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu.</p>
-                <div class="info-box"><span id="dining_botanica_info">Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00</span></div>
-                <a href="#" class="btn-outline" id="dining_botanica_btn">View Menu</a>
+                <p class="section-desc" id="dining_botanica_desc">
+                    A celebration of local flavors and international cuisine. Botanica serves a sumptuous breakfast buffet and an exquisite à la carte menu.
+                </p>
+                
+                <div class="info-box">
+                    <span id="dining_botanica_info">Breakfast: 06.00 - 10.00 | All Day: 11.00 - 22.00</span>
+                </div>
+                
+                <a href="#" class="btn-outline" id="dining_botanica_btn_text">View Menu</a>
             </div>
             <div class="img-col">
                 <img id="img_dining_botanica" src="assets/dining-bg.jpg" alt="Restaurant">
@@ -103,9 +123,15 @@
         <div class="split-layout">
             <div class="text-col">
                 <h2 class="section-title" id="dining_candle_title">Intimate Dining</h2>
-                <p class="section-desc" id="dining_candle_desc">Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight.</p>
-                <div class="info-box"><span id="dining_candle_info">Start IDR 750.000++ / Couple</span></div>
-                <a href="#" class="btn-outline" id="dining_candle_btn">Book Experience</a>
+                <p class="section-desc" id="dining_candle_desc">
+                    Create timeless memories with your loved one. We curate a private table setting with fresh flowers and warm candlelight.
+                </p>
+                
+                <div class="info-box">
+                    <span id="dining_candle_info">Start IDR 750.000++ / Couple</span>
+                </div>
+                
+                <a href="#" class="btn-outline" id="dining_candle_btn_text">Book Experience</a>
             </div>
             <div class="img-col">
                 <img id="img_dining_candle" src="assets/dining-bg.jpg" alt="Romantic Dinner">
@@ -117,26 +143,37 @@
 
     <script>
         // --- 1. MAGIC CONTENT LOADER ---
+        // Script ini akan otomatis mencari ID di HTML yang cocok dengan Key di JSON
         fetch('data.json?t='+Date.now()).then(r=>r.json()).then(data=>{
             Object.keys(data).forEach(key => {
-                // Update Gambar
+                
+                // A. UPDATE GAMBAR
                 if (key.startsWith('img_')) {
                     const el = document.getElementById(key);
                     if (el) el.src = data[key];
-                    if(key === 'img_dining_hero') document.querySelector('.hero-dining').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
+                    
+                    // Khusus Background Hero
+                    if(key === 'img_dining_hero') {
+                        document.querySelector('.hero-dining').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
+                    }
                 } 
-                // Update Tombol Link & Teks (Special Case)
+                
+                // B. UPDATE TOMBOL (LINK & TEXT)
+                // Format di JSON: dining_rooftop_btn_text & dining_rooftop_btn_link
                 else if (key.endsWith('_btn_text')) {
-                    const btnId = key.replace('_text', ''); // dining_rooftop_btn
-                    const el = document.getElementById(btnId);
+                    // Cari tombol yang ID-nya sama tanpa '_text' (misal: dining_rooftop_btn)
+                    // Pastikan di HTML ID-nya: dining_rooftop_btn_text (agar simple)
+                    const el = document.getElementById(key); 
                     if(el) el.innerText = data[key];
                 }
                 else if (key.endsWith('_btn_link')) {
-                    const btnId = key.replace('_link', ''); // dining_rooftop_btn
-                    const el = document.getElementById(btnId);
+                    // Cari tombol yang ID-nya pasangan text-nya
+                    const textKey = key.replace('_link', '_text');
+                    const el = document.getElementById(textKey);
                     if(el) el.href = data[key];
                 }
-                // Update Teks Biasa
+                
+                // C. UPDATE TEKS BIASA
                 else {
                     const el = document.getElementById(key);
                     if(el) el.innerText = data[key];
@@ -144,12 +181,16 @@
             });
         });
 
-        // UI Interactions
+        // --- 2. UI INTERACTIONS ---
         window.addEventListener('scroll', ()=>document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50));
+        
         function openTab(name) {
             document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
             document.getElementById(name).classList.add('active');
+            
+            // Logic sedikit kompleks untuk highlight tombol yang benar
+            // Karena ID tombol dinamis (ambil dari JSON), kita pakai onclick detection
             event.currentTarget.classList.add('active');
         }
     </script>
