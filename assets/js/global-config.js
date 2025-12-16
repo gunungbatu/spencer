@@ -1,17 +1,68 @@
 /**
- * GLOBAL CONFIGURATION, HEADER & FOOTER MANAGER
- * Update: Header & Tombol Book Now terpusat.
+ * GLOBAL CONFIGURATION, HEADER, FOOTER & STYLES MANAGER
+ * Update: Menambahkan CSS Global untuk tombol Booking agar konsisten di semua halaman.
  */
 
 var CONFIG = { API_URL: "", WA: "" };
 
-// Load Font Awesome jika belum ada
+// 1. LOAD FONT AWESOME (Jika belum ada)
 if (!document.querySelector('link[href*="font-awesome"]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
     document.head.appendChild(link);
 }
+
+// 2. INJECT GLOBAL CSS (STYLE TOMBOL & MODAL)
+// Ini membuat tombol .btn-check hijau di SEMUA halaman tanpa edit HTML
+const globalStyle = document.createElement('style');
+globalStyle.innerHTML = `
+    /* TOMBOL CEK KETERSEDIAAN (HIJAU EMERALD) */
+    .btn-check { 
+        width: 100%; 
+        background-color: #1B4D3E !important; /* Wajib Hijau */
+        color: #fff !important; 
+        padding: 15px; 
+        border: none; 
+        text-transform: uppercase; 
+        font-weight: bold; 
+        cursor: pointer; 
+        margin-top: 25px; 
+        margin-bottom: 20px; 
+        letter-spacing: 1px; 
+        border-radius: 4px;
+        display: block; 
+        font-family: 'Montserrat', sans-serif;
+    }
+    .btn-check:hover { background-color: #143d30 !important; }
+
+    /* TOMBOL KONFIRMASI (EMAS) */
+    .btn-submit { 
+        width: 100%; 
+        background-color: #D4AF37 !important; 
+        color: #fff !important; 
+        padding: 15px; 
+        border: none; 
+        text-transform: uppercase; 
+        font-weight: bold; 
+        cursor: pointer; 
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+    .btn-submit:disabled { background-color: #ccc !important; cursor: not-allowed; }
+
+    /* LOADING TEXT */
+    .loading { 
+        display: none; 
+        text-align: center; 
+        margin: 10px 0; 
+        color: #C5A059; 
+        font-size: 0.9rem; 
+        font-style: italic;
+    }
+`;
+document.head.appendChild(globalStyle);
+
 
 document.addEventListener('DOMContentLoaded', function() {
     loadGlobalData();
@@ -21,18 +72,16 @@ function loadGlobalData() {
     fetch('data.json?t=' + new Date().getTime())
     .then(response => response.json())
     .then(data => {
-        // 1. CONFIG UTAMA
+        // Simpan Config
         if(data.social_whatsapp) CONFIG.WA = cleanWaNumber(data.social_whatsapp);
-        if(data.api_url) CONFIG.API_URL = data.api_url;
+        if(data.api_url) CONFIG.API_URL = data.api_url; // Pastikan ada di data.json jika mau dinamis
         
-        // 2. GENERATE HEADER (Kirim data json ke fungsi ini)
+        // Generate Header & Footer
         const activePage = document.body.getAttribute('data-page') || 'home';
-        generateGlobalHeader(activePage, data); // <--- Update disini
-
-        // 3. GENERATE FOOTER
+        generateGlobalHeader(activePage, data);
         generateGlobalFooter(data);
 
-        // 4. MAGIC CONTENT LOADER
+        // Magic Content Loader
         Object.keys(data).forEach(key => {
             const el = document.getElementById(key);
             if (el) {
@@ -53,15 +102,14 @@ function loadGlobalData() {
     .catch(err => console.error("Data Load Error:", err));
 }
 
-// --- FUNGSI GENERATE HEADER ---
+// --- GENERATE HEADER ---
 function generateGlobalHeader(activePage, data) {
     const headerContainer = document.getElementById('global-header-container');
     if (!headerContainer) return;
 
-    // Ambil Teks Tombol dari JSON (Default: Book Now)
+    // Ambil Teks Tombol dari JSON
     const bookText = data.header_btn_text || "Book Now";
 
-    // Daftar Menu
     const menus = [
         { id: 'home', name: 'Home', link: 'index.html' },
         { id: 'dining', name: 'Dining', link: 'dining.html' },
@@ -81,7 +129,6 @@ function generateGlobalHeader(activePage, data) {
         mobileNavHTML += `<a href="${m.link}" class="mobile-nav-link" ${activeClass}>${m.name}</a>`;
     });
 
-    // Inject HTML (Tombol Book Now memakai variabel bookText)
     headerContainer.innerHTML = `
         <header id="navbar">
             <div class="logo">Spencer Green</div>
@@ -99,7 +146,7 @@ function generateGlobalHeader(activePage, data) {
         </div>
     `;
 
-    // Event Listener Scroll
+    // Pasang Event Scroll
     window.addEventListener('scroll', function() {
         const header = document.getElementById('navbar');
         if(header) header.classList.toggle('scrolled', window.scrollY > 50);
@@ -111,7 +158,7 @@ function toggleMobileMenu() {
     if(menu) menu.classList.toggle('active');
 }
 
-// --- FUNGSI GENERATE FOOTER ---
+// --- GENERATE FOOTER ---
 function generateGlobalFooter(data) {
     const footerEl = document.getElementById('global-footer');
     if (!footerEl) return;
