@@ -3,286 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weddings | Spencer Green Hotel Batu</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+    <title>Wedding | Spencer Green Hotel Batu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="assets/js/global-config.js"></script>
-
     <style>
-        /* --- 1. GLOBAL VARIABLES & RESET --- */
-        :root {
-            --gold: #D4AF37;
-            --emerald: #1B4D3E;
-            --dark-grey: #1a1a1a;
-            --light-bg: #F9F9F9;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
+        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin:0; }
+        h1, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
+        header { position:fixed; top:0; width:100%; padding:20px 50px; display:flex; justify-content:space-between; align-items:center; z-index:1000; transition:0.4s; background:linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); }
+        header.scrolled { background:var(--emerald); padding:15px 50px; }
+        .nav-menu { display:flex; gap:30px; list-style:none; } .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; }
+        .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.5rem; font-weight:bold; letter-spacing:2px; }
+        .btn-book { padding:10px 20px; border:1px solid var(--gold); color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; }
         
-        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background-color: var(--light-bg); line-height: 1.8; }
-
-        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark-grey); font-weight: 500; }
+        .hero-wedding { height:80vh; background:linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/wedding-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; }
+        .hero-title { color:#fff; font-size:5rem; margin:0; } .hero-subtitle { color:var(--gold); letter-spacing:3px; }
         
-        button, input, textarea { font-family: 'Montserrat', sans-serif; }
-        a { text-decoration: none; transition: 0.3s; }
-        
-        /* --- 2. NAVBAR --- */
-        header {
-            position: fixed; top: 0; width: 100%; padding: 20px 50px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; transition: 0.4s;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
-        }
-        header.scrolled { background-color: var(--emerald); padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
-        
-        .nav-menu { display: flex; gap: 30px; list-style: none; }
-        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
-        
-        .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; letter-spacing: 1px; }
-        .btn-book:hover { background: transparent; color: var(--gold); }
-
-        /* --- MOBILE MENU CSS --- */
-        .mobile-menu-btn {
-            display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1001;
-        }
-        .mobile-nav-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(27, 77, 62, 0.95);
-            z-index: 1000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: 0.4s;
-        }
-        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
-        .mobile-nav-link {
-            color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none;
-            font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        /* --- 3. HERO SECTION --- */
-        .hero-wedding {
-            height: 80vh;
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('assets/wedding-bg.jpg'); /* Default */
-            background-size: cover; background-position: center;
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            transition: background-image 0.5s ease;
-        }
-        .hero-title {
-            color: #fff; font-size: 5rem; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 4px 15px rgba(0,0,0,0.5); line-height: 1;
-        }
-        .hero-subtitle {
-            color: var(--gold); font-size: 1rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; font-weight: 600;
-        }
-
-        /* --- 4. INTRO SECTION --- */
-        .intro-section { padding: 100px 50px; text-align: center; max-width: 900px; margin: 0 auto; }
-        .intro-headline { font-size: 3rem; margin-bottom: 20px; }
-        .intro-text { font-size: 1.1rem; color: #666; font-weight: 300; }
-        .divider { width: 60px; height: 2px; background: var(--gold); margin: 30px auto; }
-
-        /* --- 5. VENUE SHOWCASE --- */
-        .venue-section { display: flex; align-items: center; padding: 50px 0; max-width: 1200px; margin: 0 auto; gap: 60px; }
-        .venue-text { flex: 1; padding: 0 20px; }
-        .venue-img { flex: 1.2; position: relative; }
-        .venue-img img { width: 100%; height: 500px; object-fit: cover; }
-        
-        .venue-title { font-size: 2.5rem; margin-bottom: 10px; color: var(--dark-grey); }
-        .venue-sub { font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); font-size: 0.8rem; display: block; margin-bottom: 20px; font-weight: 600; }
-        .venue-desc { color: #666; margin-bottom: 30px; }
-
-        /* Specs Grid */
-        .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid #ddd; padding-top: 20px; }
-        .spec-item h4 { font-size: 1rem; margin-bottom: 5px; color: var(--dark-grey); font-family: 'Cormorant Garamond', serif; }
-        .spec-item span { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* --- 6. GALLERY STRIP --- */
-        .gallery-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 80px 0; }
-        .gallery-strip img { width: 100%; height: 300px; object-fit: cover; transition: 0.5s; filter: grayscale(20%); }
-        .gallery-strip img:hover { filter: grayscale(0%); transform: scale(1.02); }
-
-        /* --- 7. INQUIRY FORM --- */
-        .form-section { background: #fff; padding: 80px 20px; text-align: center; border-top: 1px solid #eee; }
-        .form-container { max-width: 600px; margin: 0 auto; }
-        .form-input, .form-textarea {
-            width: 100%; padding: 15px; border: 1px solid #ddd; margin-bottom: 20px;
-            font-size: 0.9rem; color: #333; background: #fafafa;
-        }
-        .form-input:focus, .form-textarea:focus { border-color: var(--gold); outline: none; background: #fff; }
-        
-        .btn-submit {
-            background: var(--dark-grey); color: #fff; padding: 15px 50px; border: none;
-            text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s;
-        }
-        .btn-submit:hover { background: var(--emerald); }
-
-        /* FOOTER */
-        footer { background: var(--emerald); color: #fff; padding: 50px; text-align: center; }
-
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .hero-title { font-size: 3rem; }
-            .venue-section { flex-direction: column; padding: 40px 20px; }
-            .venue-img img { height: 300px; }
-            .gallery-strip { grid-template-columns: 1fr; }
-            .nav-menu { display: none; }
-            .mobile-menu-btn { display: block; }
-            .btn-book { display: none; }
-            header { justify-content: center; }
-        }
+        .intro { padding:80px 20px; text-align:center; max-width:800px; margin:0 auto; }
+        .venue-section { display:flex; padding:50px; gap:50px; align-items:center; } .venue-text, .venue-img { flex:1; } .venue-img img { width:100%; }
+        .form-section { background:#fff; padding:50px; text-align:center; }
+        input, textarea { width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; }
+        footer { background:var(--emerald); color:#fff; padding:50px; text-align:center; }
+        @media(max-width:900px) { .nav-menu { display:none; } .venue-section { flex-direction:column; } }
     </style>
 </head>
 <body>
-
     <header id="navbar">
         <div class="logo">Spencer Green</div>
-        
         <ul class="nav-menu">
             <li><a href="index.html" class="nav-link">Home</a></li>
             <li><a href="dining.html" class="nav-link">Dining</a></li>
             <li><a href="meeting.html" class="nav-link">Meeting</a></li>
-            <li><a href="wedding.html" class="nav-link" style="color:var(--gold); border-bottom: 1px solid var(--gold);">Wedding</a></li>
+            <li><a href="wedding.html" class="nav-link" style="color:var(--gold);">Wedding</a></li>
             <li><a href="gallery.html" class="nav-link">Gallery</a></li>
         </ul>
-        
-        <a href="#inquire" class="btn-book">Plan Your Wedding</a>
-
-        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</div>
+        <a href="#inquire" class="btn-book">Plan Wedding</a>
     </header>
-
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <a href="index.html" class="mobile-nav-link">Home</a>
-        <a href="dining.html" class="mobile-nav-link">Dining</a>
-        <a href="meeting.html" class="mobile-nav-link">Meeting</a>
-        <a href="wedding.html" class="mobile-nav-link" style="color:var(--gold);">Weddings</a>
-        <a href="gallery.html" class="mobile-nav-link">Gallery</a>
-        <a href="#inquire" class="mobile-nav-link" onclick="toggleMobileMenu()" style="border:1px solid var(--gold); padding:10px 30px; margin-top:30px;">Plan Your Wedding</a>
-        
-        <div style="position:absolute; top:30px; right:30px; color:#fff; font-size:2rem; cursor:pointer;" onclick="toggleMobileMenu()">&times;</div>
-    </div>
 
     <section class="hero-wedding">
         <div>
-            <p class="hero-subtitle" id="weddingSubtitle">The Perfect Union</p>
-            <h1 class="hero-title" id="weddingTitle">The Sky Chapel</h1>
+            <p class="hero-subtitle" id="wedding_subtitle">The Perfect Union</p>
+            <h1 class="hero-title" id="wedding_title">The Sky Chapel</h1>
         </div>
     </section>
 
-    <section class="intro-section">
-        <h2 class="intro-headline">A Sacred Vow Above The Clouds</h2>
-        <div class="divider"></div>
-        <p class="intro-text" id="weddingDesc">
-            Imagine saying "I Do" with the majestic Mount Panderman as your backdrop. Spencer Green Hotel offers an intimate, elegant, and unforgettable wedding experience. Our glass architecture allows natural light to embrace your most precious moment.
-        </p>
+    <section class="intro">
+        <h2>A Sacred Vow Above The Clouds</h2>
+        <p id="wedding_desc">Imagine saying "I Do" with the majestic Mount Panderman as your backdrop. Spencer Green Hotel offers an intimate, elegant, and unforgettable wedding experience.</p>
     </section>
 
     <section class="venue-section">
         <div class="venue-text">
-            <span class="venue-sub">The Venue</span>
-            <h2 class="venue-title">Glass Chapel & Rooftop</h2>
-            <p class="venue-desc">
-                Located on the highest floor, The Sky Chapel offers a 360-degree panoramic view of Batu City. Whether it's a holy matrimony in the morning sun or a twilight reception under the stars, our venue adapts to your dream.
-            </p>
-            
-            <div class="specs-grid">
-                <div class="spec-item">
-                    <h4>Capacity</h4>
-                    <span>Up to 100 Guests</span>
-                </div>
-                <div class="spec-item">
-                    <h4>Location</h4>
-                    <span>Rooftop Level 5</span>
-                </div>
-                <div class="spec-item">
-                    <h4>View</h4>
-                    <span>Mountain & City</span>
-                </div>
-                <div class="spec-item">
-                    <h4>Style</h4>
-                    <span>Intimate & Luxury</span>
-                </div>
-            </div>
+            <h2>Glass Chapel & Rooftop</h2>
+            <p>Located on the highest floor, The Sky Chapel offers a 360-degree panoramic view of Batu City.</p>
+            <p><strong>Capacity:</strong> Up to 100 Guests</p>
         </div>
-        <div class="venue-img">
-            <img src="https://images.unsplash.com/photo-1544592500-e2cb29559c5d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Wedding Chapel">
-        </div>
-    </section>
-
-    <section class="gallery-strip">
-        <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Wedding Detail">
-        <img src="https://images.unsplash.com/photo-1522673607200-1645062cd958?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Couple">
-        <img src="https://images.unsplash.com/photo-1510076857177-7470076d4098?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Setup">
+        <div class="venue-img"><img src="https://images.unsplash.com/photo-1544592500-e2cb29559c5d?w=800" alt="Chapel"></div>
     </section>
 
     <section class="form-section" id="inquire">
-        <div class="form-container">
-            <span class="venue-sub" style="color:var(--emerald);">Start Your Journey</span>
-            <h2 class="venue-title" style="margin-bottom: 40px;">Request Proposal</h2>
-            
+        <div style="max-width:600px; margin:0 auto;">
+            <h2>Request Proposal</h2>
             <form onsubmit="kirimWa(event)">
-                <input type="text" id="name" class="form-input" placeholder="Bride & Groom Names" required>
-                <div style="display: flex; gap: 20px;">
-                    <input type="date" id="date" class="form-input" required>
-                    <input type="number" id="pax" class="form-input" placeholder="Est. Guests" required>
-                </div>
-                <input type="tel" id="phone" class="form-input" placeholder="WhatsApp Number" required>
-                <textarea rows="4" id="message" class="form-textarea" placeholder="Special Requests / Vision"></textarea>
-                
-                <button type="submit" class="btn-submit">Submit Inquiry</button>
+                <input type="text" id="name" placeholder="Couple Names" required>
+                <input type="date" id="date" required>
+                <input type="number" id="pax" placeholder="Guests" required>
+                <button type="submit" class="btn-book" style="background:var(--dark); width:100%; border:none;">Submit</button>
             </form>
         </div>
     </section>
 
-    <footer>
-        <p>&copy; 2024 Spencer Green Hotel Batu. Weddings.</p>
-    </footer>
+    <footer><p>&copy; 2025 Spencer Green Hotel. Wedding.</p></footer>
 
     <script>
-        // --- 1. DYNAMIC CONTENT LOADER ---
-        fetch('data.json')
-        .then(r => r.json())
-        .then(data => {
-            // Update Text Hero
-            if(data.wedding_title) document.getElementById('weddingTitle').innerText = data.wedding_title;
-            if(data.wedding_subtitle) document.getElementById('weddingSubtitle').innerText = data.wedding_subtitle;
-            
-            // Update Intro Desc
-            if(data.wedding_desc) document.getElementById('weddingDesc').innerText = data.wedding_desc;
-
-            // Update Background Hero
-            if(data.img_wedding_hero) {
-                document.querySelector('.hero-wedding').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('${data.img_wedding_hero}')`;
-            }
-        })
-        .catch(err => console.log('Data Load Error:', err));
-
-        // --- 2. UI INTERACTIONS ---
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('navbar');
-            header.classList.toggle('scrolled', window.scrollY > 50);
+        // MAGIC LOADER
+        fetch('data.json?t='+Date.now()).then(r=>r.json()).then(data=>{
+            Object.keys(data).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (key.startsWith('img_')) {
+                        el.src = data[key];
+                        if(key === 'img_wedding_hero') document.querySelector('.hero-wedding').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('${data[key]}')`;
+                    } else el.innerText = data[key];
+                }
+            });
         });
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileNav');
-            menu.classList.toggle('active');
-        }
-
-        // --- 3. WHATSAPP LOGIC (Auto Number from Config) ---
+        window.addEventListener('scroll', ()=>document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50));
+        
         function kirimWa(e) {
             e.preventDefault();
             const name = document.getElementById('name').value;
             const date = document.getElementById('date').value;
             const pax = document.getElementById('pax').value;
-            const msg = document.getElementById('message').value;
-
-            const text = `Halo Spencer Wedding, saya tertarik mengadakan acara:\n---------------------------\n🤵 Nama: ${name}\n📅 Tanggal: ${date}\n👥 Tamu: ${pax} Pax\n📝 Pesan: ${msg}\n---------------------------\nMohon info paket weddingnya.`;
-
-            // Gunakan nomor WA dari Config jika ada, fallback ke default
-            const waNum = (typeof CONFIG !== 'undefined' && CONFIG.WA) ? CONFIG.WA : "6281234567890";
+            const text = `Halo Spencer Wedding, saya tertarik:\nNama: ${name}\nTanggal: ${date}\nTamu: ${pax} pax`;
+            const waNum = (CONFIG && CONFIG.WA) ? CONFIG.WA : "6281234567890";
             window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
-
 </body>
 </html>
