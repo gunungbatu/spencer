@@ -3,25 +3,52 @@
     "hero_video": "assets/hero-video.mp4",
     "img_hero_slide_1": "assets/slide1.jpg",
     "hero_title": "SPENCER GREEN HOTEL",
-    "hero_subtitle": "The Majestic Highland Sanctuary",
+    "hero_subtitle": "THE MAJESTIC HIGHLAND SANCTUARY",
+
+    "home_intro_title": "Refined Luxury in Nature",
+    "home_intro_desc": "Inspired by the majesty of Indonesia, Spencer Green offers a collection of rooms & facilities designed to harmonize with the breathtaking landscape of Mount Panderman.",
+
+    "home_accom_title": "Accommodation",
+    "home_accom_subtitle": "A Collection of Rooms",
+
+    "room_deluxe_img": "assets/room1.jpg",
+    "room_deluxe_cat": "Comfort & Style",
+    "room_deluxe_title": "Deluxe Room",
+    "room_deluxe_desc": "Experience the perfect blend of modern comfort and elegance. Our Deluxe rooms offer a spacious sanctuary with contemporary amenities.",
+    "room_deluxe_spec1": "📐 32 Sqm",
+    "room_deluxe_spec2": "🚿 Rain Shower",
+    "room_deluxe_spec3": "👥 2 Adults",
+
+    "room_superior_img": "assets/room2.jpg",
+    "room_superior_cat": "Elevated Views",
+    "room_superior_title": "Superior Room",
+    "room_superior_desc": "Perched on higher floors, the Superior Room offers breathtaking views of the surrounding highlands. Featuring enhanced living space and premium bedding.",
+    "room_superior_spec1": "📐 40 Sqm",
+    "room_superior_spec2": "⛰️ Mountain View",
+    "room_superior_spec3": "☕ Coffee Machine",
+
+    "room_executive_img": "assets/room3.avif",
+    "room_executive_cat": "The Ultimate Luxury",
+    "room_executive_title": "Executive Room",
+    "room_executive_desc": "Designed for the discerning traveler, featuring a separate living area and exclusive access to the Executive Lounge. Enjoy privacy and luxury.",
+    "room_executive_spec1": "📐 56 Sqm",
+    "room_executive_spec2": "🛁 Bathtub",
+    "room_executive_spec3": "🍸 Lounge Access",
+
+    "home_facil_title": "Facilities",
+    "home_facil_subtitle": "Curated Experiences For Every Occasion",
+
+    "facil_rooftop_img": "assets/rooftop.jpg",
+    "facil_rooftop_title": "Rooftop Cafe",
+    "facil_rooftop_desc": "Sip on artisan coffee while embraced by the misty clouds. Our rooftop sanctuary offers a selection of local blends and light bites.",
     
+    "facil_dinner_img": "assets/dining-bg.jpg",
+    "facil_dinner_title": "Candle Light Dinner",
+    "facil_dinner_desc": "An intimate culinary journey under the stars. Curated private dining experience with a bespoke menu and floral arrangements.",
+
     "social_instagram": "https://instagram.com/",
     "social_tiktok": "https://tiktok.com/",
     "social_youtube": "https://youtube.com/",
-    "social_whatsapp": "https://wa.me/628123456789",
-
-    "dining_title": "Exquisite Dining",
-    "dining_subtitle": "Taste the Local Heritage",
-    "dining_desc": "Nikmati sajian kuliner lokal dan internasional dengan pemandangan pegunungan.",
-    "img_dining_hero": "assets/dining-bg.jpg",
-    "img_dining_menu_1": "assets/menu1.jpg",
-
-    "wedding_title": "Dream Wedding",
-    "wedding_desc": "Wujudkan pernikahan impian Anda di atas awan.",
-    "img_wedding_hero": "assets/wedding-bg.jpg",
-    "wedding_package_price": "Mulai dari Rp 50.000.000",
-
-    "meeting_title": "Corporate Events",
-    "meeting_desc": "Ruang meeting modern dengan kapasitas hingga 200 pax.",
-    "img_meeting_hero": "assets/meeting-bg.jpg"
+    "social_facebook": "",
+    "social_whatsapp": "https://wa.me/628123456789"
 }
