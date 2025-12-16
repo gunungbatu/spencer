@@ -1,82 +1,94 @@
 <?php
-// send_email.php
-// Mengaktifkan Error Reporting untuk Debugging
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// send_email.php dengan SMTP PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// 1. Load Library PHPMailer
+require 'PHPMailer/Exception.php';
+require 'PHPMailer/PHPMailer.php';
+require 'PHPMailer/SMTP.php';
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
 
-// 1. Ambil Data
+// 2. Konfigurasi Akun Email (SESUAIKAN INI!)
+$smtp_host = 'mail.spencergreenhotel.com'; // Biasanya mail.namadomain.com
+$smtp_user = 'reservasi@spencergreenhotel.com'; // Email lengkap
+$smtp_pass = 'PasswordEmailAnda123'; // PASSWORD EMAIL (Bukan password cPanel!)
+$smtp_port = 465; // Port SSL biasanya 465, jika gagal coba 587 (TLS)
+
+// 3. Ambil Data dari Javascript
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
 if (!$data) {
-    echo json_encode(["status" => "error", "message" => "No data received"]);
+    echo json_encode(["status" => "error", "message" => "No data"]);
     exit;
 }
 
-// 2. Setup Variabel
-// PENTING: Ganti domain di bawah ini sesuai domain asli Anda!
-$domain_anda = "spencergreenhotel.com"; 
-$email_pengirim = "reservasi@" . $domain_anda; // Pastikan email ini ADA di cPanel
-$email_penerima_hotel = "reservasi@" . $domain_anda; // Email hotel untuk terima notifikasi
-
+// 4. Setup Variabel Data
 $booking_id = "SPN-" . date("ymd") . "-" . rand(100, 999);
 $guest_name = htmlspecialchars($data['nama']);
-$guest_email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+$guest_email = $data['email'];
 $room_type  = htmlspecialchars($data['kamar']);
 $check_in   = htmlspecialchars($data['checkIn']);
 $check_out  = htmlspecialchars($data['checkOut']);
-$total_price= htmlspecialchars($data['totalHarga']); 
-$wa_guest   = htmlspecialchars($data['whatsapp']);
+$total_price= htmlspecialchars($data['totalHarga']);
+$wa_link    = "https://wa.me/6281234567890"; // Ganti No WA Hotel
 
-// 3. Template Email (HTML)
-$subject_guest = "Booking Confirmation: $booking_id - Spencer Green Hotel";
-
-$message_guest = "
-<html>
-<head><title>Booking Confirmation</title></head>
-<body style='font-family:sans-serif; color:#333;'>
-    <div style='max-width:600px; margin:0 auto; border:1px solid #ddd; padding:20px;'>
-        <h2 style='color:#1B4D3E;'>Booking Confirmed</h2>
-        <p>Dear $guest_name,</p>
-        <p>Terima kasih telah melakukan pemesanan. Berikut detailnya:</p>
-        <table style='width:100%; text-align:left;'>
-            <tr><th>Booking ID</th><td>$booking_id</td></tr>
+// 5. Template Email HTML
+$email_body = "
+<div style='font-family:Arial, sans-serif; max-width:600px; margin:0 auto; border:1px solid #ddd;'>
+    <div style='background:#1B4D3E; padding:20px; text-align:center; color:#fff;'>
+        <h2>SPENCER GREEN HOTEL</h2>
+    </div>
+    <div style='padding:20px;'>
+        <h3>Booking Confirmed!</h3>
+        <p>Halo $guest_name, pesanan Anda telah kami terima.</p>
+        <table style='width:100%; text-align:left; margin-top:20px;'>
+            <tr><th width='30%'>Booking ID</th><td>$booking_id</td></tr>
             <tr><th>Kamar</th><td>$room_type</td></tr>
             <tr><th>Check-In</th><td>$check_in</td></tr>
             <tr><th>Check-Out</th><td>$check_out</td></tr>
-            <tr><th>Total</th><td>$total_price</td></tr>
+            <tr><th>Total</th><td style='color:#C5A059; font-weight:bold;'>$total_price</td></tr>
         </table>
         <br>
-        <p>Silakan selesaikan pembayaran melalui WhatsApp Admin.</p>
+        <p>Silakan selesaikan pembayaran agar booking ini sah.</p>
+        <center>
+            <a href='$wa_link' style='background:#1B4D3E; color:#fff; padding:10px 20px; text-decoration:none; border-radius:5px;'>Konfirmasi via WhatsApp</a>
+        </center>
     </div>
-</body>
-</html>
-";
+</div>";
 
-// 4. Headers (Sangat Penting untuk menghindari blokir server)
-$headers = "MIME-Version: 1.0" . "\r\n";
-$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-$headers .= "From: Spencer Reservation <$email_pengirim>" . "\r\n";
-$headers .= "Reply-To: $email_pengirim" . "\r\n";
-$headers .= "X-Mailer: PHP/" . phpversion();
+// 6. Proses Pengiriman via SMTP
+$mail = new PHPMailer(true);
 
-// 5. Eksekusi Kirim ke TAMU
-$mail_guest_status = mail($guest_email, $subject_guest, $message_guest, $headers);
+try {
+    // Server settings
+    $mail->isSMTP();
+    $mail->Host       = $smtp_host;
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $smtp_user;
+    $mail->Password   = $smtp_pass;
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Pakai SSL
+    $mail->Port       = $smtp_port;
 
-// 6. Eksekusi Kirim Notif ke HOTEL (Text polos saja biar cepat)
-$msg_hotel = "New Booking!\nNama: $guest_name\nKamar: $room_type\nIn: $check_in\nOut: $check_out\nWA: $wa_guest";
-$mail_hotel_status = mail($email_penerima_hotel, "[NEW BOOKING] $guest_name", $msg_hotel, "From: System <$email_pengirim>");
+    // Recipients
+    $mail->setFrom($smtp_user, 'Spencer Reservations');
+    $mail->addAddress($guest_email, $guest_name);     // Ke Tamu
+    $mail->addBCC($smtp_user);                        // Copy ke Hotel (BCC)
 
-// 7. Response ke Javascript
-if($mail_guest_status) {
-    echo json_encode(["status" => "success", "message" => "Email sent"]);
-} else {
-    // Jika gagal, catat error di file error_log di hosting
-    error_log("Gagal kirim email ke $guest_email");
-    echo json_encode(["status" => "error", "message" => "Server refused to send email"]);
+    // Content
+    $mail->isHTML(true);
+    $mail->Subject = "Booking Confirmation: $booking_id";
+    $mail->Body    = $email_body;
+
+    $mail->send();
+    echo json_encode(["status" => "success", "message" => "Email sent via SMTP"]);
+
+} catch (Exception $e) {
+    // Catat error jika gagal
+    error_log("Mailer Error: " . $mail->ErrorInfo);
+    echo json_encode(["status" => "error", "message" => "Mailer Error: " . $mail->ErrorInfo]);
 }
 ?>
