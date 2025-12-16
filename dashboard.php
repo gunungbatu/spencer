@@ -46,26 +46,28 @@ function getServerImages($dir) {
 }
 $server_images = getServerImages($upload_dir);
 
-// 4. SAVE KONTEN WEBSITE
+// 4. SAVE KONTEN WEBSITE (LOGIKA MEDIA MANAGER)
 $current_data = json_decode(file_get_contents($json_file), true);
 if (!$current_data) $current_data = [];
 
 if (isset($_POST['save_content'])) {
-    // A. Simpan Input Text/Link Manual
+    // A. Simpan dari Input Text (Link Manual/Browse) DULU
     foreach ($current_data as $key => $val) {
         if (isset($_POST[$key])) {
             $current_data[$key] = $_POST[$key];
         }
     }
     
-    // B. Simpan Upload File (Prioritas)
+    // B. Simpan dari Upload File (KEMUDIAN - Prioritas lebih tinggi)
     foreach ($_FILES as $key => $file) {
+        // Cek apakah ada file yang diupload dengan sukses
         if ($file['name'] && $file['error'] === 0) {
             $target_file = $upload_dir . basename($file['name']);
+            // Cek tipe file agar aman (optional, tapi disarankan)
             $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
             if(in_array($fileType, ['jpg','jpeg','png','gif','webp','avif','mp4'])) {
                  if (move_uploaded_file($file['tmp_name'], $target_file)) {
-                    $current_data[$key] = $target_file;
+                    $current_data[$key] = $target_file; // Timpa path dengan file baru
                 }
             }
         }
@@ -75,7 +77,7 @@ if (isset($_POST['save_content'])) {
     $msg = "Konten Website Berhasil Diupdate!";
 }
 
-// 5. SAVE REVIEW
+// 5. SAVE REVIEW (Sama seperti sebelumnya)
 $reviews = json_decode(file_get_contents($review_file), true);
 if (!$reviews) $reviews = [];
 if (isset($_POST['save_reviews'])) {
@@ -94,6 +96,7 @@ if (isset($_POST['save_reviews'])) {
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* STYLES SAMA SEPERTI SEBELUMNYA */
         :root { --primary: #1B4D3E; --gold: #C5A059; --bg: #f8f9fa; --white: #ffffff; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 250px; background: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
@@ -129,7 +132,6 @@ if (isset($_POST['save_reviews'])) {
     // DAFTAR MENU DASHBOARD
     $pages = [
         'home'=>['icon'=>'fa-home','title'=>'Home (Hero & Intro)','prefixes'=>['hero','home_intro']],
-        // Prefix img_room ditambahkan
         'rooms'=>['icon'=>'fa-bed','title'=>'Home (Rooms)','prefixes'=>['room_deluxe','room_superior','room_executive','img_room']], 
         'facilities'=>['icon'=>'fa-concierge-bell','title'=>'Home (Facilities)','prefixes'=>['home_facil','facil_rooftop','facil_dinner','img_wedding_venue','wedding_title','wedding_desc','img_meeting_hero','meeting_title','meeting_desc','meeting_subtitle','wedding_subtitle']],
         'dining'=>['icon'=>'fa-utensils','title'=>'Dining Page','prefixes'=>['dining_subtitle','dining_title','dining_rooftop','dining_botanica','dining_candle','img_dining']],
@@ -212,11 +214,11 @@ if (isset($_POST['save_reviews'])) {
                             ?>
                                 <label><?php echo $label; ?></label>
                                 
-                                <?php if($k == 'hero_type'): ?>
-                                    <select name="<?php echo $k; ?>"><option value="video" <?php if($v=='video')echo'selected'; ?>>Video Background</option><option value="slider" <?php if($v=='slider')echo'selected'; ?>>Image Slider</option></select>
-
-                                <?php elseif(strpos($k, 'social_') === 0 || strpos($k, 'header_') === 0 || strpos($k, '_link') !== false): ?>
-                                    <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
+                                <?php if($k === 'hero_type'): ?>
+                                    <select name="<?php echo $k; ?>">
+                                        <option value="video" <?php if($v=='video')echo'selected'; ?>>Video Background</option>
+                                        <option value="slider" <?php if($v=='slider')echo'selected'; ?>>Image Slider</option>
+                                    </select>
 
                                 <?php elseif($is_media): ?>
                                     <div style="background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:6px;">
@@ -231,6 +233,9 @@ if (isset($_POST['save_reviews'])) {
                                         </div>
                                         <div style="font-size:0.8rem; color:#666; margin-top:5px;">Atau Upload Baru: <input type="file" name="<?php echo $k; ?>" style="font-size:0.8rem;"></div>
                                     </div>
+
+                                <?php elseif(strpos($k, 'social_') === 0 || strpos($k, 'header_') === 0 || strpos($k, '_link') !== false): ?>
+                                    <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
 
                                 <?php elseif(strpos($k, 'desc') !== false || strlen($v) > 50): ?>
                                     <textarea name="<?php echo $k; ?>"><?php echo $v; ?></textarea>
