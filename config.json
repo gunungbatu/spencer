@@ -1,8 +1,8 @@
 {
-    "api_url": "MASUKKAN_URL_APPS_SCRIPT_ANDA_DISINI",
-    "hotel_wa": "6281234567890",
-    "hotel_email": "reservasi@spencergreen.com",
+    "hotel_wa": "6281130700206",
+    "hotel_email": "reservasi@spencergreenhotel.com",
     "hotel_maps_link": "https://maps.google.com/?q=Spencer+Green+Hotel",
-    "admin_pin": "Spencer123",
-    "super_password": "AdminMaster2025"
-}  
+    
+    "admin_hash": "$2y$10$o0oxnY.QuhctLij7EsmCXOi09PeQVLjqI3OYx1i6PomVtNeMWSuf2",
+    "admin_email": "augustinussent@gmail.com"
+}
