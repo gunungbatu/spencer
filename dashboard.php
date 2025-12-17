@@ -6,13 +6,14 @@ $json_file = 'data.json';
 $config_file = 'config.json';
 $upload_dir = 'assets/';
 
-// --- BACKUP LOGIC ---
+// --- BACKUP DATA ---
 if (isset($_GET['backup_data'])) {
     if (!class_exists('ZipArchive')) die("Error: ZipArchive not supported.");
     $zip_file = 'backup_spencer_' . date('Y-m-d_H-i') . '.zip';
     $zip = new ZipArchive();
     if ($zip->open($zip_file, ZipArchive::CREATE) === TRUE) {
         if(file_exists('data.json')) $zip->addFile('data.json');
+        if(file_exists('reviews.json')) $zip->addFile('reviews.json');
         if(file_exists('config.json')) $zip->addFile('config.json');
         if(is_dir('assets')) {
             $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('assets'), RecursiveIteratorIterator::LEAVES_ONLY);
@@ -54,12 +55,13 @@ if (!isset($_SESSION['loggedin'])) {
     exit;
 }
 
-// 2. SERVER IMAGES (MP4 Support)
+// 2. SERVER IMAGES (Scan Foto & Video untuk Modal)
 function getServerImages($dir) {
     $images = [];
     if (is_dir($dir)) {
         $files = scandir($dir);
         foreach ($files as $file) {
+            // Support Image & Video Extensions
             if ($file !== '.' && $file !== '..' && preg_match('/\.(jpg|jpeg|png|gif|webp|avif|mp4|webm|mov)$/i', $file)) {
                 $images[] = $dir . $file;
             }
@@ -80,14 +82,14 @@ if (isset($_POST['save_content'])) {
             $current_data[$key] = $_POST[$key];
         }
     }
-    // B. File Uploads
+    // B. File Uploads (Support Single File Logic)
     foreach ($_FILES as $key => $file) {
         if (!is_array($file['name']) && $file['name'] && $file['error'] === 0) {
             $target = $upload_dir . basename($file['name']);
             if (move_uploaded_file($file['tmp_name'], $target)) $current_data[$key] = $target;
         }
     }
-    // C. Gallery Items (Array Logic)
+    // C. Gallery Items (Unlimited Array Logic)
     if(isset($_POST['gallery_items_src'])) {
         $new_items = [];
         $srcs = $_POST['gallery_items_src'];
@@ -133,19 +135,20 @@ if (isset($_POST['save_content'])) {
         input[type="text"], textarea, select { width:100%; padding:10px; border:1px solid #ddd; border-radius:4px; margin-bottom:15px; box-sizing:border-box; }
         .btn { padding:12px 30px; background:#C5A059; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold; }
         
-        /* Media Preview Styles */
+        /* Media Preview & Control */
         .media-box { background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:6px; margin-bottom:15px; }
         .media-prev { width:100%; height:150px; object-fit:cover; border-radius:4px; margin-bottom:10px; background:#ddd; }
         .row-item { display:flex; gap:10px; align-items:center; background:#fff; padding:10px; margin-bottom:10px; border:1px solid #eee; }
         .row-item .media-prev { width:60px; height:60px; margin:0; }
         
-        /* Modal */
+        /* Modal Library */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; }
         .modal-content { background:#fff; width:80%; height:80%; margin:5% auto; padding:20px; overflow:auto; border-radius:8px; }
         .gal-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:15px; }
-        .gal-item { cursor:pointer; border:2px solid transparent; }
+        .gal-item { cursor:pointer; border:2px solid transparent; position: relative; }
         .gal-item:hover { border-color:#C5A059; }
         .gal-item img, .gal-item video { width:100%; height:100px; object-fit:cover; display:block; }
+        .vid-badge { position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.6); color:#fff; padding:2px 5px; font-size:0.6rem; border-radius:3px; }
     </style>
 </head>
 <body>
@@ -252,6 +255,7 @@ if (isset($_POST['save_content'])) {
                         if($grp == 'room' && isset($parts[1])) $grp = 'Room '.$parts[1];
                         if($grp == 'facil' && isset($parts[1])) $grp = 'Facility '.$parts[1];
                         if($grp == 'img') $grp = 'Images & Media';
+                        if($grp == 'hero') $grp = 'Hero Section';
                         
                         $groups[$grp][] = ['k'=>$key, 'v'=>$val];
                         $has_content = true;
@@ -267,24 +271,30 @@ if (isset($_POST['save_content'])) {
                             </h3>
                             <?php foreach($fields as $f): 
                                 $k = $f['k']; $v = $f['v'];
-                                $label = ucwords(str_replace(['_', 'img'], [' ', ''], $k));
-                                $is_media = (strpos($k, 'img')===0 || strpos($k, 'video')!==false);
+                                $label = ucwords(str_replace(['_', 'img', 'room', 'facil'], [' ', '', '', ''], $k));
+                                // Deteksi Media (Gambar/Video) untuk menampilkan Browse & Upload
+                                $is_media = (strpos($k, 'img')===0 || strpos($k, 'video')!==false || strpos($k, 'slide')!==false);
                             ?>
                                 <label><?php echo $label; ?></label>
                                 
                                 <?php if($is_media): ?>
                                     <div class="media-box">
-                                        <?php if(pathinfo($v, PATHINFO_EXTENSION) == 'mp4'): ?>
+                                        <?php if(preg_match('/\.(mp4|webm)$/i', $v)): ?>
                                             <video src="<?php echo $v; ?>" class="media-prev" controls></video>
                                         <?php else: ?>
                                             <img src="<?php echo $v; ?>" id="prev_<?php echo $k; ?>" class="media-prev">
                                         <?php endif; ?>
+                                        
                                         <div style="display:flex; gap:10px;">
                                             <input type="text" name="<?php echo $k; ?>" id="<?php echo $k; ?>" value="<?php echo $v; ?>" style="margin:0;">
-                                            <button type="button" class="btn" style="padding:5px 15px; background:#eee; color:#333;" onclick="openMediaModal('<?php echo $k; ?>', 'prev_<?php echo $k; ?>')">Pilih</button>
+                                            <button type="button" class="btn" style="padding:5px 15px; background:#eee; color:#333; border:1px solid #ccc;" onclick="openMediaModal('<?php echo $k; ?>', 'prev_<?php echo $k; ?>')">Browse Server</button>
                                         </div>
-                                        <div style="margin-top:5px; font-size:0.8rem;">Upload Baru: <input type="file" name="<?php echo $k; ?>"></div>
+                                        
+                                        <div style="margin-top:5px; font-size:0.8rem; color:#666;">
+                                            Atau Upload File Baru: <input type="file" name="<?php echo $k; ?>">
+                                        </div>
                                     </div>
+
                                 <?php elseif(strpos($k, 'desc')!==false): ?>
                                     <textarea name="<?php echo $k; ?>" rows="3"><?php echo $v; ?></textarea>
                                 <?php else: ?>
@@ -305,14 +315,15 @@ if (isset($_POST['save_content'])) {
     <div id="mediaModal" class="modal">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <h3 style="margin:0;">Media Library</h3>
+                <h3 style="margin:0;">Media Library (Server)</h3>
                 <span onclick="document.getElementById('mediaModal').style.display='none'" style="font-size:2rem; cursor:pointer;">&times;</span>
             </div>
             <div class="gal-grid">
                 <?php foreach($server_images as $img): ?>
                     <div class="gal-item" onclick="selectImage('<?php echo $img; ?>')">
-                        <?php if(preg_match('/\.(mp4|webm)$/i', $img)): ?>
+                        <?php if(preg_match('/\.(mp4|webm|mov)$/i', $img)): ?>
                             <video src="<?php echo $img; ?>"></video>
+                            <span class="vid-badge">VIDEO</span>
                         <?php else: ?>
                             <img src="<?php echo $img; ?>" loading="lazy">
                         <?php endif; ?>
@@ -335,7 +346,15 @@ if (isset($_POST['save_content'])) {
 
         function selectImage(path) {
             document.getElementById(targetInput).value = path;
-            if(targetPrev && document.getElementById(targetPrev)) document.getElementById(targetPrev).src = path;
+            if(targetPrev && document.getElementById(targetPrev)) {
+                // Cek apakah video atau gambar untuk update preview
+                if(path.match(/\.(mp4|webm)$/i)) {
+                    // Jika video, replace img tag dengan video tag (advanced) atau biarkan text update saja
+                    // Untuk simplifikasi, kita update text input saja
+                } else {
+                    document.getElementById(targetPrev).src = path;
+                }
+            }
             document.getElementById('mediaModal').style.display = 'none';
         }
 
