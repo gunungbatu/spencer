@@ -1,7 +1,18 @@
 <?php
 session_start();
-// --- FITUR BACKUP DATA (Baru) ---
+
+// --- KONFIGURASI ---
+$json_file = 'data.json';
+$review_file = 'reviews.json';
+$config_file = 'config.json';
+$upload_dir = 'assets/';
+
+// --- FITUR BACKUP DATA (Dengan Error Handling) ---
 if (isset($_GET['backup_data'])) {
+    if (!class_exists('ZipArchive')) {
+        die("Error: Fitur ZIP tidak aktif di server ini. Hubungi hosting provider Anda.");
+    }
+    
     $zip_file = 'backup_spencer_' . date('Y-m-d_H-i') . '.zip';
     $zip = new ZipArchive();
     if ($zip->open($zip_file, ZipArchive::CREATE) === TRUE) {
@@ -11,12 +22,14 @@ if (isset($_GET['backup_data'])) {
         if(file_exists('config.json')) $zip->addFile('config.json');
         
         // Masukkan Folder Assets
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('assets'), RecursiveIteratorIterator::LEAVES_ONLY);
-        foreach ($files as $name => $file) {
-            if (!$file->isDir()) {
-                $filePath = $file->getRealPath();
-                $relativePath = 'assets/' . substr($filePath, strlen(realpath('assets')) + 1);
-                $zip->addFile($filePath, $relativePath);
+        if(is_dir('assets')) {
+            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('assets'), RecursiveIteratorIterator::LEAVES_ONLY);
+            foreach ($files as $name => $file) {
+                if (!$file->isDir()) {
+                    $filePath = $file->getRealPath();
+                    $relativePath = 'assets/' . substr($filePath, strlen(realpath('assets')) + 1);
+                    $zip->addFile($filePath, $relativePath);
+                }
             }
         }
         $zip->close();
@@ -28,14 +41,10 @@ if (isset($_GET['backup_data'])) {
         readfile($zip_file);
         unlink($zip_file); // Hapus file zip di server setelah download
         exit;
+    } else {
+        die("Gagal membuat file ZIP. Pastikan folder dapat ditulisi (writable).");
     }
 }
-
-// --- KONFIGURASI ---
-$json_file = 'data.json';
-$review_file = 'reviews.json';
-$config_file = 'config.json';
-$upload_dir = 'assets/';
 
 // 1. LOAD CONFIG & PASSWORD
 $config = [];
@@ -67,7 +76,6 @@ function getServerImages($dir) {
     if (is_dir($dir)) {
         $files = scandir($dir);
         foreach ($files as $file) {
-            // PERBAIKAN DI SINI: Menambahkan mp4, webm, mov ke dalam regex
             if ($file !== '.' && $file !== '..' && preg_match('/\.(jpg|jpeg|png|gif|webp|avif|mp4|webm|mov)$/i', $file)) {
                 $images[] = $dir . $file;
             }
@@ -97,7 +105,7 @@ if (isset($_POST['save_content'])) {
     $msg = "Konten Website Berhasil Diupdate!";
 }
 
-// 5. SAVE REVIEW (Simple Logic)
+// 5. SAVE REVIEW
 $reviews = json_decode(file_get_contents($review_file), true);
 if (!$reviews) $reviews = [];
 if (isset($_POST['save_reviews'])) {
@@ -171,13 +179,14 @@ if (isset($_POST['save_reviews'])) {
             <?php endforeach; ?>
         </div>
         <div class="logout">
-    <a href="?backup_data=true" style="color:#FFD700; text-decoration:none; margin-bottom:10px; display:block;">
-        <i class="fas fa-download"></i> Backup Data
-    </a>
-    <a href="?logout=true" style="color:#ff6b6b; text-decoration:none;">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
-</div>
+            <a href="?backup_data=true" style="color:#FFD700; text-decoration:none; margin-bottom:10px; display:block;">
+                <i class="fas fa-download"></i> Backup Data
+            </a>
+            <a href="?logout=true" style="color:#ff6b6b; text-decoration:none;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
 
     <div class="main">
         <div class="header">
@@ -195,24 +204,34 @@ if (isset($_POST['save_reviews'])) {
                 $allowed_prefixes = $page_info['prefixes'];
                 $has_content = false;
                 $groups = [];
-                foreach ($current_data as $key => $val) {
-                    $show = false;
-                    foreach($allowed_prefixes as $ap) {
-                        if ($key === $ap || strpos($key, $ap . '_') === 0) { $show = true; break; }
-                    }
-                    if ($show) {
-                        $parts = explode('_', $key);
-                        $prefix = $parts[0]; 
-                        if($prefix == 'room' && isset($parts[1])) $prefix = 'room_' . $parts[1]; 
-                        if($prefix == 'img' && isset($parts[1])) $prefix = $parts[1];
-                        if($prefix == 'facil' && isset($parts[1])) $prefix = 'facilities_' . $parts[1];
-                        $groups[$prefix][] = ['key'=>$key, 'val'=>$val];
-                        $has_content = true;
+                
+                // Pastikan data JSON valid
+                if (empty($current_data)) {
+                    echo "<div class='card' style='color:red;'>Error: Data tidak ditemukan atau data.json rusak.</div>";
+                } else {
+                    foreach ($current_data as $key => $val) {
+                        $show = false;
+                        foreach($allowed_prefixes as $ap) {
+                            if ($key === $ap || strpos($key, $ap . '_') === 0) { $show = true; break; }
+                        }
+                        if ($show) {
+                            $parts = explode('_', $key);
+                            $prefix = $parts[0]; 
+                            if($prefix == 'room' && isset($parts[1])) $prefix = 'room_' . $parts[1]; 
+                            if($prefix == 'img' && isset($parts[1])) $prefix = $parts[1];
+                            if($prefix == 'facil' && isset($parts[1])) $prefix = 'facilities_' . $parts[1];
+                            
+                            // Grouping khusus untuk fasilitas agar tidak terpecah aneh
+                            if($key == 'home_facil_title' || $key == 'home_facil_subtitle') $prefix = 'facilities_header';
+                            
+                            $groups[$prefix][] = ['key'=>$key, 'val'=>$val];
+                            $has_content = true;
+                        }
                     }
                 }
 
-                if(!$has_content): ?>
-                    <div class="card"><p>Belum ada data.</p></div>
+                if(!$has_content && !empty($current_data)): ?>
+                    <div class="card"><p>Tidak ada data yang cocok untuk halaman ini.</p></div>
                 <?php else: 
                     foreach ($groups as $grp => $items): ?>
                         <div class="card">
