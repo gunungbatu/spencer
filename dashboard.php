@@ -139,8 +139,7 @@ if (isset($_POST['save_reviews'])) {
         'dining'=>['icon'=>'fa-utensils','title'=>'Dining Page','prefixes'=>['dining_subtitle','dining_title','dining_rooftop','dining_botanica','dining_candle','img_dining']],
         'wedding'=>['icon'=>'fa-heart','title'=>'Wedding Page','prefixes'=>['wedding_intro','wedding_venue','wedding_spec','img_wedding_gal','wedding_form']],
         'meeting'=>['icon'=>'fa-briefcase','title'=>'Meeting Page','prefixes'=>['meeting_ballroom','meeting_func','meeting_pkg']],
-                // UPDATE BARIS GALLERY INI:
-        'gallery'=>['icon'=>'fa-images','title'=>'Gallery Page','prefixes'=>['gallery_title','gallery_subtitle','img_gallery_hero','gallery_columns','gallery_height','gallery_cat','img_gallery']],
+        'gallery'=>['icon'=>'fa-images','title'=>'Gallery Page','prefixes'=>['gallery','img_gallery']],
         'social'=>['icon'=>'fa-share-alt','title'=>'Social & Header','prefixes'=>['social','header_btn']],
         'reviews'=>['icon'=>'fa-star','title'=>'Guest Reviews','prefixes'=>[]]
     ];
