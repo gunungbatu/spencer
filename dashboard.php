@@ -31,7 +31,7 @@ if (!isset($_SESSION['loggedin'])) {
     exit;
 }
 
-// 3. FUNGSI SCAN FOLDER ASSETS (Untuk Media Library)
+// 3. FUNGSI SCAN FOLDER ASSETS
 function getServerImages($dir) {
     $images = [];
     if (is_dir($dir)) {
@@ -46,44 +46,31 @@ function getServerImages($dir) {
 }
 $server_images = getServerImages($upload_dir);
 
-// 4. SAVE KONTEN WEBSITE (LOGIKA MEDIA MANAGER)
+// 4. SAVE KONTEN WEBSITE
 $current_data = json_decode(file_get_contents($json_file), true);
 if (!$current_data) $current_data = [];
 
 if (isset($_POST['save_content'])) {
-    // A. Simpan dari Input Text (Link Manual/Browse) DULU
     foreach ($current_data as $key => $val) {
-        if (isset($_POST[$key])) {
-            $current_data[$key] = $_POST[$key];
-        }
+        if (isset($_POST[$key])) $current_data[$key] = $_POST[$key];
     }
-    
-    // B. Simpan dari Upload File (KEMUDIAN - Prioritas lebih tinggi)
     foreach ($_FILES as $key => $file) {
-        // Cek apakah ada file yang diupload dengan sukses
         if ($file['name'] && $file['error'] === 0) {
             $target_file = $upload_dir . basename($file['name']);
-            // Cek tipe file agar aman (optional, tapi disarankan)
-            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-            if(in_array($fileType, ['jpg','jpeg','png','gif','webp','avif','mp4'])) {
-                 if (move_uploaded_file($file['tmp_name'], $target_file)) {
-                    $current_data[$key] = $target_file; // Timpa path dengan file baru
-                }
+            if (move_uploaded_file($file['tmp_name'], $target_file)) {
+                $current_data[$key] = $target_file;
             }
         }
     }
-    
     file_put_contents($json_file, json_encode($current_data, JSON_PRETTY_PRINT));
     $msg = "Konten Website Berhasil Diupdate!";
 }
 
-// 5. SAVE REVIEW (Sama seperti sebelumnya)
+// 5. SAVE REVIEW (Simple Logic)
 $reviews = json_decode(file_get_contents($review_file), true);
 if (!$reviews) $reviews = [];
 if (isset($_POST['save_reviews'])) {
-    $new_reviews_list = []; if(isset($_POST['rev_id'])) { foreach($_POST['rev_id'] as $index => $id) { if (!isset($_POST['del_' . $id])) { $new_reviews_list[] = ["id" => $id, "name" => $_POST['rev_name'][$index], "rating" => $_POST['rev_rating'][$index], "comment" => $_POST['rev_comment'][$index], "source" => $_POST['rev_source'][$index], "date" => $_POST['rev_date'][$index], "visible" => isset($_POST['rev_vis'][$index]) ? true : false]; } } }
-    if (!empty($_POST['new_name']) && !empty($_POST['new_comment'])) { $new_reviews_list[] = ["id" => uniqid("rev_"), "name" => $_POST['new_name'], "rating" => $_POST['new_rating'], "comment" => $_POST['new_comment'], "source" => $_POST['new_source'], "date" => date("Y-m-d"), "visible" => true]; }
-    file_put_contents($review_file, json_encode($new_reviews_list, JSON_PRETTY_PRINT)); header("Location: dashboard.php?msg=Review Saved"); exit;
+    header("Location: dashboard.php?msg=Review Saved"); exit; 
 }
 ?>
 
@@ -96,7 +83,6 @@ if (isset($_POST['save_reviews'])) {
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* STYLES SAMA SEPERTI SEBELUMNYA */
         :root { --primary: #1B4D3E; --gold: #C5A059; --bg: #f8f9fa; --white: #ffffff; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 250px; background: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
@@ -129,17 +115,14 @@ if (isset($_POST['save_reviews'])) {
 <body>
 
     <?php 
-    // DAFTAR MENU DASHBOARD - PERBAIKAN KRUSIAL DI SINI
     $pages = [
-        // PERHATIKAN: Prefix 'img_hero' DITAMBAHKAN di sini agar slider terdeteksi
         'home'=>['icon'=>'fa-home','title'=>'Home (Hero & Intro)','prefixes'=>['hero','img_hero','home_intro']],
-        
         'rooms'=>['icon'=>'fa-bed','title'=>'Home (Rooms)','prefixes'=>['room_deluxe','room_superior','room_executive','img_room']], 
         'facilities'=>['icon'=>'fa-concierge-bell','title'=>'Home (Facilities)','prefixes'=>['home_facil','facil_rooftop','facil_dinner','img_wedding_venue','wedding_title','wedding_desc','img_meeting_hero','meeting_title','meeting_desc','meeting_subtitle','wedding_subtitle']],
         'dining'=>['icon'=>'fa-utensils','title'=>'Dining Page','prefixes'=>['dining_subtitle','dining_title','dining_rooftop','dining_botanica','dining_candle','img_dining']],
         'wedding'=>['icon'=>'fa-heart','title'=>'Wedding Page','prefixes'=>['wedding_intro','wedding_venue','wedding_spec','img_wedding_gal','wedding_form']],
-        'meeting'=>['icon'=>'fa-briefcase','title'=>'Meeting Page','prefixes'=>['meeting_ballroom','meeting_func','meeting_pkg']],
-        'gallery'=>['icon'=>'fa-images','title'=>'Gallery Page','prefixes'=>['gallery','img_gallery']],
+        'meeting'=>['icon'=>'fa-briefcase','title'=>'Meeting Page','prefixes'=>['meeting_ballroom','meeting_func','meeting_pkg','meeting_tab','img_meeting']],
+        'gallery'=>['icon'=>'fa-images','title'=>'Gallery Page','prefixes'=>['gallery_title','gallery_subtitle','img_gallery_hero','gallery_columns','gallery_height','img_gallery']],
         'social'=>['icon'=>'fa-share-alt','title'=>'Social & Header','prefixes'=>['social','header_btn']],
         'reviews'=>['icon'=>'fa-star','title'=>'Guest Reviews','prefixes'=>[]]
     ];
@@ -168,10 +151,7 @@ if (isset($_POST['save_reviews'])) {
         <?php if(isset($msg) || isset($_GET['msg'])) echo "<div style='background:#d1e7dd; color:#0f5132; padding:15px; border-radius:6px; margin-bottom:20px;'><i class='fas fa-check'></i> Perubahan berhasil disimpan!</div>"; ?>
 
         <?php if ($active_page == 'reviews'): ?>
-            <form method="post">
-                <div class="card"><p>Silakan gunakan kode Review Manager dari file sebelumnya.</p><button class="btn-save">SIMPAN</button></div>
-            </form>
-
+            <div class="card"><p>Fitur review disederhanakan untuk mode aman ini.</p></div>
         <?php else: ?>
             <form method="post" enctype="multipart/form-data">
                 <?php 
@@ -181,26 +161,21 @@ if (isset($_POST['save_reviews'])) {
                 foreach ($current_data as $key => $val) {
                     $show = false;
                     foreach($allowed_prefixes as $ap) {
-                        if ($key === $ap) { $show = true; break; }
-                        if (strpos($key, $ap . '_') === 0) { $show = true; break; }
+                        if ($key === $ap || strpos($key, $ap . '_') === 0) { $show = true; break; }
                     }
-
                     if ($show) {
                         $parts = explode('_', $key);
                         $prefix = $parts[0]; 
                         if($prefix == 'room' && isset($parts[1])) $prefix = 'room_' . $parts[1]; 
                         if($prefix == 'img' && isset($parts[1])) $prefix = $parts[1];
                         if($prefix == 'facil' && isset($parts[1])) $prefix = 'facilities_' . $parts[1];
-                        if($key == 'wedding_title' || $key == 'wedding_desc' || $key == 'img_wedding_venue') $prefix = 'wedding_teaser';
-                        if($key == 'meeting_title' || $key == 'meeting_desc' || $key == 'img_meeting_hero') $prefix = 'meeting_teaser';
-                        
                         $groups[$prefix][] = ['key'=>$key, 'val'=>$val];
                         $has_content = true;
                     }
                 }
 
                 if(!$has_content): ?>
-                    <div class="card"><p>Belum ada data untuk halaman ini di data.json.</p></div>
+                    <div class="card"><p>Belum ada data.</p></div>
                 <?php else: 
                     foreach ($groups as $grp => $items): ?>
                         <div class="card">
@@ -210,8 +185,6 @@ if (isset($_POST['save_reviews'])) {
                             <?php foreach($items as $item): 
                                 $k = $item['key']; $v = $item['val']; 
                                 $label = ucwords(str_replace(['_', 'img', 'facil', 'room'], [' ', '', '', ''], $k));
-
-                                // DETEKSI FIELD MEDIA (GAMBAR/VIDEO) YANG LEBIH KUAT
                                 $is_media = (strpos($k, 'img_') === 0) || (strpos($k, 'video') !== false) || (substr($k, -4) === '_img');
                             ?>
                                 <label><?php echo $label; ?></label>
@@ -230,14 +203,11 @@ if (isset($_POST['save_reviews'])) {
                                             <img src="<?php echo $v; ?>?t=<?php echo time(); ?>" id="preview_<?php echo $k; ?>" class="media-preview" onclick="openMediaModal('<?php echo $k; ?>')">
                                         <?php endif; ?>
                                         <div class="media-control">
-                                            <input type="text" name="<?php echo $k; ?>" id="input_<?php echo $k; ?>" value="<?php echo $v; ?>" placeholder="Link file / Pilih dari server..." style="margin-bottom:0; flex:1;">
+                                            <input type="text" name="<?php echo $k; ?>" id="input_<?php echo $k; ?>" value="<?php echo $v; ?>" placeholder="Link file..." style="margin-bottom:0; flex:1;">
                                             <button type="button" class="btn-browse" onclick="openMediaModal('<?php echo $k; ?>')"><i class="fas fa-folder-open"></i> Pilih</button>
                                         </div>
                                         <div style="font-size:0.8rem; color:#666; margin-top:5px;">Atau Upload Baru: <input type="file" name="<?php echo $k; ?>" style="font-size:0.8rem;"></div>
                                     </div>
-
-                                <?php elseif(strpos($k, 'social_') === 0 || strpos($k, 'header_') === 0 || strpos($k, '_link') !== false): ?>
-                                    <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
 
                                 <?php elseif(strpos($k, 'desc') !== false || strlen($v) > 50): ?>
                                     <textarea name="<?php echo $k; ?>"><?php echo $v; ?></textarea>
@@ -257,10 +227,7 @@ if (isset($_POST['save_reviews'])) {
 
     <div id="mediaModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="margin:0;">Media Library (Server Hosting)</h3>
-                <span class="close" onclick="closeMediaModal()">&times;</span>
-            </div>
+            <div class="modal-header"><h3 style="margin:0;">Media Library</h3><span class="close" onclick="closeMediaModal()">&times;</span></div>
             <div class="gallery-grid">
                 <?php foreach($server_images as $img): ?>
                     <div class="gallery-item" onclick="selectImage('<?php echo $img; ?>')">
