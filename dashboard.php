@@ -1,5 +1,35 @@
 <?php
 session_start();
+// --- FITUR BACKUP DATA (Baru) ---
+if (isset($_GET['backup_data'])) {
+    $zip_file = 'backup_spencer_' . date('Y-m-d_H-i') . '.zip';
+    $zip = new ZipArchive();
+    if ($zip->open($zip_file, ZipArchive::CREATE) === TRUE) {
+        // Masukkan File JSON
+        if(file_exists('data.json')) $zip->addFile('data.json');
+        if(file_exists('reviews.json')) $zip->addFile('reviews.json');
+        if(file_exists('config.json')) $zip->addFile('config.json');
+        
+        // Masukkan Folder Assets
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('assets'), RecursiveIteratorIterator::LEAVES_ONLY);
+        foreach ($files as $name => $file) {
+            if (!$file->isDir()) {
+                $filePath = $file->getRealPath();
+                $relativePath = 'assets/' . substr($filePath, strlen(realpath('assets')) + 1);
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+        $zip->close();
+        
+        // Force Download
+        header('Content-Type: application/zip');
+        header('Content-Disposition: attachment; filename="'.basename($zip_file).'"');
+        header('Content-Length: ' . filesize($zip_file));
+        readfile($zip_file);
+        unlink($zip_file); // Hapus file zip di server setelah download
+        exit;
+    }
+}
 
 // --- KONFIGURASI ---
 $json_file = 'data.json';
