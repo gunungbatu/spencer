@@ -3,79 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery | Spencer Green Hotel Batu</title>
+    <title>Visual Journey | Spencer Green Hotel Batu</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="assets/js/global-config.js"></script>
 
     <style>
-        :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
-        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin:0; }
-        h1, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
-
-        /* --- HEADER STYLES (Global Support) --- */
-        header { 
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            padding: 20px 50px; 
-            display: flex; 
-            justify-content: space-between; /* Logo Kiri, Menu Kanan */
-            align-items: center; 
-            z-index: 1000; 
-            transition: 0.4s; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); 
-            box-sizing: border-box;
-        }
-        header.scrolled { background:var(--emerald); padding:15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        /* --- SPENCER THEME VARS --- */
+        :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #111; }
         
-        .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.8rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; z-index:1002; }
-        .nav-menu { display:flex; gap:30px; list-style:none; margin:0; padding:0; }
-        .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; letter-spacing:1px; }
-        .btn-book { padding:10px 20px; border:1px solid var(--gold); color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; }
-
-        /* MOBILE MENU */
-        .mobile-menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1002; }
-        .mobile-nav-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(27, 77, 62, 0.98); 
-            z-index: 1001; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            opacity: 0; pointer-events: none; transition: 0.4s; 
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Montserrat', sans-serif; 
+            background: var(--dark); 
+            height: 100vh; 
+            overflow: hidden; /* Penting agar tidak ada scrollbar ganda */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
-        .mobile-nav-link { color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none; font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* HERO */
-        .hero-gallery { height:60vh; background:linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('assets/gallery-bg.jpg'); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; text-align:center; transition:0.5s; }
-        .hero-title { color:#fff; font-size:4rem; margin:0; letter-spacing:3px; } .hero-subtitle { color:var(--gold); letter-spacing:3px; font-weight:600; }
-
-        /* GALLERY FILTER */
-        .gallery-section { padding:80px 50px; max-width:1200px; margin:0 auto; }
-        .filter-nav { text-align:center; margin-bottom:50px; }
-        .filter-btn { background:none; border:none; padding:10px 20px; margin:0 5px; font-size:0.9rem; font-weight:500; cursor:pointer; color:#888; transition:0.3s; }
-        .filter-btn.active { color:var(--dark); border-bottom:2px solid var(--gold); }
-
-        .gallery-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
-        .gallery-item { overflow:hidden; position:relative; cursor:pointer; height:300px; }
-        .gallery-item img { width:100%; height:100%; object-fit:cover; display:block; transition:0.5s; }
-        .gallery-item:hover img { transform:scale(1.05); }
+        /* --- FULLSCREEN BACKGROUND LAYERS --- */
+        /* Kita butuh 2 layer untuk efek cross-fade yang halus */
+        .bg-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1s ease-in-out;
+        }
+        #bg-back { z-index: 1; opacity: 1; }
+        #bg-front { z-index: 2; opacity: 0; }
         
-        /* FOOTER */
-        footer { background:var(--emerald); color:#fff; padding:50px; text-align:center; margin-top:auto; }
-        .social-box { display:flex; justify-content:center; gap:20px; margin-top:20px; }
-        .social-icon { color:#fff; width:40px; height:40px; border:1px solid rgba(255,255,255,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:0.3s; text-decoration:none; }
-        .social-icon:hover { background:var(--gold); border-color:var(--gold); transform: translateY(-3px); }
+        /* Overlay hitam agar teks/header terbaca */
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); /* Gelapkan background */
+            z-index: 3;
+            pointer-events: none;
+        }
 
-        /* RESPONSIVE */
-        @media(max-width:900px) { 
-            header { padding: 15px 20px; justify-content: space-between; } /* Reset agar hamburger di kanan */
-            .nav-menu, .btn-book { display:none; } 
-            .mobile-menu-btn { display:block; }
-            .gallery-grid { grid-template-columns:1fr; } 
-            .filter-nav { display:flex; flex-wrap:wrap; justify-content:center; } 
+        /* --- HERO TEXT (Kiri Atas) --- */
+        .hero-content {
+            position: absolute;
+            top: 25%; /* Sesuaikan posisi vertikal */
+            left: 8%; /* Sesuaikan posisi horizontal */
+            z-index: 10;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+        }
+        .hero-subtitle { 
+            color: var(--gold); letter-spacing: 3px; font-weight: 600; 
+            text-transform: uppercase; font-size: 1rem; margin-bottom: 10px; display: block;
+            animation: fadeUp 1s ease forwards;
+        }
+        .hero-title { 
+            font-family: 'Cormorant Garamond', serif; font-size: 4.5rem; margin: 0; 
+            line-height: 1.1;
+            animation: fadeUp 1s ease 0.3s forwards; opacity: 0;
+        }
+
+        /* --- 3D CAROUSEL CONTAINER (Pojok Kanan Bawah) --- */
+        .carousel-viewport {
+            position: absolute;
+            bottom: 5%;  /* Posisi dari bawah */
+            right: 5%;   /* Posisi dari kanan */
+            width: 500px;
+            height: 400px;
+            perspective: 1200px; /* Titik hilang 3D */
+            z-index: 20;
+            /* Border debug sementara - hapus jika sudah pas */
+            /* border: 1px dashed red; */ 
+        }
+
+        .carousel-stage {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Efek putar halus */
+            /* INI KUNCI EFEK TIKTOK: Miringkan wadahnya */
+            transform: rotateX(-10deg) rotateY(-20deg) rotateZ(5deg); 
+        }
+
+        /* ITEM FOTO DI CAROUSEL */
+        .carousel-item {
+            position: absolute;
+            width: 160px;  /* Ukuran thumbnail */
+            height: 240px;
+            top: 50%;
+            left: 50%;
+            margin-top: -120px; /* Setengah height agar center */
+            margin-left: -80px; /* Setengah width agar center */
+            
+            background: #000;
+            border: 2px solid rgba(212, 175, 55, 0.5); /* Gold border */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            cursor: pointer;
+            transition: all 0.5s ease;
+            /* Agar foto tidak terbalik saat di belakang */
+            backface-visibility: hidden; 
+        }
+
+        .carousel-item img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.7); /* Redupkan yang tidak aktif */
+            transition: 0.5s;
+        }
+        
+        /* Item yang sedang aktif (di depan) */
+        .carousel-item.active {
+            border-color: var(--gold);
+            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.3);
+        }
+        .carousel-item.active img, .carousel-item:hover img {
+            filter: brightness(1.1);
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        @keyframes fadeUp { from{opacity:0; transform:translateY(30px);} to{opacity:1; transform:translateY(0);} }
+
+        /* Responsive adjustments */
+        @media(max-width: 768px) {
             .hero-title { font-size: 3rem; }
+            .carousel-viewport {
+                width: 300px; height: 300px; bottom: 10%; right: 0%; left: 0%; margin: auto;
+            }
+            .carousel-item { width: 120px; height: 180px; margin-top:-90px; margin-left:-60px; }
         }
     </style>
 </head>
@@ -83,102 +143,123 @@
 
     <div id="global-header-container"></div>
 
-    <section class="hero-gallery" id="img_gallery_hero">
-        <div>
-            <p class="hero-subtitle" id="gallery_subtitle">Explore The Beauty</p>
-            <h1 class="hero-title" id="gallery_title">Visual Journey</h1>
-        </div>
-    </section>
+    <div id="bg-back" class="bg-layer"></div>
+    <div id="bg-front" class="bg-layer"></div>
+    <div class="bg-overlay"></div>
 
-    <section class="gallery-section">
-        <div class="filter-nav">
-            <button class="filter-btn active" data-filter="all" id="gallery_cat_all" onclick="filterGallery('all')">All Photos</button>
-            <button class="filter-btn" data-filter="rooms" id="gallery_cat_rooms" onclick="filterGallery('rooms')">Rooms</button>
-            <button class="filter-btn" data-filter="dining" id="gallery_cat_dining" onclick="filterGallery('dining')">Dining</button>
-            <button class="filter-btn" data-filter="mice" id="gallery_cat_meetings" onclick="filterGallery('mice')">MICE</button>
-        </div>
+    <div class="hero-content">
+        <span class="hero-subtitle" id="gallery_subtitle">Visual Journey</span>
+        <h1 class="hero-title" id="gallery_title">Spencer's Collection</h1>
+    </div>
 
-        <div class="gallery-grid" id="gallery-container">
-            <div class="gallery-item rooms"><img src="assets/room1.jpg" alt="Room"></div>
-            <div class="gallery-item dining"><img src="assets/rooftop.jpg" alt="Rooftop"></div>
-            <div class="gallery-item mice"><img src="assets/meeting-bg.jpg" alt="Ballroom"></div>
-            <div class="gallery-item rooms"><img src="assets/room2.jpg" alt="Superior"></div>
-            <div class="gallery-item dining"><img src="assets/dining-bg.jpg" alt="Botanica"></div>
-            <div class="gallery-item mice"><img src="assets/meeting-room.jpg" alt="Meeting"></div>
-            <div class="gallery-item rooms"><img src="assets/room3.avif" alt="Executive"></div>
-            <div class="gallery-item dining"><img src="assets/wedding-2.jpg" alt="Wedding"></div>
-            <div class="gallery-item rooms"><img src="assets/wedding-3.jpg" alt="Detail"></div>
-        </div>
-    </section>
-
-    <footer id="global-footer"></footer>
+    <div class="carousel-viewport">
+        <div class="carousel-stage" id="carousel-stage">
+            </div>
+    </div>
 
     <script>
-        // --- 1. DYNAMIC GALLERY LOADER ---
-        // Script ini akan mengambil foto tambahan dari Dashboard (data.json)
-        // dan menambahkannya ke galeri secara otomatis.
+        let images = [];
+        let currentAngle = 0;
+        let currentIndex = 0;
+        const stage = document.getElementById('carousel-stage');
+        const bgBack = document.getElementById('bg-back');
+        const bgFront = document.getElementById('bg-front');
+        let isFrontActive = false; // Toggle untuk background layers
+
+        // --- 1. LOAD DATA ---
         fetch('data.json?t=' + new Date().getTime())
         .then(r => r.json())
         .then(data => {
-            // Update Text & Hero Background (Standard)
-            Object.keys(data).forEach(key => {
-                const el = document.getElementById(key);
-                if (el) {
-                    if (key.startsWith('img_')) {
-                        el.src = data[key];
-                        if(key === 'img_gallery_hero') document.querySelector('.hero-gallery').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${data[key]}')`;
-                    } else if (!key.startsWith('social_')) {
-                        el.innerText = data[key];
-                    }
-                }
-            });
+            // Update Titles
+            if(data.gallery_title) document.getElementById('gallery_title').innerText = data.gallery_title;
+            if(data.gallery_subtitle) document.getElementById('gallery_subtitle').innerText = data.gallery_subtitle;
 
-            // INJECT DYNAMIC IMAGES
-            const container = document.getElementById('gallery-container');
-            let hasDynamic = false;
+            // Kumpulkan images dari JSON (Maksimal 12 slot)
+            for (let i = 1; i <= 12; i++) {
+                if(data[`img_gallery_${i}`]) images.push(data[`img_gallery_${i}`]);
+            }
+            // Fallback jika data kosong
+            if (images.length === 0) images = ["assets/room1.jpg", "assets/room2.jpg", "assets/dining-bg.jpg"];
 
-            Object.keys(data).forEach(key => {
-                // Cari key dengan pola 'img_gallery_rooms_1', 'img_gallery_dining_2', dll
-                if(key.startsWith('img_gallery_') && key !== 'img_gallery_hero') {
-                    
-                    // Bersihkan gambar statis JIKA ada gambar dinamis dari dashboard
-                    // (Opsional: hapus baris ini jika ingin menggabungkan statis + dinamis)
-                    if(!hasDynamic) { 
-                        container.innerHTML = ''; 
-                        hasDynamic = true; 
-                    } 
-
-                    // Deteksi Kategori dari nama file/key
-                    let category = 'rooms'; // Default
-                    if(key.includes('_dining_')) category = 'dining';
-                    if(key.includes('_mice_') || key.includes('_meeting_')) category = 'mice';
-                    if(key.includes('_events_') || key.includes('_wedding_')) category = 'mice';
-
-                    // Buat Element Gambar Baru
-                    const div = document.createElement('div');
-                    div.className = `gallery-item ${category}`;
-                    div.style.display = 'block'; // Pastikan terlihat
-                    div.innerHTML = `<img src="${data[key]}" alt="Gallery Image">`;
-                    container.appendChild(div);
-                }
-            });
+            // Inisialisasi Galeri
+            initGallery();
         });
 
-        // --- 2. UI INTERACTIONS ---
-        window.addEventListener('scroll', ()=>document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50));
+        // --- 2. SETUP GALLERY ---
+        function initGallery() {
+            const total = images.length;
+            // Radius: Jarak item dari pusat putaran. Makin besar makin lebar lingkarannya.
+            const radius = window.innerWidth < 768 ? 180 : 280; 
+            const angleStep = 360 / total;
 
-        function filterGallery(category) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.filter-btn[data-filter="${category}"]`).classList.add('active');
-
-            document.querySelectorAll('.gallery-item').forEach(item => {
-                if (category === 'all' || item.classList.contains(category)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
+            images.forEach((src, idx) => {
+                const item = document.createElement('div');
+                item.className = `carousel-item ${idx === 0 ? 'active' : ''}`;
+                // Tempatkan item melingkar berdasarkan index
+                item.style.transform = `rotateY(${idx * angleStep}deg) translateZ(${radius}px)`;
+                item.innerHTML = `<img src="${src}" alt="Gallery ${idx}">`;
+                
+                // Event Klik: Putar carousel & ganti background
+                item.onclick = () => rotateToItem(idx);
+                
+                stage.appendChild(item);
             });
+
+            // Set background awal
+            bgBack.style.backgroundImage = `url('${images[0]}')`;
         }
-    </script>
+
+        // --- 3. ROTATION LOGIC ---
+        function rotateToItem(index) {
+            if (index === currentIndex) return; // Jangan lakukan apa2 jika klik item yg sama
+
+            const total = images.length;
+            const angleStep = 360 / total;
+
+            // Hitung sudut target agar item yang diklik menghadap depan (0 derajat)
+            // Kita gunakan negatif karena stage berputar berlawanan arah jarum jam
+            const targetAngle = -1 * index * angleStep; 
+            
+            // --- Logika Putaran Terdekat (Shortest Path) ---
+            // Ini mencegah carousel berputar liar (misal dari item 1 ke 12 mutar 360deg)
+            let delta = targetAngle - currentAngle;
+            // Normalisasi delta ke range -180 sampai 180
+            while (delta <= -180) delta += 360;
+            while (delta > 180) delta -= 360;
+            
+            currentAngle += delta; // Update sudut global
+
+            // Terapkan Transformasi 3D (Pertahankan kemiringan TikTok + Sudut baru)
+            stage.style.transform = `rotateX(-10deg) rotateY(${currentAngle - 20}deg) rotateZ(5deg)`;
+
+            // Update Active Class
+            document.querySelectorAll('.carousel-item').forEach(el => el.classList.remove('active'));
+            stage.children[index].classList.add('active');
+
+            currentIndex = index;
+            changeBackground(images[index]);
+        }
+
+        // --- 4. BACKGROUND TRANSITION (CROSS-FADE) ---
+        function changeBackground(newSrc) {
+            const url = `url('${newSrc}')`;
+            
+            if (isFrontActive) {
+                // Front sedang aktif, siapkan Back, lalu fade-out Front
+                bgBack.style.backgroundImage = url;
+                bgFront.style.opacity = 0;
+                isFrontActive = false;
+            } else {
+                // Back sedang aktif, siapkan Front, lalu fade-in Front
+                bgFront.style.backgroundImage = url;
+                bgFront.style.opacity = 1;
+                isFrontActive = true;
+            }
+        }
+
+        // --- Optional: Auto Rotate pelan jika tidak ada interaksi ---
+        // let autoRotate = setInterval(() => rotateToItem((currentIndex + 1) % images.length), 5000);
+        // stage.addEventListener('mouseenter', () => clearInterval(autoRotate));
+    </style>
 </body>
 </html>
