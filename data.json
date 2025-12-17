@@ -138,24 +138,14 @@
     "gallery_title": "Visual Journey",
     "gallery_subtitle": "Explore The Beauty",
     "img_gallery_hero": "assets/gallery-bg.jpg",
-    
-    "gallery_columns": "3", 
-    "gallery_height": "300px",
-    
     "gallery_cat_all": "All Photos",
     "gallery_cat_rooms": "Rooms",
     "gallery_cat_dining": "Dining",
     "gallery_cat_meetings": "MICE",
 
-    "img_gallery_1": "assets/room1.jpg",
-    "img_gallery_2": "assets/room2.jpg",
-    "img_gallery_3": "assets/room3.avif",
-    "img_gallery_4": "assets/rooftop.jpg",
-    "img_gallery_5": "assets/dining-bg.jpg",
-    "img_gallery_6": "assets/meeting-bg.jpg",
-    "img_gallery_7": "",
-    "img_gallery_8": "",
-    "img_gallery_9": "",
-    "img_gallery_10": "",
-    "img_gallery_11": "",
-    "img_gallery_12": "",
+    "social_instagram": "https://instagram.com/spencerhotel",
+    "social_tiktok": "https://tiktok.com/@spencerhotel",
+    "social_youtube": "",
+    "social_facebook": "",
+    "social_whatsapp": "6281234567890" 
+}
