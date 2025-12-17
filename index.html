@@ -20,9 +20,7 @@
         h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
         a { text-decoration: none; transition: 0.3s; }
 
-        /* --- 2. HEADER FIX --- */
-        header:not(#navbar) { display: none !important; } /* Sembunyikan sisa kode header lama */
-        
+        /* --- 2. HEADER STYLING (HANYA UNTUK HEADER GLOBAL) --- */
         header { 
             position: fixed; top: 0; left: 0; width: 100%; padding: 15px 50px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -35,7 +33,7 @@
         .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; }
 
-        /* --- 3. HERO --- */
+        /* --- 3. HERO SECTION --- */
         .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
         .video-background-local { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
         .hero-slider { position:absolute; top:0; left:0; width:100%; height:100%; z-index:-2; display:none; }
@@ -45,7 +43,7 @@
         .hero-title { color: #ffffff; font-size: 5rem; line-height: 1.1; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9); }
         .hero-subtitle { color: #ffffff; letter-spacing: 3px; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600; }
 
-        /* --- 4. CARDS FIX (TOMBOL ROOM TOUR) --- */
+        /* --- 4. CARDS & ROOM TOUR BUTTON --- */
         .section-separator { text-align: center; padding: 80px 20px 40px; background-color: #fff; }
         .section-separator h2 { font-size: 3rem; text-transform: uppercase; letter-spacing: 2px; }
         
@@ -240,7 +238,7 @@
                 }
             });
 
-            // Mapping Room Tour Buttons
+            // Binding Room Tour Buttons
             const tourMap = {
                 'room_deluxe_video': 'btn_tour_deluxe',
                 'room_superior_video': 'btn_tour_superior',
@@ -276,7 +274,7 @@
             vid.load();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden'; // Matikan scroll body
-            vid.play().catch(e => console.log("User must interact to play"));
+            vid.play().catch(e => console.log("Manual play required"));
         }
 
         function closeTour() {
