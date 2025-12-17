@@ -3,139 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Journey | Spencer Green Hotel Batu</title>
+    <title>Gallery | Spencer Green Hotel Batu</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="assets/js/global-config.js"></script>
 
     <style>
-        /* --- SPENCER THEME VARS --- */
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #111; }
         
+        /* Reset Body agar Full Screen */
         body { 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             font-family: 'Montserrat', sans-serif; 
-            background: var(--dark); 
+            background: #000; 
             height: 100vh; 
-            overflow: hidden; /* Penting agar tidak ada scrollbar ganda */
+            overflow: hidden; /* Hilangkan Scrollbar */
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* --- FULLSCREEN BACKGROUND LAYERS --- */
-        /* Kita butuh 2 layer untuk efek cross-fade yang halus */
+        /* --- 1. HEADER FIX (Agar tidak kacau) --- */
+        /* Kita manipulasi header global agar transparan dan melayang */
+        #global-header-container header {
+            position: absolute !important;
+            top: 0; left: 0; width: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent) !important;
+            box-shadow: none !important;
+            z-index: 100 !important; /* Wajib paling atas */
+            padding: 20px 50px;
+        }
+        /* Sembunyikan footer di mode immersive ini */
+        #global-footer { display: none; }
+
+        /* --- 2. DYNAMIC BACKGROUND (Maximize Effect) --- */
         .bg-layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            transition: opacity 1s ease-in-out;
+            transition: transform 1s ease, opacity 0.8s ease;
+            opacity: 0;
+            z-index: 1;
         }
-        #bg-back { z-index: 1; opacity: 1; }
-        #bg-front { z-index: 2; opacity: 0; }
+        .bg-layer.active {
+            opacity: 1;
+            transform: scale(1.05); /* Efek zoom halus ala TikTok */
+            z-index: 2;
+        }
         
-        /* Overlay hitam agar teks/header terbaca */
-        .bg-overlay {
+        /* Overlay Gelap agar teks terbaca */
+        .overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); /* Gelapkan background */
+            background: radial-gradient(circle at bottom right, transparent 0%, rgba(0,0,0,0.8) 100%);
             z-index: 3;
             pointer-events: none;
         }
 
-        /* --- HERO TEXT (Kiri Atas) --- */
-        .hero-content {
+        /* --- 3. TEXT CONTENT (Kiri Bawah) --- */
+        .gallery-info {
             position: absolute;
-            top: 25%; /* Sesuaikan posisi vertikal */
-            left: 8%; /* Sesuaikan posisi horizontal */
+            bottom: 50px;
+            left: 50px;
             z-index: 10;
             color: #fff;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            max-width: 500px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
         }
-        .hero-subtitle { 
-            color: var(--gold); letter-spacing: 3px; font-weight: 600; 
-            text-transform: uppercase; font-size: 1rem; margin-bottom: 10px; display: block;
-            animation: fadeUp 1s ease forwards;
+        .gallery-subtitle { 
+            color: var(--gold); 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0; animation: fadeUp 0.8s forwards 0.2s;
         }
-        .hero-title { 
-            font-family: 'Cormorant Garamond', serif; font-size: 4.5rem; margin: 0; 
-            line-height: 1.1;
-            animation: fadeUp 1s ease 0.3s forwards; opacity: 0;
+        .gallery-title { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 4rem; 
+            margin: 0; 
+            line-height: 1;
+            opacity: 0; animation: fadeUp 0.8s forwards 0.4s;
         }
 
-        /* --- 3D CAROUSEL CONTAINER (Pojok Kanan Bawah) --- */
-        .carousel-viewport {
+        /* --- 4. THUMBNAIL STACK (Kanan Bawah ala TikTok) --- */
+        .thumb-container {
             position: absolute;
-            bottom: 5%;  /* Posisi dari bawah */
-            right: 5%;   /* Posisi dari kanan */
-            width: 500px;
-            height: 400px;
-            perspective: 1200px; /* Titik hilang 3D */
+            bottom: 40px;
+            right: 40px;
             z-index: 20;
-            /* Border debug sementara - hapus jika sudah pas */
-            /* border: 1px dashed red; */ 
+            display: flex;
+            gap: 15px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3); /* Glass effect */
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            max-width: 60vw;
+            overflow-x: auto; /* Scroll samping jika foto banyak */
+            scrollbar-width: none; /* Hide scrollbar Firefox */
         }
+        .thumb-container::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
 
-        .carousel-stage {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Efek putar halus */
-            /* INI KUNCI EFEK TIKTOK: Miringkan wadahnya */
-            transform: rotateX(-10deg) rotateY(-20deg) rotateZ(5deg); 
-        }
-
-        /* ITEM FOTO DI CAROUSEL */
-        .carousel-item {
-            position: absolute;
-            width: 160px;  /* Ukuran thumbnail */
-            height: 240px;
-            top: 50%;
-            left: 50%;
-            margin-top: -120px; /* Setengah height agar center */
-            margin-left: -80px; /* Setengah width agar center */
-            
-            background: #000;
-            border: 2px solid rgba(212, 175, 55, 0.5); /* Gold border */
+        .thumb-item {
+            width: 70px;
+            height: 100px;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
             cursor: pointer;
-            transition: all 0.5s ease;
-            /* Agar foto tidak terbalik saat di belakang */
-            backface-visibility: hidden; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 2px solid transparent;
+            opacity: 0.6;
+            flex-shrink: 0;
         }
-
-        .carousel-item img {
+        .thumb-item img {
             width: 100%; height: 100%; object-fit: cover;
-            filter: brightness(0.7); /* Redupkan yang tidak aktif */
-            transition: 0.5s;
         }
         
-        /* Item yang sedang aktif (di depan) */
-        .carousel-item.active {
+        /* Efek Hover & Active */
+        .thumb-item:hover, .thumb-item.active {
+            width: 90px; /* Melebar saat aktif */
+            height: 120px; /* Membesar ke atas */
+            margin-top: -20px; /* Efek pop-up */
+            opacity: 1;
             border-color: var(--gold);
-            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.3);
-        }
-        .carousel-item.active img, .carousel-item:hover img {
-            filter: brightness(1.1);
-            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        /* Animations */
-        @keyframes fadeUp { from{opacity:0; transform:translateY(30px);} to{opacity:1; transform:translateY(0);} }
+        /* Animasi */
+        @keyframes fadeUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
 
-        /* Responsive adjustments */
+        /* --- RESPONSIF MOBILE --- */
         @media(max-width: 768px) {
-            .hero-title { font-size: 3rem; }
-            .carousel-viewport {
-                width: 300px; height: 300px; bottom: 10%; right: 0%; left: 0%; margin: auto;
+            .gallery-title { font-size: 2.5rem; }
+            .gallery-info { left: 20px; bottom: 160px; /* Naikkan teks agar tidak ketutup jempol */ }
+            .thumb-container { 
+                right: 0; left: 0; bottom: 20px; 
+                margin: auto; 
+                width: 90%; 
+                justify-content: flex-start;
             }
-            .carousel-item { width: 120px; height: 180px; margin-top:-90px; margin-left:-60px; }
+            .thumb-item { width: 60px; height: 80px; }
+            .thumb-item.active { width: 70px; height: 95px; margin-top: -15px; }
+            
+            /* Fix Header Mobile */
+            #global-header-container header { padding: 15px 20px; }
         }
     </style>
 </head>
@@ -143,123 +158,72 @@
 
     <div id="global-header-container"></div>
 
-    <div id="bg-back" class="bg-layer"></div>
-    <div id="bg-front" class="bg-layer"></div>
-    <div class="bg-overlay"></div>
+    <div id="bg-container">
+        </div>
+    <div class="overlay"></div>
 
-    <div class="hero-content">
-        <span class="hero-subtitle" id="gallery_subtitle">Visual Journey</span>
-        <h1 class="hero-title" id="gallery_title">Spencer's Collection</h1>
+    <div class="gallery-info">
+        <span class="gallery-subtitle" id="gallery_subtitle">Visual Journey</span>
+        <h1 class="gallery-title" id="gallery_title">Spencer Collection</h1>
     </div>
 
-    <div class="carousel-viewport">
-        <div class="carousel-stage" id="carousel-stage">
-            </div>
-    </div>
+    <div class="thumb-container" id="thumb-list">
+        </div>
 
     <script>
-        let images = [];
-        let currentAngle = 0;
-        let currentIndex = 0;
-        const stage = document.getElementById('carousel-stage');
-        const bgBack = document.getElementById('bg-back');
-        const bgFront = document.getElementById('bg-front');
-        let isFrontActive = false; // Toggle untuk background layers
-
-        // --- 1. LOAD DATA ---
         fetch('data.json?t=' + new Date().getTime())
         .then(r => r.json())
         .then(data => {
-            // Update Titles
+            // 1. Set Judul
             if(data.gallery_title) document.getElementById('gallery_title').innerText = data.gallery_title;
             if(data.gallery_subtitle) document.getElementById('gallery_subtitle').innerText = data.gallery_subtitle;
 
-            // Kumpulkan images dari JSON (Maksimal 12 slot)
+            // 2. Kumpulkan Gambar
+            let images = [];
             for (let i = 1; i <= 12; i++) {
-                if(data[`img_gallery_${i}`]) images.push(data[`img_gallery_${i}`]);
+                let key = `img_gallery_${i}`;
+                if (data[key]) images.push(data[key]);
             }
-            // Fallback jika data kosong
-            if (images.length === 0) images = ["assets/room1.jpg", "assets/room2.jpg", "assets/dining-bg.jpg"];
+            
+            // Fallback jika kosong
+            if(images.length === 0) images = ["assets/room1.jpg", "assets/dining-bg.jpg", "assets/meeting-bg.jpg"];
 
-            // Inisialisasi Galeri
-            initGallery();
-        });
-
-        // --- 2. SETUP GALLERY ---
-        function initGallery() {
-            const total = images.length;
-            // Radius: Jarak item dari pusat putaran. Makin besar makin lebar lingkarannya.
-            const radius = window.innerWidth < 768 ? 180 : 280; 
-            const angleStep = 360 / total;
-
+            // 3. Render Elemen
+            const bgContainer = document.getElementById('bg-container');
+            const thumbList = document.getElementById('thumb-list');
+            
+            // Buat Background Layer & Thumbnail
             images.forEach((src, idx) => {
-                const item = document.createElement('div');
-                item.className = `carousel-item ${idx === 0 ? 'active' : ''}`;
-                // Tempatkan item melingkar berdasarkan index
-                item.style.transform = `rotateY(${idx * angleStep}deg) translateZ(${radius}px)`;
-                item.innerHTML = `<img src="${src}" alt="Gallery ${idx}">`;
+                // A. Background Layer
+                const bgDiv = document.createElement('div');
+                bgDiv.className = `bg-layer ${idx === 0 ? 'active' : ''}`; // Yang pertama aktif
+                bgDiv.style.backgroundImage = `url('${src}')`;
+                bgDiv.id = `bg-${idx}`;
+                bgContainer.appendChild(bgDiv);
+
+                // B. Thumbnail Item
+                const thumbDiv = document.createElement('div');
+                thumbDiv.className = `thumb-item ${idx === 0 ? 'active' : ''}`;
+                thumbDiv.innerHTML = `<img src="${src}" alt="Thumb ${idx}">`;
                 
-                // Event Klik: Putar carousel & ganti background
-                item.onclick = () => rotateToItem(idx);
-                
-                stage.appendChild(item);
+                // Event Klik / Hover
+                thumbDiv.onclick = () => activateImage(idx);
+                // thumbDiv.onmouseenter = () => activateImage(idx); // Uncomment jika mau hover effect (desktop)
+
+                thumbList.appendChild(thumbDiv);
             });
 
-            // Set background awal
-            bgBack.style.backgroundImage = `url('${images[0]}')`;
-        }
+            // Fungsi Ganti Gambar
+            function activateImage(index) {
+                // 1. Ganti Background Utama
+                document.querySelectorAll('.bg-layer').forEach(el => el.classList.remove('active'));
+                document.getElementById(`bg-${index}`).classList.add('active');
 
-        // --- 3. ROTATION LOGIC ---
-        function rotateToItem(index) {
-            if (index === currentIndex) return; // Jangan lakukan apa2 jika klik item yg sama
-
-            const total = images.length;
-            const angleStep = 360 / total;
-
-            // Hitung sudut target agar item yang diklik menghadap depan (0 derajat)
-            // Kita gunakan negatif karena stage berputar berlawanan arah jarum jam
-            const targetAngle = -1 * index * angleStep; 
-            
-            // --- Logika Putaran Terdekat (Shortest Path) ---
-            // Ini mencegah carousel berputar liar (misal dari item 1 ke 12 mutar 360deg)
-            let delta = targetAngle - currentAngle;
-            // Normalisasi delta ke range -180 sampai 180
-            while (delta <= -180) delta += 360;
-            while (delta > 180) delta -= 360;
-            
-            currentAngle += delta; // Update sudut global
-
-            // Terapkan Transformasi 3D (Pertahankan kemiringan TikTok + Sudut baru)
-            stage.style.transform = `rotateX(-10deg) rotateY(${currentAngle - 20}deg) rotateZ(5deg)`;
-
-            // Update Active Class
-            document.querySelectorAll('.carousel-item').forEach(el => el.classList.remove('active'));
-            stage.children[index].classList.add('active');
-
-            currentIndex = index;
-            changeBackground(images[index]);
-        }
-
-        // --- 4. BACKGROUND TRANSITION (CROSS-FADE) ---
-        function changeBackground(newSrc) {
-            const url = `url('${newSrc}')`;
-            
-            if (isFrontActive) {
-                // Front sedang aktif, siapkan Back, lalu fade-out Front
-                bgBack.style.backgroundImage = url;
-                bgFront.style.opacity = 0;
-                isFrontActive = false;
-            } else {
-                // Back sedang aktif, siapkan Front, lalu fade-in Front
-                bgFront.style.backgroundImage = url;
-                bgFront.style.opacity = 1;
-                isFrontActive = true;
+                // 2. Highlight Thumbnail
+                document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+                thumbList.children[index].classList.add('active');
             }
-        }
-
-        // --- Optional: Auto Rotate pelan jika tidak ada interaksi ---
-        // let autoRotate = setInterval(() => rotateToItem((currentIndex + 1) % images.length), 5000);
-        // stage.addEventListener('mouseenter', () => clearInterval(autoRotate));
-    </style>
+        });
+    </script>
 </body>
 </html>
