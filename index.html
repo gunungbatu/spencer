@@ -18,85 +18,54 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background-color: #fff; }
 
-        /* --- 2. TYPOGRAPHY --- */
-        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
-        a { text-decoration: none; transition: 0.3s; }
-        
-        /* --- 3. HERO SECTION --- */
+        /* --- 2. HEADER STYLES (Krusial untuk tampilan sempurna) --- */
+        header { 
+            position: fixed; top: 0; left: 0; width: 100%; padding: 15px 50px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            z-index: 1000; transition: 0.4s; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); 
+            box-sizing: border-box;
+        }
+        header.scrolled { background-color: var(--emerald) !important; padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; z-index: 1002; }
+        .nav-menu { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
+        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; text-decoration: none; }
+        .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; text-decoration: none; }
+        .btn-book:hover { background: transparent; color: var(--gold); }
+        .mobile-menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; z-index: 1002; }
+
+        /* Mobile Overlay */
+        .mobile-nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(27, 77, 62, 0.98); z-index: 1001; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-nav-link { color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none; text-transform: uppercase; }
+
+        /* --- 3. HERO & INTRO --- */
         .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
         .video-background-local { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
-        .hero-slider { position:absolute; top:0; left:0; width:100%; height:100%; z-index:-2; display:none; }
-        .hero-slide { position:absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; opacity:0; transition:opacity 1.5s; }
-        .hero-slide.active { opacity:1; }
         .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: -1; }
-        .hero-content { position: relative; z-index: 2; animation: fadeUp 1.5s ease-out; }
-        .hero-subtitle { color: #ffffff; letter-spacing: 3px; font-size: 1rem; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); }
-        .hero-title { color: #ffffff; font-size: 5.5rem; line-height: 1; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); }
+        .hero-title { color: #ffffff; font-size: 5rem; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
 
-        /* --- 4. REFINED INTRO SECTION (FIXED SPACING) --- */
-        .intro { padding: 120px 20px; text-align: center; max-width: 900px; margin: 0 auto; background-color: #fff; }
-        #home_intro_title { font-size: 3.5rem; color: var(--emerald); margin-bottom: 10px; letter-spacing: 2px; line-height: 1.2; }
+        .intro { padding: 120px 20px; text-align: center; max-width: 900px; margin: 0 auto; }
+        #home_intro_title { font-size: 3.5rem; color: var(--emerald); font-family: 'Cormorant Garamond', serif; }
         .divider { width: 60px; height: 3px; background: var(--gold); margin: 30px auto; }
-        #home_intro_desc { font-size: 1.1rem; color: #666; line-height: 2; letter-spacing: 1px; font-weight: 400; }
+        #home_intro_desc { font-size: 1.1rem; color: #666; line-height: 2; }
 
-        /* --- 5. CONTENT LAYOUT (CARDS) --- */
-        .section-separator { text-align: center; padding: 100px 20px 50px; background-color: #fff; border-top: 1px solid #f0f0f0; }
-        .section-separator h2 { font-size: 3.5rem; text-transform: uppercase; letter-spacing: 3px; color: var(--dark); }
-        .section-separator p { color: var(--gold); letter-spacing: 2px; margin-top: 10px; font-size: 0.9rem; text-transform: uppercase; font-weight: 600;}
-
-        .content-card { display: flex; width: 100%; min-height: 650px; height: auto; overflow: hidden; }
-        .card-image-box { flex: 1; position: relative; overflow: hidden; min-height: 450px; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s ease; }
-        .content-card:hover .card-img { transform: scale(1.08); }
-        .card-info-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 80px; background-color: #fff; }
-        .content-card.reverse { flex-direction: row-reverse; }
-        .content-card.reverse .card-info-box { background-color: #FBFBFB; }
-
-        .card-cat { color: var(--gold); letter-spacing: 2px; font-size: 0.85rem; text-transform: uppercase; font-weight: 700; margin-bottom: 15px; }
-        .card-title { font-size: 3rem; margin-bottom: 25px; line-height: 1.1; color: var(--emerald); }
-        .card-desc { font-size: 1.05rem; color: #777; margin-bottom: 35px; line-height: 1.8; }
-        .card-specs { display: flex; gap: 30px; margin-bottom: 45px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 20px 0; }
-        .spec-item { font-size: 0.85rem; text-transform: uppercase; color: #444; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; font-weight: 500; }
-
-        /* BUTTONS */
-        .card-actions { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
-        .btn-discover { color: var(--emerald); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; font-weight: 700; border-bottom: 2px solid var(--gold); padding-bottom: 5px; cursor: pointer; }
-        .btn-discover:hover { color: var(--gold); border-bottom-color: var(--emerald); }
-        .btn-tour { background: transparent; border: 1px solid var(--emerald); color: var(--emerald); padding: 12px 25px; text-transform: uppercase; font-size: 0.8rem; font-weight: 700; border-radius: 4px; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; }
-        .btn-tour:hover { background: var(--emerald); color: #fff; }
-
-        /* --- 6. VIDEO MODAL (ROOM TOUR) --- */
-        .video-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center; }
-        .video-modal-overlay.active { display: flex; }
-        .video-wrapper { width: 90%; max-width: 1100px; aspect-ratio: 16/9; background: #000; position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-        .close-video { position: absolute; top: -50px; right: 0; color: #fff; font-size: 3rem; cursor: pointer; line-height: 1; }
-        .close-video:hover { color: var(--gold); }
-        .video-wrapper video { width: 100%; height: 100%; outline: none; }
-
-        /* --- 7. REVIEW SECTION --- */
-        .review-section { padding: 100px 20px; background: #fff; text-align: center; border-top: 1px solid #eee; }
-        .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; max-width: 1200px; margin: 60px auto; }
-        .review-card { background: #fff; padding: 40px; border-radius: 4px; box-shadow: 0 15px 45px rgba(0,0,0,0.05); text-align: left; position: relative; border: 1px solid #f4f4f4; transition: 0.3s; }
-        .review-card:hover { transform: translateY(-10px); }
-        .review-source-icon { position: absolute; top: 30px; right: 30px; font-size: 1.5rem; opacity: 0.2; }
-        .review-stars { color: #f1c40f; margin-bottom: 20px; letter-spacing: 3px; }
-        .review-text { font-style: italic; color: #555; margin-bottom: 25px; line-height: 1.8; font-size: 1rem; }
-        .review-name { font-weight: 700; color: var(--emerald); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        /* --- 4. CARDS FIX (Agar tombol muncul) --- */
+        .content-card { display: flex; width: 100%; min-height: 600px; height: auto; overflow: hidden; }
+        .card-image-box { flex: 1; min-height: 400px; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; }
+        .card-info-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px 80px; background-color: #fff; }
+        .card-actions { display: flex; gap: 20px; align-items: center; margin-top: 30px; }
+        .btn-tour { background: transparent; border: 1px solid #333; color: #333; padding: 10px 20px; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
 
         /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .card-info-box { padding: 50px; }
-            .hero-title { font-size: 4rem; }
-        }
         @media (max-width: 900px) {
+            header { padding: 15px 20px; }
+            .nav-menu, .btn-book { display: none; }
+            .mobile-menu-btn { display: block; }
+            .content-card { flex-direction: column; }
             .hero-title { font-size: 3rem; }
-            .content-card, .content-card.reverse { flex-direction: column; height: auto; }
-            .card-image-box { height: 350px; min-height: 350px; }
-            .card-info-box { padding: 50px 30px; }
-            #home_intro_title { font-size: 2.5rem; }
-            .section-separator h2 { font-size: 2.5rem; }
         }
-        @keyframes fadeUp { from {opacity:0; transform:translateY(40px);} to {opacity:1; transform:translateY(0);} }
     </style>
 </head>
 <body data-page="home">
@@ -107,13 +76,6 @@
         <video id="heroVideo" autoplay muted loop playsinline class="video-background-local">
             <source src="assets/hero-video.mp4" type="video/mp4">
         </video>
-        
-        <div id="heroSlider" class="hero-slider">
-            <div class="hero-slide" id="slide1"></div>
-            <div class="hero-slide" id="slide2"></div>
-            <div class="hero-slide" id="slide3"></div>
-        </div>
-
         <div class="hero-content">
             <p class="hero-subtitle" id="hero_subtitle">Welcome To</p>
             <h1 class="hero-title" id="hero_title">SPENCER GREEN<br>HOTEL</h1>
@@ -126,211 +88,20 @@
         <p id="home_intro_desc">Inspired by the majesty of Indonesia, Spencer Green offers a collection of rooms & facilities designed to harmonize with the breathtaking landscape of Mount Panderman.</p>
     </section>
 
-    <div class="section-separator">
-        <h2 id="home_accom_title">Accommodation</h2>
-        <p id="home_accom_subtitle">A Collection of Rooms</p>
-    </div>
-    
-    <section class="full-section">
-        <div class="content-card">
-            <div class="card-image-box">
-                <img id="room_deluxe_img" src="assets/room1.jpg" alt="Deluxe Room" class="card-img">
-            </div>
-            <div class="card-info-box">
-                <span class="card-cat" id="room_deluxe_cat">Comfort & Style</span>
-                <h3 class="card-title" id="room_deluxe_title">Deluxe Room</h3>
-                <p class="card-desc" id="room_deluxe_desc">Experience the perfect blend of modern comfort and elegance. Our Deluxe rooms offer a spacious sanctuary with contemporary amenities.</p>
-                <div class="card-specs">
-                    <span class="spec-item" id="room_deluxe_spec1">📐 32 Sqm</span>
-                    <span class="spec-item" id="room_deluxe_spec2">🚿 Rain Shower</span>
-                    <span class="spec-item" id="room_deluxe_spec3">👥 2 Adults</span>
-                </div>
-                <div class="card-actions">
-                    <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
-                    <button class="btn-tour" id="btn_tour_deluxe"><i class="fas fa-play"></i> Room Tour</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="content-card reverse">
-            <div class="card-image-box">
-                <img id="room_superior_img" src="assets/room2.jpg" alt="Superior Room" class="card-img">
-            </div>
-            <div class="card-info-box">
-                <span class="card-cat" id="room_superior_cat">Elevated Views</span>
-                <h3 class="card-title" id="room_superior_title">Superior Room</h3>
-                <p class="card-desc" id="room_superior_desc">Perched on higher floors, the Superior Room offers breathtaking views of the surrounding highlands. Featuring enhanced living space and premium bedding.</p>
-                <div class="card-specs">
-                    <span class="spec-item" id="room_superior_spec1">📐 40 Sqm</span>
-                    <span class="spec-item" id="room_superior_spec2">⛰️ Mountain View</span>
-                    <span class="spec-item" id="room_superior_spec3">☕ Coffee Machine</span>
-                </div>
-                <div class="card-actions">
-                    <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
-                    <button class="btn-tour" id="btn_tour_superior"><i class="fas fa-play"></i> Room Tour</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="content-card">
-            <div class="card-image-box">
-                <img id="room_executive_img" src="assets/room3.avif" alt="Executive Room" class="card-img">
-            </div>
-            <div class="card-info-box">
-                <span class="card-cat" id="room_executive_cat">The Ultimate Luxury</span>
-                <h3 class="card-title" id="room_executive_title">Executive Room</h3>
-                <p class="card-desc" id="room_executive_desc">Designed for the discerning traveler, featuring a separate living area and exclusive access to the Executive Lounge. Enjoy privacy and luxury.</p>
-                <div class="card-specs">
-                    <span class="spec-item" id="room_executive_spec1">📐 56 Sqm</span>
-                    <span class="spec-item" id="room_executive_spec2">🛁 Bathtub</span>
-                    <span class="spec-item" id="room_executive_spec3">🍸 Lounge Access</span>
-                </div>
-                <div class="card-actions">
-                    <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
-                    <button class="btn-tour" id="btn_tour_executive"><i class="fas fa-play"></i> Room Tour</button>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <div class="section-separator">
-        <h2 id="home_facil_title">Facilities</h2>
-        <p id="home_facil_subtitle">Curated Experiences For Every Occasion</p>
-    </div>
-
-    <section class="full-section">
-        <div class="content-card reverse">
-            <div class="card-image-box"><img id="facil_rooftop_img" src="assets/rooftop.jpg" alt="Rooftop Cafe" class="card-img"></div>
-            <div class="card-info-box">
-                <span class="card-cat" id="facil_rooftop_cat">Gastronomy</span>
-                <h3 class="card-title" id="facil_rooftop_title">Rooftop Cafe</h3>
-                <p class="card-desc" id="facil_rooftop_desc">Sip on artisan coffee while embraced by the misty clouds. Our rooftop sanctuary offers a selection of local blends and light bites.</p>
-                <a href="dining.html" class="btn-discover">Explore Dining</a>
-            </div>
-        </div>
-        
-        <div class="content-card">
-            <div class="card-image-box"><img id="facil_dinner_img" src="assets/dining-bg.jpg" alt="Romantic Dinner" class="card-img"></div>
-            <div class="card-info-box">
-                <span class="card-cat" id="facil_dinner_cat">Romantic Experience</span>
-                <h3 class="card-title" id="facil_dinner_title">Candle Light Dinner</h3>
-                <p class="card-desc" id="facil_dinner_desc">An intimate culinary journey under the stars. Curated private dining experience with a bespoke menu and floral arrangements.</p>
-                <a href="dining.html" class="btn-discover">Reserve Now</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="review-section">
-        <div class="section-separator" style="padding-top:0;">
-            <h2>Guest Stories</h2>
-            <p>Memorable moments shared by our guests</p>
-        </div>
-        <div class="review-grid" id="reviewContainer">
-            <p style="color:#888;">Discovering guest experiences...</p>
-        </div>
-    </section>
-
     <footer id="global-footer"></footer>
 
-    <div class="video-modal-overlay" id="tourModal" onclick="closeTour()">
-        <div class="video-wrapper" onclick="event.stopPropagation()">
-            <span class="close-video" onclick="closeTour()">&times;</span>
-            <video id="tourVideo" controls controlsList="nodownload">
-                <source src="" type="video/mp4">
-                Your browser does not support video playback.
-            </video>
-        </div>
-    </div>
-
     <script>
-        // --- 1. DATA LOADER & DYNAMIC BINDING ---
-        fetch('data.json?t=' + new Date().getTime())
-        .then(r => r.json())
-        .then(data => {
-            // Hero Setup
-            const vid = document.getElementById('heroVideo');
-            const slider = document.getElementById('heroSlider');
-            if(data.hero_type === 'slider') {
-                vid.style.display = 'none';
-                slider.style.display = 'block';
-                if(data.img_hero_slide_1) document.getElementById('slide1').style.backgroundImage = `url('${data.img_hero_slide_1}')`;
-                if(data.img_hero_slide_2) document.getElementById('slide2').style.backgroundImage = `url('${data.img_hero_slide_2}')`;
-                if(data.img_hero_slide_3) document.getElementById('slide3').style.backgroundImage = `url('${data.img_hero_slide_3}')`;
-                startSlider();
-            } else {
-                slider.style.display = 'none';
-                vid.src = data.hero_video;
-            }
-
-            // Auto Mapping Text & Images
-            Object.keys(data).forEach(key => {
-                const el = document.getElementById(key);
-                if (el) {
-                    if (key.startsWith('img_') || key.endsWith('_img')) el.src = data[key];
-                    else if (!key.startsWith('social_') && !Array.isArray(data[key])) el.innerText = data[key]; 
-                }
-            });
-
-            // Assign Room Tour Videos
-            if(data.room_deluxe_video) document.getElementById('btn_tour_deluxe').onclick = () => openTour(data.room_deluxe_video);
-            if(data.room_superior_video) document.getElementById('btn_tour_superior').onclick = () => openTour(data.room_superior_video);
-            if(data.room_executive_video) document.getElementById('btn_tour_executive').onclick = () => openTour(data.room_executive_video);
-        });
-
-        // --- 2. ROOM TOUR LOGIC ---
-        function openTour(src) {
-            const modal = document.getElementById('tourModal');
-            const vid = document.getElementById('tourVideo');
-            if(!src || src === "#") return alert("Room tour video is being prepared.");
-            vid.src = src;
-            modal.classList.add('active');
-            vid.play();
-        }
-        function closeTour() {
-            const modal = document.getElementById('tourModal');
-            const vid = document.getElementById('tourVideo');
-            modal.classList.remove('active');
-            vid.pause();
-            vid.currentTime = 0;
-        }
-
-        // --- 3. SLIDER LOGIC ---
-        function startSlider() {
-            let slides = document.querySelectorAll('.hero-slide');
-            let i = 0; if(slides.length) slides[0].classList.add('active');
-            setInterval(() => {
-                slides[i].classList.remove('active');
-                i = (i+1) % slides.length;
-                slides[i].classList.add('active');
-            }, 5000);
-        }
-
-        // --- 4. GLOBAL EVENTS ---
+        // Override fungsi scroll untuk navbar
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if(nav) nav.classList.toggle('scrolled', window.scrollY > 50);
+            if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // Load Reviews from separate file
-        fetch('reviews.json?t=' + Date.now()).then(r => r.json()).then(data => {
-            const container = document.getElementById('reviewContainer');
-            const active = data.filter(r => r.visible === true).slice(0, 3);
-            if(active.length > 0) {
-                container.innerHTML = '';
-                active.forEach(r => {
-                    let stars = '⭐'.repeat(r.rating);
-                    container.innerHTML += `
-                        <div class="review-card">
-                            <i class="fas fa-quote-right review-source-icon"></i>
-                            <div class="review-stars">${stars}</div>
-                            <p class="review-text">"${r.comment}"</p>
-                            <div class="review-name">${r.name}</div>
-                        </div>`;
-                });
-            } else {
-                container.innerHTML = '<p>Thank you for choosing us.</p>';
-            }
-        });
+        // Booking Jump Fix
+        function openBooking() {
+            const modal = document.getElementById('bookingModal');
+            if(modal) modal.classList.add('active');
+        }
     </script>
 </body>
 </html>
