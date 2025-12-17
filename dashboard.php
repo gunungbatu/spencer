@@ -177,7 +177,7 @@ if (isset($_POST['save_reviews'])) {
         'wedding'=>['icon'=>'fa-heart','title'=>'Wedding Page','prefixes'=>['wedding_intro','wedding_venue','wedding_spec','img_wedding_gal','wedding_form']],
         'meeting'=>['icon'=>'fa-briefcase','title'=>'Meeting Page','prefixes'=>['meeting_ballroom','meeting_func','meeting_pkg']],
         'gallery'=>['icon'=>'fa-images','title'=>'Gallery Page','prefixes'=>['gallery','img_gallery']],
-        'social'=>['icon'=>'fa-share-alt','title'=>'Social & Header','prefixes'=>['social','header_btn']],
+        'social'=>['icon'=>'fa-share-alt','title'=>'Social & Config','prefixes'=>['social','header_btn','api']],
         'reviews'=>['icon'=>'fa-star','title'=>'Guest Reviews','prefixes'=>[]]
     ];
     $active_page = isset($_GET['page']) ? $_GET['page'] : 'home';
