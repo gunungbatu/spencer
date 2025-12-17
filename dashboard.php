@@ -130,16 +130,19 @@ if (isset($_POST['save_reviews'])) {
 
     <?php 
     // DAFTAR MENU DASHBOARD - PERBAIKAN KRUSIAL DI SINI
-    $pages = [
-        // PERHATIKAN: Prefix 'img_hero' DITAMBAHKAN di sini agar slider terdeteksi
+  $pages = [
         'home'=>['icon'=>'fa-home','title'=>'Home (Hero & Intro)','prefixes'=>['hero','img_hero','home_intro']],
-        
         'rooms'=>['icon'=>'fa-bed','title'=>'Home (Rooms)','prefixes'=>['room_deluxe','room_superior','room_executive','img_room']], 
         'facilities'=>['icon'=>'fa-concierge-bell','title'=>'Home (Facilities)','prefixes'=>['home_facil','facil_rooftop','facil_dinner','img_wedding_venue','wedding_title','wedding_desc','img_meeting_hero','meeting_title','meeting_desc','meeting_subtitle','wedding_subtitle']],
         'dining'=>['icon'=>'fa-utensils','title'=>'Dining Page','prefixes'=>['dining_subtitle','dining_title','dining_rooftop','dining_botanica','dining_candle','img_dining']],
         'wedding'=>['icon'=>'fa-heart','title'=>'Wedding Page','prefixes'=>['wedding_intro','wedding_venue','wedding_spec','img_wedding_gal','wedding_form']],
-        'meeting'=>['icon'=>'fa-briefcase','title'=>'Meeting Page','prefixes'=>['meeting_ballroom','meeting_func','meeting_pkg']],
+        
+        // UPDATE MEETING: Tambah meeting_tab, meeting_pkg
+        'meeting'=>['icon'=>'fa-briefcase','title'=>'Meeting Page','prefixes'=>['meeting_ballroom','meeting_func','meeting_pkg','meeting_tab','img_meeting']],
+        
+        // UPDATE GALLERY: Tambah gallery_columns, gallery_cat
         'gallery'=>['icon'=>'fa-images','title'=>'Gallery Page','prefixes'=>['gallery','img_gallery']],
+        
         'social'=>['icon'=>'fa-share-alt','title'=>'Social & Header','prefixes'=>['social','header_btn']],
         'reviews'=>['icon'=>'fa-star','title'=>'Guest Reviews','prefixes'=>[]]
     ];
