@@ -1,76 +1,60 @@
 <?php
 session_start();
 
-// --- KONFIGURASI ---
+// --- CONFIG ---
 $json_file = 'data.json';
-$review_file = 'reviews.json';
 $config_file = 'config.json';
 $upload_dir = 'assets/';
 
-// --- FITUR BACKUP DATA (Dengan Error Handling) ---
+// --- BACKUP DATA ---
 if (isset($_GET['backup_data'])) {
-    if (!class_exists('ZipArchive')) {
-        die("Error: Fitur ZIP tidak aktif di server ini. Hubungi hosting provider Anda.");
-    }
-    
+    if (!class_exists('ZipArchive')) die("Error: ZipArchive not supported.");
     $zip_file = 'backup_spencer_' . date('Y-m-d_H-i') . '.zip';
     $zip = new ZipArchive();
     if ($zip->open($zip_file, ZipArchive::CREATE) === TRUE) {
-        // Masukkan File JSON
         if(file_exists('data.json')) $zip->addFile('data.json');
-        if(file_exists('reviews.json')) $zip->addFile('reviews.json');
         if(file_exists('config.json')) $zip->addFile('config.json');
-        
-        // Masukkan Folder Assets
         if(is_dir('assets')) {
             $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('assets'), RecursiveIteratorIterator::LEAVES_ONLY);
             foreach ($files as $name => $file) {
                 if (!$file->isDir()) {
-                    $filePath = $file->getRealPath();
-                    $relativePath = 'assets/' . substr($filePath, strlen(realpath('assets')) + 1);
-                    $zip->addFile($filePath, $relativePath);
+                    $path = $file->getRealPath();
+                    $rel = 'assets/' . substr($path, strlen(realpath('assets')) + 1);
+                    $zip->addFile($path, $rel);
                 }
             }
         }
         $zip->close();
-        
-        // Force Download
         header('Content-Type: application/zip');
         header('Content-Disposition: attachment; filename="'.basename($zip_file).'"');
         header('Content-Length: ' . filesize($zip_file));
         readfile($zip_file);
-        unlink($zip_file); // Hapus file zip di server setelah download
+        unlink($zip_file);
         exit;
-    } else {
-        die("Gagal membuat file ZIP. Pastikan folder dapat ditulisi (writable).");
     }
 }
 
-// 1. LOAD CONFIG & PASSWORD
+// 1. AUTH
 $config = [];
-if (file_exists($config_file)) {
-    $config = json_decode(file_get_contents($config_file), true);
-}
+if (file_exists($config_file)) $config = json_decode(file_get_contents($config_file), true);
 $password_admin = isset($config['admin_pin']) ? $config['admin_pin'] : 'Spencer123'; 
 
-// 2. LOGIC AUTH
 if (isset($_GET['logout'])) { session_destroy(); header("Location: dashboard.php"); exit; }
 if (isset($_POST['login'])) {
-    if ($_POST['password'] === $password_admin) { $_SESSION['loggedin'] = true; } 
-    else { $error = "PIN Salah!"; }
+    if ($_POST['password'] === $password_admin) $_SESSION['loggedin'] = true; 
+    else $error = "PIN Salah!";
 }
 if (!isset($_SESSION['loggedin'])) {
-    // FORM LOGIN
     echo '<body style="background:#f4f4f4; display:flex; height:100vh; justify-content:center; align-items:center; font-family:sans-serif;">
-          <form method="post" style="background:white; padding:40px; border-radius:8px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.1); border-top:5px solid #1B4D3E;">
-          <h2 style="color:#1B4D3E; margin-top:0;">SPENCER ADMIN</h2>
-          <input type="password" name="password" placeholder="Masukkan PIN" style="padding:10px; width:100%; margin:10px 0; border:1px solid #ddd;" required>
-          <button type="submit" name="login" style="padding:10px 20px; background:#1B4D3E; color:white; border:none; width:100%; cursor:pointer;">LOGIN</button>
+          <form method="post" style="background:white; padding:40px; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.1); border-top:5px solid #1B4D3E;">
+          <h2 style="color:#1B4D3E; margin:0 0 20px;">SPENCER ADMIN</h2>
+          <input type="password" name="password" placeholder="Masukkan PIN" style="padding:10px; width:100%; border:1px solid #ddd;" required>
+          <button type="submit" name="login" style="margin-top:10px; padding:10px 20px; background:#1B4D3E; color:white; border:none; width:100%; cursor:pointer;">LOGIN</button>
           '.(isset($error)?"<p style='color:red'>$error</p>":"").'</form></body>';
     exit;
 }
 
-// 3. FUNGSI SCAN FOLDER ASSETS (UPDATE: SUPPORT VIDEO MP4)
+// 2. SERVER IMAGES
 function getServerImages($dir) {
     $images = [];
     if (is_dir($dir)) {
@@ -85,31 +69,48 @@ function getServerImages($dir) {
 }
 $server_images = getServerImages($upload_dir);
 
-// 4. SAVE KONTEN WEBSITE
+// 3. SAVE DATA
 $current_data = json_decode(file_get_contents($json_file), true);
 if (!$current_data) $current_data = [];
 
 if (isset($_POST['save_content'])) {
+    // A. Handle Normal Fields
     foreach ($current_data as $key => $val) {
-        if (isset($_POST[$key])) $current_data[$key] = $_POST[$key];
-    }
-    foreach ($_FILES as $key => $file) {
-        if ($file['name'] && $file['error'] === 0) {
-            $target_file = $upload_dir . basename($file['name']);
-            if (move_uploaded_file($file['tmp_name'], $target_file)) {
-                $current_data[$key] = $target_file;
-            }
+        if (isset($_POST[$key]) && !is_array($_POST[$key])) {
+            $current_data[$key] = $_POST[$key];
         }
     }
-    file_put_contents($json_file, json_encode($current_data, JSON_PRETTY_PRINT));
-    $msg = "Konten Website Berhasil Diupdate!";
-}
+    // B. Handle File Uploads (Normal)
+    foreach ($_FILES as $key => $file) {
+        if (!is_array($file['name']) && $file['name'] && $file['error'] === 0) {
+            $target = $upload_dir . basename($file['name']);
+            if (move_uploaded_file($file['tmp_name'], $target)) $current_data[$key] = $target;
+        }
+    }
+    // C. Handle Special Gallery Items (Array)
+    if(isset($_POST['gallery_items_src'])) {
+        $new_items = [];
+        $srcs = $_POST['gallery_items_src'];
+        $tags = $_POST['gallery_items_tag'];
+        
+        for($i=0; $i<count($srcs); $i++) {
+            // Cek jika ada file baru diupload untuk slot ini
+            $uploaded_src = $srcs[$i]; // Default pake yg text
+            if(isset($_FILES['gallery_file']['name'][$i]) && $_FILES['gallery_file']['error'][$i] === 0) {
+                $fname = basename($_FILES['gallery_file']['name'][$i]);
+                if(move_uploaded_file($_FILES['gallery_file']['tmp_name'][$i], $upload_dir . $fname)) {
+                    $uploaded_src = $upload_dir . $fname;
+                }
+            }
+            if($uploaded_src) {
+                $new_items[] = ["src" => $uploaded_src, "tag" => $tags[$i]];
+            }
+        }
+        $current_data['gallery_items'] = $new_items;
+    }
 
-// 5. SAVE REVIEW
-$reviews = json_decode(file_get_contents($review_file), true);
-if (!$reviews) $reviews = [];
-if (isset($_POST['save_reviews'])) {
-    header("Location: dashboard.php?msg=Review Saved"); exit; 
+    file_put_contents($json_file, json_encode($current_data, JSON_PRETTY_PRINT));
+    $msg = "Data Tersimpan!";
 }
 ?>
 
@@ -118,188 +119,152 @@ if (isset($_POST['save_reviews'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spencer Dashboard Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Spencer Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #1B4D3E; --gold: #C5A059; --bg: #f8f9fa; --white: #ffffff; }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 250px; background: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
-        .brand { padding: 25px; font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .menu { flex: 1; padding: 20px 0; overflow-y: auto; }
-        .menu a { display: block; padding: 15px 25px; color: rgba(255,255,255,0.7); text-decoration: none; transition: 0.3s; border-left: 4px solid transparent; }
-        .menu a:hover, .menu a.active { background: rgba(0,0,0,0.2); color: var(--gold); border-left-color: var(--gold); }
-        .logout { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .main { flex: 1; overflow-y: auto; padding: 30px; }
-        .header { display: flex; justify-content: space-between; margin-bottom: 30px; align-items: center; }
-        .card { background: white; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: #555; }
-        input[type="text"], textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; }
-        .btn-save { background: var(--gold); color: white; border: none; padding: 12px 30px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .media-control { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
-        .media-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; border: 1px solid #eee; background: #fafafa; margin-bottom: 10px; cursor: pointer; }
-        .btn-browse { background: #eee; border: 1px solid #ddd; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 900px; border-radius: 8px; max-height: 80vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .close { color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; }
-        .gallery-item { border: 2px solid transparent; cursor: pointer; border-radius: 4px; overflow: hidden; position: relative; }
-        .gallery-item img, .gallery-item video { width: 100%; height: 100px; object-fit: cover; display: block; }
-        .gallery-item:hover { border-color: var(--gold); }
-        .gallery-name { font-size: 0.7rem; text-align: center; padding: 5px; background: #fafafa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        @media(max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; } .menu { display: flex; overflow-x: auto; padding: 10px; } .menu a { padding: 10px 15px; white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; } .menu a.active { border-bottom-color: var(--gold); } }
+        body { font-family: sans-serif; margin:0; display:flex; height:100vh; background:#f4f4f4; }
+        .sidebar { width:250px; background:#1B4D3E; color:#fff; display:flex; flex-direction:column; }
+        .brand { padding:20px; font-weight:bold; border-bottom:1px solid #ffffff20; }
+        .menu { flex:1; padding:10px; overflow-y:auto; }
+        .menu a { display:block; padding:12px; color:#ffffff90; text-decoration:none; }
+        .menu a.active, .menu a:hover { color:#fff; background:#ffffff10; }
+        .main { flex:1; padding:30px; overflow-y:auto; }
+        .card { background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05); }
+        input, select, textarea { width:100%; padding:10px; margin:5px 0 15px; border:1px solid #ddd; box-sizing:border-box; }
+        .btn { padding:10px 20px; background:#C5A059; color:#fff; border:none; cursor:pointer; }
+        .row-item { display:flex; gap:10px; align-items:center; background:#f9f9f9; padding:10px; margin-bottom:10px; border:1px solid #eee; }
+        .media-prev { width:60px; height:60px; object-fit:cover; background:#eee; }
     </style>
 </head>
 <body>
-
     <?php 
-    $pages = [
-        'home'=>['icon'=>'fa-home','title'=>'Home (Hero & Intro)','prefixes'=>['hero','img_hero','home_intro']],
-        'rooms'=>['icon'=>'fa-bed','title'=>'Home (Rooms)','prefixes'=>['room_deluxe','room_superior','room_executive','img_room']], 
-        'facilities'=>['icon'=>'fa-concierge-bell','title'=>'Home (Facilities)','prefixes'=>['home_facil','facil_rooftop','facil_dinner','img_wedding_venue','wedding_title','wedding_desc','img_meeting_hero','meeting_title','meeting_desc','meeting_subtitle','wedding_subtitle']],
-        'dining'=>['icon'=>'fa-utensils','title'=>'Dining Page','prefixes'=>['dining_subtitle','dining_title','dining_rooftop','dining_botanica','dining_candle','img_dining']],
-        'wedding'=>['icon'=>'fa-heart','title'=>'Wedding Page','prefixes'=>['wedding_intro','wedding_venue','wedding_spec','img_wedding_gal','wedding_form']],
-        'meeting'=>['icon'=>'fa-briefcase','title'=>'Meeting Page','prefixes'=>['meeting_ballroom','meeting_func','meeting_pkg','meeting_tab','img_meeting']],
-        'gallery'=>['icon'=>'fa-images','title'=>'Gallery Page','prefixes'=>['gallery_title','gallery_subtitle','img_gallery_hero','gallery_columns','gallery_height','img_gallery']],
-        'social'=>['icon'=>'fa-share-alt','title'=>'Social & Header','prefixes'=>['social','header_btn']],
-        'reviews'=>['icon'=>'fa-star','title'=>'Guest Reviews','prefixes'=>[]]
+    $page = isset($_GET['page']) ? $_GET['page'] : 'home';
+    $menus = [
+        'home'=>['Home Page', ['hero','home_intro']],
+        'rooms'=>['Rooms', ['room_deluxe','room_superior','room_executive']],
+        'facilities'=>['Facilities', ['home_facil','facil_rooftop','facil_dinner']],
+        'dining'=>['Dining', ['dining']],
+        'meeting'=>['Meeting', ['meeting']],
+        'wedding'=>['Wedding', ['wedding']],
+        'gallery'=>['Gallery Manager', []], // Spesial
+        'social'=>['Social Media', ['social']]
     ];
-    $active_page = isset($_GET['page']) ? $_GET['page'] : 'home';
-    $page_info = $pages[$active_page];
     ?>
 
     <div class="sidebar">
-        <div class="brand"><i class="fas fa-hotel"></i> SPENCER ADMIN</div>
+        <div class="brand">SPENCER ADMIN</div>
         <div class="menu">
-            <?php foreach($pages as $key => $p): ?>
-                <a href="?page=<?php echo $key; ?>" class="<?php echo ($active_page == $key) ? 'active' : ''; ?>">
-                    <i class="fas <?php echo $p['icon']; ?>"></i> <?php echo $p['title']; ?>
-                </a>
+            <?php foreach($menus as $k=>$v): ?>
+                <a href="?page=<?php echo $k; ?>" class="<?php echo $page==$k?'active':''; ?>"><?php echo $v[0]; ?></a>
             <?php endforeach; ?>
         </div>
-        <div class="logout">
-            <a href="?backup_data=true" style="color:#FFD700; text-decoration:none; margin-bottom:10px; display:block;">
-                <i class="fas fa-download"></i> Backup Data
-            </a>
-            <a href="?logout=true" style="color:#ff6b6b; text-decoration:none;">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
+        <div style="padding:20px;">
+            <a href="?backup_data=true" style="color:#FFD700; text-decoration:none;">Backup Data</a><br><br>
+            <a href="?logout=true" style="color:#ff9999; text-decoration:none;">Logout</a>
         </div>
     </div>
 
     <div class="main">
-        <div class="header">
-            <h2 style="margin:0;"><?php echo $page_info['title']; ?></h2>
-            <a href="index.html" target="_blank" style="color:var(--primary); text-decoration:none; font-weight:600;"><i class="fas fa-external-link-alt"></i> Lihat Website</a>
-        </div>
+        <h2><?php echo $menus[$page][0]; ?></h2>
+        <?php if(isset($msg)) echo "<p style='color:green'>$msg</p>"; ?>
 
-        <?php if(isset($msg) || isset($_GET['msg'])) echo "<div style='background:#d1e7dd; color:#0f5132; padding:15px; border-radius:6px; margin-bottom:20px;'><i class='fas fa-check'></i> Perubahan berhasil disimpan!</div>"; ?>
+        <form method="post" enctype="multipart/form-data">
+            
+            <?php if($page == 'gallery'): ?>
+                <div class="card">
+                    <h3>Gallery Settings</h3>
+                    <label>Judul Halaman</label><input type="text" name="gallery_title" value="<?php echo $current_data['gallery_title']??''; ?>">
+                    <label>Sub Judul</label><input type="text" name="gallery_subtitle" value="<?php echo $current_data['gallery_subtitle']??''; ?>">
+                    <label>Header Image</label>
+                    <input type="text" name="img_gallery_hero" id="hero_img" value="<?php echo $current_data['img_gallery_hero']??''; ?>">
+                    <button type="button" onclick="openMediaModal('hero_img')">Pilih</button>
+                    
+                    <hr style="margin:20px 0;">
+                    
+                    <h3>Daftar Kategori (Tags)</h3>
+                    <p style="font-size:0.8rem; color:#666;">Pisahkan dengan koma. Contoh: Rooms, Dining, MICE, Wedding</p>
+                    <input type="text" name="gallery_tags" value="<?php echo $current_data['gallery_tags']??'All, Rooms'; ?>">
 
-        <?php if ($active_page == 'reviews'): ?>
-            <div class="card"><p>Fitur review disederhanakan untuk mode aman ini.</p></div>
-        <?php else: ?>
-            <form method="post" enctype="multipart/form-data">
+                    <h3>Foto Galeri (Unlimited)</h3>
+                    <div id="gallery-rows">
+                        <?php 
+                        $items = isset($current_data['gallery_items']) ? $current_data['gallery_items'] : [];
+                        foreach($items as $i => $item): 
+                        ?>
+                        <div class="row-item">
+                            <img src="<?php echo $item['src']; ?>" class="media-prev" id="prev_<?php echo $i; ?>">
+                            <div style="flex:1;">
+                                <input type="text" name="gallery_items_src[]" id="input_<?php echo $i; ?>" value="<?php echo $item['src']; ?>" placeholder="Path Gambar">
+                                <input type="file" name="gallery_file[]">
+                            </div>
+                            <div style="width:150px;">
+                                <select name="gallery_items_tag[]">
+                                    <?php 
+                                    // Generate Option dari Tags
+                                    $tags = explode(',', $current_data['gallery_tags']);
+                                    foreach($tags as $t) {
+                                        $t = trim($t);
+                                        $sel = ($t == $item['tag']) ? 'selected' : '';
+                                        echo "<option value='$t' $sel>$t</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <button type="button" onclick="openMediaModal('input_<?php echo $i; ?>', 'prev_<?php echo $i; ?>')" style="background:#eee; color:#333;">Browse</button>
+                            <button type="button" onclick="this.parentElement.remove()" style="background:#d9534f; color:#fff;">Hapus</button>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <button type="button" onclick="addGalleryRow()" class="btn" style="background:#1B4D3E;">+ Tambah Foto</button>
+                </div>
+
+            <?php else: ?>
                 <?php 
-                $allowed_prefixes = $page_info['prefixes'];
-                $has_content = false;
-                $groups = [];
-                
-                // Pastikan data JSON valid
-                if (empty($current_data)) {
-                    echo "<div class='card' style='color:red;'>Error: Data tidak ditemukan atau data.json rusak.</div>";
-                } else {
-                    foreach ($current_data as $key => $val) {
-                        $show = false;
-                        foreach($allowed_prefixes as $ap) {
-                            if ($key === $ap || strpos($key, $ap . '_') === 0) { $show = true; break; }
+                $prefixes = $menus[$page][1];
+                $found = false;
+                foreach($current_data as $key => $val) {
+                    $match = false;
+                    foreach($prefixes as $p) { if(strpos($key, $p) === 0) $match = true; }
+                    if($match && !is_array($val)) { // Skip array (gallery items)
+                        $found = true;
+                        echo "<div class='card'><label>$key</label>";
+                        if(strpos($key, 'img')===0 || strpos($key, 'hero')===0) {
+                            echo "<div style='display:flex; gap:10px;'>
+                                    <input type='text' name='$key' id='$key' value='$val'>
+                                    <button type='button' onclick=\"openMediaModal('$key')\">Pilih</button>
+                                  </div>
+                                  <input type='file' name='$key'>";
+                        } else {
+                            echo "<input type='text' name='$key' value='$val'>";
                         }
-                        if ($show) {
-                            $parts = explode('_', $key);
-                            $prefix = $parts[0]; 
-                            if($prefix == 'room' && isset($parts[1])) $prefix = 'room_' . $parts[1]; 
-                            if($prefix == 'img' && isset($parts[1])) $prefix = $parts[1];
-                            if($prefix == 'facil' && isset($parts[1])) $prefix = 'facilities_' . $parts[1];
-                            
-                            // Grouping khusus untuk fasilitas agar tidak terpecah aneh
-                            if($key == 'home_facil_title' || $key == 'home_facil_subtitle') $prefix = 'facilities_header';
-                            
-                            $groups[$prefix][] = ['key'=>$key, 'val'=>$val];
-                            $has_content = true;
-                        }
+                        echo "</div>";
                     }
                 }
+                if(!$found) echo "<p>Data belum diinisialisasi di data.json</p>";
+                ?>
+            <?php endif; ?>
 
-                if(!$has_content && !empty($current_data)): ?>
-                    <div class="card"><p>Tidak ada data yang cocok untuk halaman ini.</p></div>
-                <?php else: 
-                    foreach ($groups as $grp => $items): ?>
-                        <div class="card">
-                            <h3 style="color:var(--primary); border-bottom:1px solid #eee; padding-bottom:10px; margin-top:0; text-transform:uppercase;">
-                                <i class="fas fa-layer-group"></i> <?php echo str_replace('_', ' ', $grp); ?>
-                            </h3>
-                            <?php foreach($items as $item): 
-                                $k = $item['key']; $v = $item['val']; 
-                                $label = ucwords(str_replace(['_', 'img', 'facil', 'room'], [' ', '', '', ''], $k));
-                                $is_media = (strpos($k, 'img_') === 0) || (strpos($k, 'video') !== false) || (substr($k, -4) === '_img');
-                            ?>
-                                <label><?php echo $label; ?></label>
-                                
-                                <?php if($k === 'hero_type'): ?>
-                                    <select name="<?php echo $k; ?>">
-                                        <option value="video" <?php echo ($v === 'video') ? 'selected' : ''; ?>>Video Background</option>
-                                        <option value="slider" <?php echo ($v === 'slider') ? 'selected' : ''; ?>>Image Slider</option>
-                                    </select>
-
-                                <?php elseif($is_media): ?>
-                                    <div style="background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:6px;">
-                                        <?php if(pathinfo($v, PATHINFO_EXTENSION) == 'mp4'): ?>
-                                            <video src="<?php echo $v; ?>" style="height:150px; width:100%; object-fit:cover; border-radius:4px; margin-bottom:10px;"></video>
-                                        <?php else: ?>
-                                            <img src="<?php echo $v; ?>?t=<?php echo time(); ?>" id="preview_<?php echo $k; ?>" class="media-preview" onclick="openMediaModal('<?php echo $k; ?>')">
-                                        <?php endif; ?>
-                                        <div class="media-control">
-                                            <input type="text" name="<?php echo $k; ?>" id="input_<?php echo $k; ?>" value="<?php echo $v; ?>" placeholder="Link file..." style="margin-bottom:0; flex:1;">
-                                            <button type="button" class="btn-browse" onclick="openMediaModal('<?php echo $k; ?>')"><i class="fas fa-folder-open"></i> Pilih</button>
-                                        </div>
-                                        <div style="font-size:0.8rem; color:#666; margin-top:5px;">Atau Upload Baru: <input type="file" name="<?php echo $k; ?>" style="font-size:0.8rem;"></div>
-                                    </div>
-
-                                <?php elseif(strpos($k, 'social_') === 0 || strpos($k, 'header_') === 0 || strpos($k, '_link') !== false): ?>
-                                    <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
-
-                                <?php elseif(strpos($k, 'desc') !== false || strlen($v) > 50): ?>
-                                    <textarea name="<?php echo $k; ?>"><?php echo $v; ?></textarea>
-
-                                <?php else: ?>
-                                    <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
-                                <?php endif; ?>
-                                <br>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endforeach; ?>
-                    <button type="submit" name="save_content" class="btn-save" style="margin-bottom:50px;">SIMPAN PERUBAHAN</button>
-                <?php endif; ?>
-            </form>
-        <?php endif; ?>
+            <div style="position:fixed; bottom:20px; right:20px;">
+                <button type="submit" name="save_content" class="btn" style="padding:15px 30px; font-size:1.1rem; box-shadow:0 5px 15px rgba(0,0,0,0.2);">SIMPAN PERUBAHAN</button>
+            </div>
+        </form>
     </div>
 
-    <div id="mediaModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3 style="margin:0;">Media Library (Server Hosting)</h3><span class="close" onclick="closeMediaModal()">&times;</span></div>
-            <div class="gallery-grid">
+    <div id="mediaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999;">
+        <div style="background:#fff; width:80%; height:80%; margin:5% auto; padding:20px; overflow:auto; border-radius:8px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h3>Media Library</h3>
+                <button onclick="document.getElementById('mediaModal').style.display='none'" style="background:red; color:#fff; border:none; padding:5px 10px;">X</button>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:10px;">
                 <?php foreach($server_images as $img): ?>
-                    <div class="gallery-item" onclick="selectImage('<?php echo $img; ?>')">
-                        <?php 
-                            // Cek Ekstensi untuk menampilkan video atau gambar
-                            $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
-                            if(in_array($ext, ['mp4','webm','mov'])) {
-                                echo '<video src="'.$img.'" muted style="pointer-events:none;"></video>';
-                            } else {
-                                echo '<img src="'.$img.'" loading="lazy">';
-                            }
-                        ?>
-                        <div class="gallery-name"><?php echo basename($img); ?></div>
+                    <div onclick="selectImage('<?php echo $img; ?>')" style="cursor:pointer; border:1px solid #ddd; padding:5px;">
+                        <?php if(preg_match('/\.(mp4|webm)$/i', $img)): ?>
+                            <video src="<?php echo $img; ?>" style="width:100%; height:80px; object-fit:cover;"></video>
+                        <?php else: ?>
+                            <img src="<?php echo $img; ?>" style="width:100%; height:80px; object-fit:cover;">
+                        <?php endif; ?>
+                        <div style="font-size:0.7rem; overflow:hidden;"><?php echo basename($img); ?></div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -307,16 +272,42 @@ if (isset($_POST['save_reviews'])) {
     </div>
 
     <script>
-        let currentInputId = '';
-        function openMediaModal(key) { currentInputId = key; document.getElementById('mediaModal').style.display = 'block'; }
-        function closeMediaModal() { document.getElementById('mediaModal').style.display = 'none'; }
-        function selectImage(path) {
-            document.getElementById('input_' + currentInputId).value = path;
-            const previewImg = document.getElementById('preview_' + currentInputId);
-            if(previewImg) previewImg.src = path;
-            closeMediaModal();
+        let targetInput = '';
+        let targetPrev = '';
+
+        function openMediaModal(inputId, prevId = null) {
+            targetInput = inputId;
+            targetPrev = prevId;
+            document.getElementById('mediaModal').style.display = 'block';
         }
-        window.onclick = function(event) { if (event.target == document.getElementById('mediaModal')) closeMediaModal(); }
+
+        function selectImage(path) {
+            document.getElementById(targetInput).value = path;
+            if(targetPrev) document.getElementById(targetPrev).src = path;
+            document.getElementById('mediaModal').style.display = 'none';
+        }
+
+        function addGalleryRow() {
+            const id = Date.now(); // Unique ID
+            const tags = document.querySelector('input[name="gallery_tags"]').value.split(',');
+            let opts = '';
+            tags.forEach(t => opts += `<option value="${t.trim()}">${t.trim()}</option>`);
+
+            const html = `
+            <div class="row-item">
+                <div class="media-prev" style="background:#ddd;"></div>
+                <div style="flex:1;">
+                    <input type="text" name="gallery_items_src[]" id="new_${id}" placeholder="Path Gambar">
+                    <input type="file" name="gallery_file[]">
+                </div>
+                <div style="width:150px;">
+                    <select name="gallery_items_tag[]">${opts}</select>
+                </div>
+                <button type="button" onclick="openMediaModal('new_${id}')" style="background:#eee;">Browse</button>
+                <button type="button" onclick="this.parentElement.remove()" style="background:#d9534f; color:#fff;">Hapus</button>
+            </div>`;
+            document.getElementById('gallery-rows').insertAdjacentHTML('beforeend', html);
+        }
     </script>
 </body>
 </html>
