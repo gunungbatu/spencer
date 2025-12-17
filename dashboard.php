@@ -31,13 +31,14 @@ if (!isset($_SESSION['loggedin'])) {
     exit;
 }
 
-// 3. FUNGSI SCAN FOLDER ASSETS
+// 3. FUNGSI SCAN FOLDER ASSETS (UPDATE: SUPPORT VIDEO MP4)
 function getServerImages($dir) {
     $images = [];
     if (is_dir($dir)) {
         $files = scandir($dir);
         foreach ($files as $file) {
-            if ($file !== '.' && $file !== '..' && preg_match('/\.(jpg|jpeg|png|gif|webp|avif)$/i', $file)) {
+            // PERBAIKAN DI SINI: Menambahkan mp4, webm, mov ke dalam regex
+            if ($file !== '.' && $file !== '..' && preg_match('/\.(jpg|jpeg|png|gif|webp|avif|mp4|webm|mov)$/i', $file)) {
                 $images[] = $dir . $file;
             }
         }
@@ -106,7 +107,7 @@ if (isset($_POST['save_reviews'])) {
         .close { color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; }
         .gallery-item { border: 2px solid transparent; cursor: pointer; border-radius: 4px; overflow: hidden; position: relative; }
-        .gallery-item img { width: 100%; height: 100px; object-fit: cover; display: block; }
+        .gallery-item img, .gallery-item video { width: 100%; height: 100px; object-fit: cover; display: block; }
         .gallery-item:hover { border-color: var(--gold); }
         .gallery-name { font-size: 0.7rem; text-align: center; padding: 5px; background: #fafafa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         @media(max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; } .menu { display: flex; overflow-x: auto; padding: 10px; } .menu a { padding: 10px 15px; white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; } .menu a.active { border-bottom-color: var(--gold); } }
@@ -209,6 +210,9 @@ if (isset($_POST['save_reviews'])) {
                                         <div style="font-size:0.8rem; color:#666; margin-top:5px;">Atau Upload Baru: <input type="file" name="<?php echo $k; ?>" style="font-size:0.8rem;"></div>
                                     </div>
 
+                                <?php elseif(strpos($k, 'social_') === 0 || strpos($k, 'header_') === 0 || strpos($k, '_link') !== false): ?>
+                                    <input type="text" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
+
                                 <?php elseif(strpos($k, 'desc') !== false || strlen($v) > 50): ?>
                                     <textarea name="<?php echo $k; ?>"><?php echo $v; ?></textarea>
 
@@ -227,11 +231,19 @@ if (isset($_POST['save_reviews'])) {
 
     <div id="mediaModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h3 style="margin:0;">Media Library</h3><span class="close" onclick="closeMediaModal()">&times;</span></div>
+            <div class="modal-header"><h3 style="margin:0;">Media Library (Server Hosting)</h3><span class="close" onclick="closeMediaModal()">&times;</span></div>
             <div class="gallery-grid">
                 <?php foreach($server_images as $img): ?>
                     <div class="gallery-item" onclick="selectImage('<?php echo $img; ?>')">
-                        <img src="<?php echo $img; ?>" loading="lazy">
+                        <?php 
+                            // Cek Ekstensi untuk menampilkan video atau gambar
+                            $ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
+                            if(in_array($ext, ['mp4','webm','mov'])) {
+                                echo '<video src="'.$img.'" muted style="pointer-events:none;"></video>';
+                            } else {
+                                echo '<img src="'.$img.'" loading="lazy">';
+                            }
+                        ?>
                         <div class="gallery-name"><?php echo basename($img); ?></div>
                     </div>
                 <?php endforeach; ?>
