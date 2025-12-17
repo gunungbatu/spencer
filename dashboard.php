@@ -170,8 +170,14 @@ if (isset($_POST['save_reviews'])) {
                 </a>
             <?php endforeach; ?>
         </div>
-        <div class="logout"><a href="?logout=true" style="color:#ff6b6b; text-decoration:none;"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
-    </div>
+        <div class="logout">
+    <a href="?backup_data=true" style="color:#FFD700; text-decoration:none; margin-bottom:10px; display:block;">
+        <i class="fas fa-download"></i> Backup Data
+    </a>
+    <a href="?logout=true" style="color:#ff6b6b; text-decoration:none;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
 
     <div class="main">
         <div class="header">
