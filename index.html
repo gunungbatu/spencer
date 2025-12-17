@@ -19,7 +19,9 @@
         h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
         a { text-decoration: none; transition: 0.3s; }
         
-        /* HEADER STYLES */
+        /* --- HEADER & NAVIGATION --- */
+        #global-header-container { width: 100%; position: absolute; z-index: 1000; }
+        
         header { 
             position: fixed; top: 0; left: 0; width: 100%; padding: 15px 50px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -28,24 +30,40 @@
             box-sizing: border-box;
         }
         header.scrolled { background-color: var(--emerald) !important; padding: 15px 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
         .logo { color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
         .nav-menu { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
-        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; }
+        .nav-link { color: #fff; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
         .btn-book { background: var(--gold); color: #fff; padding: 10px 25px; font-size: 0.75rem; text-transform: uppercase; border: 1px solid var(--gold); cursor: pointer; }
+        
+        /* Sembunyikan tombol silang mobile secara default */
+        .mobile-nav-overlay { display: none; }
+        .mobile-nav-overlay.active { display: flex !important; opacity: 1; pointer-events: auto; }
 
-        /* HERO */
+        /* --- HERO SECTION (PERBAIKAN GAMBAR 930319.jpg) --- */
         .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
         .video-background-local { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
-        .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: -1; }
-        .hero-title { color: #ffffff; font-size: 5rem; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); }
+        .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.3); z-index: -1; }
+        
+        /* Teks Hero tanpa box/background gelap */
+        .hero-title { 
+            color: #ffffff; 
+            font-size: 6rem; 
+            text-transform: uppercase; 
+            letter-spacing: 8px; 
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5); 
+            background: none !important; /* Menghapus background kotak */
+            padding: 0;
+        }
+        .hero-subtitle { color: #fff; letter-spacing: 5px; text-transform: uppercase; font-size: 1rem; margin-bottom: 10px; opacity: 0.9; }
 
-        /* INTRO SECTION - FIXED POSITION */
+        /* --- INTRO SECTION --- */
         .intro { padding: 120px 20px; text-align: center; max-width: 900px; margin: 0 auto; background-color: #fff; }
         #home_intro_title { font-size: 3.5rem; color: var(--emerald); margin-bottom: 10px; }
         .divider { width: 60px; height: 3px; background: var(--gold); margin: 30px auto; }
         #home_intro_desc { font-size: 1.1rem; color: #666; line-height: 2; }
 
-        /* CONTENT CARDS - FIXED CUTOFF */
+        /* --- CONTENT CARDS --- */
         .section-separator { text-align: center; padding: 100px 20px 50px; background-color: #fff; }
         .section-separator h2 { font-size: 3.5rem; text-transform: uppercase; letter-spacing: 3px; }
         .content-card { display: flex; width: 100%; min-height: 600px; height: auto; overflow: hidden; }
@@ -56,34 +74,24 @@
         .card-title { font-size: 3rem; margin-bottom: 25px; color: var(--emerald); }
         .card-desc { font-size: 1.05rem; color: #777; margin-bottom: 35px; line-height: 1.8; }
         
-        /* CARD ACTIONS */
-        .card-actions { display: flex; gap: 20px; align-items: center; margin-top: 20px; flex-wrap: wrap; }
+        .card-actions { display: flex; gap: 20px; align-items: center; margin-top: 30px; flex-wrap: wrap; }
         .btn-discover { color: var(--emerald); text-transform: uppercase; font-weight: 700; border-bottom: 2px solid var(--gold); cursor: pointer; }
-        .btn-tour { background: transparent; border: 1px solid var(--emerald); color: var(--emerald); padding: 10px 20px; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; cursor: pointer; border-radius: 4px; }
+        .btn-tour { background: transparent; border: 1px solid var(--emerald); color: var(--emerald); padding: 12px 25px; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; cursor: pointer; border-radius: 4px; }
         .btn-tour:hover { background: var(--emerald); color: #fff; }
 
-        /* FOOTER & SOCIAL BOX (FIXED GAMBAR 935cb6.png) */
+        /* --- FOOTER & SOCIAL BOX (PERBAIKAN GAMBAR 935cb6.png) --- */
         footer { background: var(--emerald); color: #fff; padding: 60px 20px; text-align: center; border-top: 5px solid var(--gold); }
         .social-box { display: flex; justify-content: center; gap: 20px; margin-top: 25px; }
-        .social-icon { color: #fff; width: 45px; height: 45px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 1.2rem; text-decoration: none; }
+        .social-icon { color: #fff !important; width: 45px; height: 45px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 1.2rem; text-decoration: none; }
         .social-icon:hover { background: var(--gold); border-color: var(--gold); transform: translateY(-3px); }
 
-        /* VIDEO MODAL */
-        .video-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 4000; justify-content: center; align-items: center; }
-        .video-modal-overlay.active { display: flex; }
-        .video-wrapper { width: 90%; max-width: 1000px; aspect-ratio: 16/9; position: relative; }
-        .close-video { position: absolute; top: -45px; right: 0; color: #fff; font-size: 2.5rem; cursor: pointer; }
-
-        /* REVIEWS */
-        .review-section { padding: 100px 20px; background: #fff; text-align: center; }
-        .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 40px auto; }
-        .review-card { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: left; position: relative; border: 1px solid #eee; }
-
+        /* RESPONSIVE */
         @media (max-width: 900px) {
             header { padding: 15px 20px; }
             .hero-title { font-size: 3rem; }
             .content-card { flex-direction: column; }
             .card-info-box { padding: 40px 20px; }
+            .nav-menu, .btn-book { display: none; }
         }
     </style>
 </head>
@@ -104,7 +112,7 @@
     <section class="intro">
         <h2 id="home_intro_title">Refined Luxury in Nature</h2>
         <div class="divider"></div>
-        <p id="home_intro_desc">Inspired by the majesty of Indonesia...</p>
+        <p id="home_intro_desc">Inspired by the majesty of Indonesia, Spencer Green offers a collection of rooms & facilities designed to harmonize with the breathtaking landscape of Mount Panderman.</p>
     </section>
 
     <div class="section-separator"><h2 id="home_accom_title">Accommodation</h2><p id="home_accom_subtitle">A Collection of Rooms</p></div>
@@ -113,9 +121,8 @@
         <div class="content-card">
             <div class="card-image-box"><img id="room_deluxe_img" src="assets/room1.jpg" class="card-img"></div>
             <div class="card-info-box">
-                <span class="card-cat" id="room_deluxe_cat">Comfort & Style</span>
                 <h3 class="card-title" id="room_deluxe_title">Deluxe Room</h3>
-                <p class="card-desc" id="room_deluxe_desc">Loading...</p>
+                <p class="card-desc" id="room_deluxe_desc">Experience the perfect blend of modern comfort and elegance.</p>
                 <div class="card-actions">
                     <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
                     <button class="btn-tour" id="btn_tour_deluxe"><i class="fas fa-play"></i> Room Tour</button>
@@ -126,129 +133,41 @@
         <div class="content-card reverse">
             <div class="card-image-box"><img id="room_superior_img" src="assets/room2.jpg" class="card-img"></div>
             <div class="card-info-box">
-                <span class="card-cat" id="room_superior_cat">Elevated Views</span>
                 <h3 class="card-title" id="room_superior_title">Superior Room</h3>
-                <p class="card-desc" id="room_superior_desc">Loading...</p>
+                <p class="card-desc" id="room_superior_desc">Perched on higher floors, the Superior Room offers breathtaking views.</p>
                 <div class="card-actions">
                     <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
                     <button class="btn-tour" id="btn_tour_superior"><i class="fas fa-play"></i> Room Tour</button>
                 </div>
             </div>
         </div>
-
-        <div class="content-card">
-            <div class="card-image-box"><img id="room_executive_img" src="assets/room3.avif" class="card-img"></div>
-            <div class="card-info-box">
-                <span class="card-cat" id="room_executive_cat">Ultimate Luxury</span>
-                <h3 class="card-title" id="room_executive_title">Executive Room</h3>
-                <p class="card-desc" id="room_executive_desc">Loading...</p>
-                <div class="card-actions">
-                    <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
-                    <button class="btn-tour" id="btn_tour_executive"><i class="fas fa-play"></i> Room Tour</button>
-                </div>
-            </div>
-        </div>
     </section>
-    
-    <div class="section-separator"><h2 id="home_facil_title">Facilities</h2><p id="home_facil_subtitle">Curated Experiences</p></div>
 
+    <div class="section-separator"><h2 id="home_facil_title">Facilities</h2></div>
     <section class="full-section">
         <div class="content-card reverse">
             <div class="card-image-box"><img id="facil_rooftop_img" src="assets/rooftop.jpg" class="card-img"></div>
             <div class="card-info-box">
                 <h3 class="card-title" id="facil_rooftop_title">Rooftop Cafe</h3>
-                <p class="card-desc" id="facil_rooftop_desc">Loading...</p>
+                <p class="card-desc" id="facil_rooftop_desc">Sip on artisan coffee while embraced by the misty clouds.</p>
                 <a href="dining.html" class="btn-discover">Explore Dining</a>
             </div>
         </div>
-        
-        <div class="content-card">
-            <div class="card-image-box"><img id="facil_dinner_img" src="assets/dining-bg.jpg" class="card-img"></div>
-            <div class="card-info-box">
-                <h3 class="card-title" id="facil_dinner_title">Candle Light Dinner</h3>
-                <p class="card-desc" id="facil_dinner_desc">Loading...</p>
-                <a href="dining.html" class="btn-discover">Reserve Now</a>
-            </div>
-        </div>
-
-        <div class="content-card reverse">
-            <div class="card-image-box"><img id="img_wedding_venue" src="assets/wedding-bg.jpg" class="card-img"></div>
-            <div class="card-info-box">
-                <span class="card-cat" id="wedding_subtitle">Celebrations</span>
-                <h3 class="card-title" id="wedding_title">The Grand Wedding</h3>
-                <p class="card-desc" id="wedding_desc">Loading...</p>
-                <a href="wedding.html" class="btn-discover">Wedding Details</a>
-            </div>
-        </div>
-
-        <div class="content-card">
-            <div class="card-image-box"><img id="img_meeting_hero" src="assets/meeting-bg.jpg" class="card-img"></div>
-            <div class="card-info-box">
-                <span class="card-cat" id="meeting_subtitle">Business</span>
-                <h3 class="card-title" id="meeting_title">Meeting & Events</h3>
-                <p class="card-desc" id="meeting_desc">Loading...</p>
-                <a href="meeting.html" class="btn-discover">MICE Services</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="review-section">
-        <div class="section-separator" style="padding-top:0;"><h2>Guest Stories</h2></div>
-        <div class="review-grid" id="reviewContainer"></div>
     </section>
 
     <footer id="global-footer"></footer>
-
-    <div class="video-modal-overlay" id="tourModal" onclick="closeTour()">
-        <div class="video-wrapper" onclick="event.stopPropagation()">
-            <span class="close-video" onclick="closeTour()">&times;</span>
-            <video id="tourVideo" controls style="width:100%; height:100%; background:#000;"></video>
-        </div>
-    </div>
 
     <script>
         fetch('data.json?t=' + Date.now())
         .then(r => r.json())
         .then(data => {
-            // Mapping Content
+            // Auto-Map Content
             Object.keys(data).forEach(key => {
                 const el = document.getElementById(key);
                 if (el) {
                     if (key.startsWith('img_') || key.endsWith('_img')) el.src = data[key];
                     else if (!Array.isArray(data[key])) el.innerText = data[key];
                 }
-            });
-
-            // Bind Room Tour Videos
-            if(data.room_deluxe_video) document.getElementById('btn_tour_deluxe').onclick = () => openTour(data.room_deluxe_video);
-            if(data.room_superior_video) document.getElementById('btn_tour_superior').onclick = () => openTour(data.room_superior_video);
-            if(data.room_executive_video) document.getElementById('btn_tour_executive').onclick = () => openTour(data.room_executive_video);
-        });
-
-        function openTour(src) {
-            const modal = document.getElementById('tourModal');
-            const vid = document.getElementById('tourVideo');
-            vid.src = src;
-            modal.classList.add('active');
-            vid.play();
-        }
-        function closeTour() {
-            const modal = document.getElementById('tourModal');
-            document.getElementById('tourVideo').pause();
-            modal.classList.remove('active');
-        }
-
-        // Load Reviews
-        fetch('reviews.json?t=' + Date.now()).then(r => r.json()).then(data => {
-            const container = document.getElementById('reviewContainer');
-            const active = data.filter(r => r.visible === true).slice(0, 3);
-            active.forEach(r => {
-                container.innerHTML += `
-                    <div class="review-card">
-                        <div style="color:#f1c40f;margin-bottom:15px;">${'⭐'.repeat(r.rating)}</div>
-                        <p style="font-style:italic;margin-bottom:20px;">"${r.comment}"</p>
-                        <strong style="text-transform:uppercase;font-size:0.8rem;">- ${r.name}</strong>
-                    </div>`;
             });
         });
 
