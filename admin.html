@@ -1,276 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spencer Admin Editor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        body { font-family: 'Roboto', sans-serif; background: #f4f5f7; margin: 0; padding: 20px; }
-        
-        /* TOOLBAR */
-        .toolbar {
-            background: #fff; padding: 15px; border-radius: 8px; 
-            display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px;
-            position: sticky; top: 0; z-index: 100; border-bottom: 2px solid #1B4D3E;
-        }
-        .date-picker { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
-        
-        .btn-action { padding: 10px 20px; border-radius: 4px; cursor: pointer; border: none; font-weight: bold; }
-        .btn-load { background: #333; color: #fff; }
-        
-        /* Tombol Save (Penting) */
-        .btn-save { 
-            background: #1B4D3E; color: #fff; display: none; /* Hidden kalau belum ada edit */
-            animation: popIn 0.3s;
-        }
-        .btn-save:hover { background: #143d30; }
+// admin.html - Bagian Script
+<script>
+    let API_URL = ""; // Dikosongkan, akan diisi otomatis
+    let pendingChanges = []; 
 
-        .toggle-group { display: flex; gap: 15px; border-left: 1px solid #ddd; padding-left: 15px; margin-left: auto; }
-        
-        /* TABLE */
-        .table-wrapper {
-            overflow-x: auto; background: #fff; border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: relative;
-            max-height: 80vh;
-        }
-        table { border-collapse: collapse; width: 100%; min-width: 1200px; }
-        
-        thead th {
-            background: #333; color: #fff; padding: 10px; text-align: center;
-            font-size: 0.8rem; border-right: 1px solid #555;
-            position: sticky; top: 0; z-index: 10;
-        }
-        
-        .room-col {
-            position: sticky; left: 0; z-index: 5;
-            background: #f9fafb; width: 250px; min-width: 250px;
-            border-right: 2px solid #ddd; padding: 15px;
-            text-align: left; font-weight: 600; color: #2c3e50;
-        }
-        
-        td { border: 1px solid #eee; padding: 8px; text-align: center; vertical-align: top; min-width: 110px; }
+    // FUNGSI BARU: Ambil Config saat halaman dimuat
+    window.onload = function() {
+        fetch('get_config.php')
+        .then(r => r.json())
+        .then(res => {
+            API_URL = res.api_url;
+            if(!API_URL) alert("PERINGATAN: API URL belum diisi di Super Admin!");
+        });
+    };
 
-        /* INPUT FIELDS (EDITABLE) */
-        input.edit-input {
-            width: 100%; text-align: center; border: 1px solid #ddd;
-            border-radius: 4px; padding: 5px; font-size: 0.85rem;
-            margin-bottom: 4px; transition: 0.2s;
-        }
-        
-        /* Stok Input */
-        input.stock-input { background: #fff; color: #333; font-weight: bold; }
-        input.stock-input:focus { border-color: #333; outline: none; }
-        input.stock-input.zero-stok { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+    document.getElementById('startDate').valueAsDate = new Date();
 
-        /* Harga Input */
-        input.price-input { background: #fffbeb; border-color: #fcd34d; color: #555; font-size: 0.8rem; }
-        input.price-input:focus { border-color: #d97706; outline: none; background: #fff; }
+    function loadData() {
+        if(!API_URL) return alert("API URL Kosong.");
+        const date = document.getElementById('startDate').value;
+        const tbody = document.getElementById('tableBody');
+        pendingChanges = [];
+        updateSaveButton();
+        tbody.innerHTML = '<tr><td colspan="15" style="padding:40px; text-align:center;"><i class="fas fa-spinner fa-spin"></i> Loading Matrix...</td></tr>';
 
-        /* Modified State (Kalau diedit warnanya berubah) */
-        input.modified { border: 2px solid #00a651 !important; background: #dcfce7 !important; }
+        fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "getAdminMatrix", startDate: date })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success") renderTable(data);
+            else alert("Error: " + data.message);
+        })
+        .catch(err => alert("Connection Error."));
+    }
 
-        /* Toggle Visibility */
-        .hide-stock .stock-input { display: none; }
-        .hide-price .price-input { display: none; }
-
-        @keyframes popIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-        #loadingOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:999; justify-content:center; align-items:center; flex-direction:column; }
-    </style>
-</head>
-<body>
-
-    <div id="loadingOverlay">
-        <i class="fas fa-spinner fa-spin fa-3x" style="color:#1B4D3E;"></i>
-        <h3 style="margin-top:20px;">Saving Changes...</h3>
-    </div>
-
-    <div class="toolbar">
-        <input type="date" id="startDate" class="date-picker">
-        <button id="btnLoad" class="btn-action btn-load" onclick="loadData()">Load Data</button>
-        
-        <button id="btnSave" class="btn-action btn-save" onclick="saveChanges()">
-            <i class="fas fa-save"></i> SAVE CHANGES (<span id="changeCount">0</span>)
-        </button>
-
-        <div class="toggle-group">
-            <label style="margin-right:15px; cursor:pointer;">
-                <input type="checkbox" id="toggleAvail" checked onchange="updateView()"> Availability
-            </label>
-            <label style="cursor:pointer;">
-                <input type="checkbox" id="toggleRates" checked onchange="updateView()"> Rates
-            </label>
-        </div>
-    </div>
-
-    <div class="table-wrapper">
-        <table id="calendarTable">
-            <thead>
-                <tr id="headerRow">
-                    <th class="room-col">ROOM TYPE</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                <tr><td colspan="15" style="padding:40px; text-align:center;">Select date to manage Inventory</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <script>
-        // CONFIG: URL APPS SCRIPT
-        const API_URL = "https://script.google.com/macros/s/AKfycbz8NCQgwChpMLSYF3FjkVtXlgoe12u_-UHHNedozKrTuMmp-piWtzINkcCZeF0XuBWdXQ/exec"; 
-        
-        let pendingChanges = []; // Menyimpan daftar edit sebelum di-save
-        
-        document.getElementById('startDate').valueAsDate = new Date();
-
-        // 1. LOAD DATA
-        function loadData() {
-            const date = document.getElementById('startDate').value;
-            const tbody = document.getElementById('tableBody');
-            
-            // Reset state
-            pendingChanges = [];
-            updateSaveButton();
-            tbody.innerHTML = '<tr><td colspan="15" style="padding:40px; text-align:center;"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
-
-            fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "getAdminMatrix", startDate: date })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success") renderTable(data);
-                else alert("Error: " + data.message);
-            })
-            .catch(err => alert("Connection Error."));
-        }
-
-        // 2. RENDER TABLE (WITH INPUTS)
-        function renderTable(data) {
-            const headerRow = document.getElementById('headerRow');
-            const tbody = document.getElementById('tableBody');
-            
-            // Render Header
-            headerRow.innerHTML = '<th class="room-col" style="z-index: 20;">ROOM TYPE</th>'; 
-            data.dates.forEach(dateStr => {
-                let d = new Date(dateStr);
-                let fmt = `${d.getDate()} <br> ${d.toLocaleString('default', { month: 'short' }).toUpperCase()}`;
-                headerRow.innerHTML += `<th>${fmt}</th>`;
-            });
-
-            // Render Body
-            tbody.innerHTML = '';
-            Object.keys(data.rooms).forEach(roomName => {
-                let tr = document.createElement('tr');
-                // Kolom Nama Kamar
-                tr.innerHTML = `<td class="room-col"><i class="fas fa-bed"></i> ${roomName}</td>`;
-
-                // Kolom Data
-                data.dates.forEach(dateStr => {
-                    let cellData = data.rooms[roomName][dateStr] || { stok: 0, harga: 0 };
-                    let td = document.createElement('td');
-
-                    // Input Stok
-                    let stockVal = (cellData.stok === "") ? 0 : cellData.stok;
-                    let stockClass = (stockVal == 0) ? "edit-input stock-input zero-stok" : "edit-input stock-input";
-                    let inputStok = `<input type="number" class="${stockClass}" 
-                        value="${stockVal}" 
-                        onchange="trackChange(this, '${dateStr}', '${roomName}', 'stok')">`;
-
-                    // Input Harga
-                    let priceVal = cellData.harga;
-                    let inputHarga = `<input type="number" class="edit-input price-input" 
-                        value="${priceVal}" 
-                        placeholder="Harga..." 
-                        onchange="trackChange(this, '${dateStr}', '${roomName}', 'harga')">`;
-
-                    td.innerHTML = inputStok + inputHarga;
-                    tr.appendChild(td);
-                });
-                tbody.appendChild(tr);
-            });
-            updateView();
-        }
-
-        // 3. TRACK PERUBAHAN
-        function trackChange(inputElem, date, room, type) {
-            // Tandai input berwarna hijau (Modified)
-            inputElem.classList.add('modified');
-            
-            // Hapus perubahan lama jika ada (untuk cell yang sama)
-            pendingChanges = pendingChanges.filter(c => !(c.date === date && c.room === room && c.type === type));
-
-            // Tambah perubahan baru
-            pendingChanges.push({
-                date: date,
-                room: room,
-                type: type,
-                val: inputElem.value
-            });
-
-            updateSaveButton();
-        }
-
-        function updateSaveButton() {
-            const btn = document.getElementById('btnSave');
-            const countSpan = document.getElementById('changeCount');
-            
-            if (pendingChanges.length > 0) {
-                btn.style.display = 'inline-block';
-                countSpan.innerText = pendingChanges.length;
-            } else {
-                btn.style.display = 'none';
-            }
-        }
-
-        // 4. SAVE CHANGES (BULK UPDATE)
-        function saveChanges() {
-            if(pendingChanges.length === 0) return;
-
-            if(!confirm(`Simpan ${pendingChanges.length} perubahan ke Google Sheets?`)) return;
-
-            document.getElementById('loadingOverlay').style.display = 'flex';
-
-            fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ 
-                    action: "updateMatrix", 
-                    updates: pendingChanges 
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                if(data.status === "success") {
-                    alert("Data Berhasil Disimpan!");
-                    loadData(); // Reload table untuk pastikan data sinkron
-                } else {
-                    alert("Gagal menyimpan: " + data.message);
-                }
-            })
-            .catch(err => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                alert("Error Connection");
-            });
-        }
-
-        function updateView() {
-            const showAvail = document.getElementById('toggleAvail').checked;
-            const showRates = document.getElementById('toggleRates').checked;
-            const table = document.getElementById('calendarTable');
-
-            if (showAvail) table.classList.remove('hide-stock');
-            else table.classList.add('hide-stock');
-
-            if (showRates) table.classList.remove('hide-price');
-            else table.classList.add('hide-price');
-        }
-    </script>
-</body>
-
-</html>
-
+    // ... Sisa fungsi renderTable, trackChange, saveChanges tetap sama ...
+    // Pastikan di dalam saveChanges() juga menggunakan variabel API_URL yang sudah terisi
+</script>
