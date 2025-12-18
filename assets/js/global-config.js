@@ -1,4 +1,3 @@
-
 /**
  * GLOBAL CONFIGURATION & SYSTEM MANAGER
  * Mengatur: Config API, Header, Footer, Styling, dan Booking Engine Global.
