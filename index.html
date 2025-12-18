@@ -13,40 +13,45 @@
     <script src="assets/js/global-config.js"></script>
 
     <style>
-        /* --- GLOBAL --- */
+        /* --- 1. GLOBAL RESET --- */
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; overflow-x: hidden; background: #fff; }
         h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
         a { text-decoration: none; transition: 0.3s; }
 
-        /* HEADER & HERO */
-        header:not(#navbar) { display: none !important; } /* Safety check */
+        /* --- 2. HEADER SAFEGUARD (PENTING) --- */
+        /* Ini menyembunyikan sisa header manual jika ada */
+        header:not(#navbar) { display: none !important; }
         
+        /* Spacer untuk mencegah konten tertutup header global */
+        #global-header-container { min-height: 0; } 
+
+        /* --- 3. HERO SECTION --- */
         .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
         .video-background-local { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
         .hero-slider { position:absolute; top:0; left:0; width:100%; height:100%; z-index:-2; display:none; }
         .hero-slide { position:absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; opacity:0; transition:opacity 1.5s; }
         .hero-slide.active { opacity:1; }
         .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: -1; }
+        .hero-content { position: relative; z-index: 2; animation: fadeUp 1.5s ease-out; padding: 0 20px; }
         .hero-title { color: #ffffff; font-size: 5rem; line-height: 1.1; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9); }
         .hero-subtitle { color: #ffffff; letter-spacing: 3px; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600; }
 
-        /* CONTENT LAYOUT (Perbaikan Sesuai Request) */
+        /* --- 4. CONTENT CARDS (LAYOUT) --- */
         .intro { padding: 80px 20px; text-align: center; max-width: 800px; margin: 0 auto; }
         .divider { width: 50px; height: 2px; background: var(--gold); margin: 20px auto; }
         .section-separator { text-align: center; padding: 80px 20px 40px; background-color: #fff; }
         .section-separator h2 { font-size: 3rem; text-transform: uppercase; letter-spacing: 2px; }
-
-        /* CARD STYLE - HAPUS MIN-HEIGHT 600PX */
-        .full-section { width: 100%; }
-        .content-card { display: flex; width: 100%; overflow: hidden; align-items: stretch; } /* Flex stretch agar tinggi gambar & teks sama */
         
-        .card-image-box { flex: 1; position: relative; overflow: hidden; }
+        .full-section { width: 100%; }
+        /* Reset min-height agar tidak ada ruang kosong berlebih di mobile */
+        .content-card { display: flex; width: 100%; min-height: 600px; height: auto; overflow: hidden; }
+        
+        .card-image-box { flex: 1; position: relative; overflow: hidden; min-height: 400px; }
         .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
         .content-card:hover .card-img { transform: scale(1.05); }
         
-        /* Padding Desktop default */
         .card-info-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px 80px; background-color: #fff; }
         .content-card.reverse { flex-direction: row-reverse; }
         .content-card.reverse .card-info-box { background-color: #F9F9F9; }
@@ -63,43 +68,50 @@
         .btn-tour { background: transparent; border: 1px solid #333; color: #333; padding: 10px 20px; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; border-radius: 4px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; }
         .btn-tour:hover { background: #333; color: #fff; }
 
-        /* REVIEW SECTION */
+        /* --- 5. FULL SCREEN VIDEO MODAL --- */
+        .video-modal-overlay { 
+            display: none; position: fixed; inset: 0; 
+            background: #000; z-index: 10000; 
+            justify-content: center; align-items: center; 
+        }
+        .video-modal-overlay.active { display: flex; }
+        .video-wrapper { width: 100%; height: 100%; position: relative; }
+        .video-wrapper video { width: 100%; height: 100%; object-fit: contain; }
+        .close-video { 
+            position: fixed; top: 25px; right: 25px; color: #fff; 
+            font-size: 3.5rem; cursor: pointer; z-index: 10001; 
+            text-shadow: 0 0 15px rgba(0,0,0,0.8); transition: 0.3s;
+        }
+        .close-video:hover { color: var(--gold); transform: scale(1.1); }
+
+        /* REVIEW & FOOTER */
         .review-section { padding: 80px 20px; background: #fff; text-align: center; border-top: 1px solid #eee; }
         .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 40px auto; }
         .review-card { background: #fdfdfd; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: left; position: relative; border: 1px solid #eee; }
         .review-name { font-weight: 700; color: #1B4D3E; text-transform: uppercase; font-size: 0.85rem; }
         .write-review-btn { background: transparent; color: #1B4D3E; border: 2px solid #1B4D3E; padding: 12px 30px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
         
+        /* FORM REVIEW */
         .review-form-box { max-width: 500px; margin: 30px auto; background: #fff; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 8px; display: none; border-top: 5px solid var(--gold); text-align: left; }
         .review-form-box h3 { text-align: center; margin-bottom: 20px; }
 
-        /* FOOTER & VIDEO MODAL */
         footer { background: var(--emerald); color: #fff; padding: 50px; text-align: center; }
-        
-        .video-modal-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; justify-content: center; align-items: center; }
-        .video-modal-overlay.active { display: flex; }
-        .video-wrapper { width: 100%; height: 100%; position: relative; }
-        .video-wrapper video { width: 100%; height: 100%; object-fit: contain; }
-        .close-video { position: fixed; top: 25px; right: 25px; color: #fff; font-size: 3.5rem; cursor: pointer; z-index: 10001; text-shadow: 0 0 15px rgba(0,0,0,0.8); transition: 0.3s; }
-        .close-video:hover { color: var(--gold); transform: scale(1.1); }
 
-        /* --- MOBILE RESPONSIVE FIX (UTAMA) --- */
+        /* --- MOBILE RESPONSIVE --- */
         @media (max-width: 900px) {
             .hero-title { font-size: 3rem; }
             
             /* Stack card vertikal */
-            .content-card, .content-card.reverse { flex-direction: column; height: auto; }
+            .content-card, .content-card.reverse { flex-direction: column; height: auto; min-height: auto; }
             
-            /* Gambar Tinggi Tetap agar proporsional */
+            /* Gambar Tinggi Tetap */
             .card-image-box { width: 100%; height: 300px; min-height: 300px; order: 1; }
             
             /* Teks Padding Dikecilkan */
             .card-info-box { width: 100%; padding: 40px 25px; height: auto; order: 2; }
             
-            /* Font Size Penyesuaian */
             .card-title { font-size: 2rem; margin-bottom: 15px; }
             .section-separator h2 { font-size: 2.2rem; }
-            .section-separator { padding: 60px 20px 20px; }
             .intro { padding: 60px 20px; }
         }
         @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
@@ -110,8 +122,14 @@
     <div id="global-header-container"></div>
 
     <section class="hero">
-        <video id="heroVideo" autoplay muted loop playsinline class="video-background-local"><source src="assets/hero-video.mp4" type="video/mp4"></video>
-        <div id="heroSlider" class="hero-slider" style="display:none;"><div class="hero-slide" id="slide1"></div><div class="hero-slide" id="slide2"></div><div class="hero-slide" id="slide3"></div></div>
+        <video id="heroVideo" autoplay muted loop playsinline class="video-background-local">
+            <source src="assets/hero-video.mp4" type="video/mp4">
+        </video>
+        <div id="heroSlider" class="hero-slider">
+            <div class="hero-slide" id="slide1"></div>
+            <div class="hero-slide" id="slide2"></div>
+            <div class="hero-slide" id="slide3"></div>
+        </div>
         <div class="hero-content">
             <p class="hero-subtitle" id="hero_subtitle">WELCOME TO</p>
             <h1 class="hero-title" id="hero_title">SPENCER GREEN HOTEL</h1>
@@ -119,47 +137,64 @@
     </section>
 
     <section class="intro">
-        <h2 id="home_intro_title">Refined Luxury</h2>
+        <h2 id="home_intro_title">Refined Luxury in Nature</h2>
         <div class="divider"></div>
-        <p id="home_intro_desc">Inspired by the majesty...</p>
+        <p id="home_intro_desc">Inspired by the majesty of Indonesia, Spencer Green offers a collection of rooms & facilities designed to harmonize with the breathtaking landscape of Mount Panderman.</p>
     </section>
 
-    <div class="section-separator"><h2 id="home_accom_title">Accommodation</h2><p id="home_accom_subtitle">Rooms</p></div>
+    <div class="section-separator">
+        <h2 id="home_accom_title">Accommodation</h2>
+        <p id="home_accom_subtitle">A Collection of Rooms</p>
+    </div>
     
     <section class="full-section">
         <div class="content-card">
             <div class="card-image-box"><img id="room_deluxe_img" src="assets/room1.jpg" class="card-img"></div>
             <div class="card-info-box">
-                <span class="card-cat" id="room_deluxe_cat">Comfort</span>
+                <span class="card-cat" id="room_deluxe_cat">Comfort & Style</span>
                 <h3 class="card-title" id="room_deluxe_title">Deluxe Room</h3>
-                <p class="card-desc" id="room_deluxe_desc">...</p>
-                <div class="card-specs"><span class="spec-item" id="room_deluxe_spec1">32 Sqm</span></div>
+                <p class="card-desc" id="room_deluxe_desc">Experience modern luxury in nature.</p>
+                <div class="card-specs">
+                    <span class="spec-item" id="room_deluxe_spec1">📐 32 Sqm</span>
+                    <span class="spec-item" id="room_deluxe_spec2">🚿 Rain Shower</span>
+                    <span class="spec-item" id="room_deluxe_spec3">👥 2 Adults</span>
+                </div>
                 <div class="card-actions">
                     <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
                     <button class="btn-tour" id="btn_tour_deluxe"><i class="fas fa-play"></i> Room Tour</button>
                 </div>
             </div>
         </div>
+
         <div class="content-card reverse">
             <div class="card-image-box"><img id="room_superior_img" src="assets/room2.jpg" class="card-img"></div>
             <div class="card-info-box">
-                <span class="card-cat" id="room_superior_cat">Views</span>
+                <span class="card-cat" id="room_superior_cat">Elevated Views</span>
                 <h3 class="card-title" id="room_superior_title">Superior Room</h3>
-                <p class="card-desc" id="room_superior_desc">...</p>
-                <div class="card-specs"><span class="spec-item" id="room_superior_spec1">40 Sqm</span></div>
+                <p class="card-desc" id="room_superior_desc">Perched on higher floors with views.</p>
+                <div class="card-specs">
+                    <span class="spec-item" id="room_superior_spec1">📐 40 Sqm</span>
+                    <span class="spec-item" id="room_superior_spec2">⛰️ Mountain View</span>
+                    <span class="spec-item" id="room_superior_spec3">☕ Coffee Machine</span>
+                </div>
                 <div class="card-actions">
                     <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
                     <button class="btn-tour" id="btn_tour_superior"><i class="fas fa-play"></i> Room Tour</button>
                 </div>
             </div>
         </div>
+
         <div class="content-card">
             <div class="card-image-box"><img id="room_executive_img" src="assets/room3.avif" class="card-img"></div>
             <div class="card-info-box">
-                <span class="card-cat" id="room_executive_cat">Luxury</span>
+                <span class="card-cat" id="room_executive_cat">The Ultimate Luxury</span>
                 <h3 class="card-title" id="room_executive_title">Executive Room</h3>
-                <p class="card-desc" id="room_executive_desc">...</p>
-                <div class="card-specs"><span class="spec-item" id="room_executive_spec1">56 Sqm</span></div>
+                <p class="card-desc" id="room_executive_desc">Designed for the discerning traveler.</p>
+                <div class="card-specs">
+                    <span class="spec-item" id="room_executive_spec1">📐 56 Sqm</span>
+                    <span class="spec-item" id="room_executive_spec2">🛁 Bathtub</span>
+                    <span class="spec-item" id="room_executive_spec3">🍸 Lounge Access</span>
+                </div>
                 <div class="card-actions">
                     <a href="javascript:void(0)" class="btn-discover" onclick="openBooking()">Book Room</a>
                     <button class="btn-tour" id="btn_tour_executive"><i class="fas fa-play"></i> Room Tour</button>
@@ -168,22 +203,52 @@
         </div>
     </section>
 
-    <div class="section-separator"><h2 id="home_facil_title">Facilities</h2><p id="home_facil_subtitle">Experiences</p></div>
+    <div class="section-separator">
+        <h2 id="home_facil_title">Facilities</h2>
+        <p id="home_facil_subtitle">Curated Experiences</p>
+    </div>
+
     <section class="full-section">
         <div class="content-card reverse">
             <div class="card-image-box"><img id="facil_rooftop_img" src="assets/rooftop.jpg" class="card-img"></div>
             <div class="card-info-box">
+                <span class="card-cat" id="facil_rooftop_cat">Gastronomy</span>
                 <h3 class="card-title" id="facil_rooftop_title">Rooftop Cafe</h3>
-                <p class="card-desc" id="facil_rooftop_desc">...</p>
+                <p class="card-desc" id="facil_rooftop_desc">Sip on artisan coffee while embraced by the misty clouds.</p>
                 <a href="dining.html" class="btn-discover">View Menu</a>
             </div>
         </div>
         <div class="content-card">
             <div class="card-image-box"><img id="facil_dinner_img" src="assets/dining-bg.jpg" class="card-img"></div>
             <div class="card-info-box">
-                <h3 class="card-title" id="facil_dinner_title">Candle Light</h3>
-                <p class="card-desc" id="facil_dinner_desc">...</p>
+                <span class="card-cat" id="facil_dinner_cat">Romantic Experience</span>
+                <h3 class="card-title" id="facil_dinner_title">Candle Light Dinner</h3>
+                <p class="card-desc" id="facil_dinner_desc">An intimate culinary journey under the stars.</p>
                 <a href="dining.html" class="btn-discover">Reserve Table</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="full-section">
+        <div class="content-card reverse">
+            <div class="card-image-box"><img id="img_wedding_venue" src="assets/wedding-bg.jpg" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat" id="wedding_subtitle">Celebrations</span>
+                <h3 class="card-title" id="wedding_title">The Grand Wedding</h3>
+                <p class="card-desc" id="wedding_desc">A majestic highland setting for your sacred union. From the open-air garden chapel to the grand ballroom.</p>
+                <a href="wedding.html" class="btn-discover">Plan Your Wedding</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="full-section">
+        <div class="content-card">
+            <div class="card-image-box"><img id="img_meeting_hero" src="assets/meeting-bg.jpg" class="card-img"></div>
+            <div class="card-info-box">
+                <span class="card-cat" id="meeting_subtitle">Business & Events</span>
+                <h3 class="card-title" id="meeting_title">Meetings & Events</h3>
+                <p class="card-desc" id="meeting_desc">Elevate your business gatherings in our sophisticated venues. Equipped with modern technology and bathed in natural light.</p>
+                <a href="meeting.html" class="btn-discover">Inquire Now</a>
             </div>
         </div>
     </section>
@@ -192,7 +257,6 @@
         <div class="section-separator" style="padding-top:0;"><h2>Guest Experiences</h2></div>
         <div class="review-grid" id="reviewContainer"><p style="color:#888;">Loading reviews...</p></div>
         <button onclick="document.getElementById('reviewFormArea').style.display='block'; this.style.display='none'" class="write-review-btn">Write a Review</button>
-        
         <div id="reviewFormArea" class="review-form-box">
             <h3>Share Your Experience</h3>
             <form id="guestReviewForm" onsubmit="submitReview(event)">
@@ -216,28 +280,36 @@
     <div class="video-modal-overlay" id="tourModal">
         <div class="video-wrapper">
             <span class="close-video" onclick="closeTour()">&times;</span>
-            <video id="tourVideo" controls controlsList="nodownload" playsinline><source src="" type="video/mp4"></video>
+            <video id="tourVideo" controls controlsList="nodownload" playsinline>
+                <source src="" type="video/mp4">
+            </video>
         </div>
     </div>
-    
+
     <div class="modal-overlay" id="bookingModal">
         <div class="booking-form-box">
-            <span class="close-modal" style="position:absolute;top:10px;right:20px;font-size:2rem;cursor:pointer;" onclick="closeBooking()">&times;</span>
+            <span style="position:absolute; top:10px; right:20px; font-size:2rem; cursor:pointer;" onclick="closeBooking()">&times;</span>
             </div>
     </div>
 
     <script>
+        // LOAD DATA
         fetch('data.json?t=' + Date.now()).then(r => r.json()).then(data => {
             // Hero Toggle
             const vid = document.getElementById('heroVideo');
             const slider = document.getElementById('heroSlider');
             if(data.hero_type === 'slider') {
-                vid.style.display='none'; slider.style.display='block';
+                vid.style.display = 'none'; slider.style.display = 'block';
                 if(data.img_hero_slide_1) document.getElementById('slide1').style.backgroundImage = `url('${data.img_hero_slide_1}')`;
+                if(data.img_hero_slide_2) document.getElementById('slide2').style.backgroundImage = `url('${data.img_hero_slide_2}')`;
+                if(data.img_hero_slide_3) document.getElementById('slide3').style.backgroundImage = `url('${data.img_hero_slide_3}')`;
                 startSlider();
-            } else { slider.style.display='none'; if(data.hero_video) vid.src=data.hero_video; }
+            } else {
+                slider.style.display = 'none'; 
+                if(data.hero_video) vid.src = data.hero_video.replace(/\\/g, '');
+            }
 
-            // Auto Map
+            // Auto Map Text/Img
             Object.keys(data).forEach(key => {
                 const el = document.getElementById(key);
                 if (el) {
@@ -246,12 +318,17 @@
                 }
             });
 
-            // Tour Buttons
-            const tourMap = {'room_deluxe_video':'btn_tour_deluxe', 'room_superior_video':'btn_tour_superior', 'room_executive_video':'btn_tour_executive'};
+            // Mapping Room Tour Buttons
+            const tourMap = {
+                'room_deluxe_video': 'btn_tour_deluxe',
+                'room_superior_video': 'btn_tour_superior',
+                'room_executive_video': 'btn_tour_executive'
+            };
+
             Object.keys(tourMap).forEach(key => {
                 const btn = document.getElementById(tourMap[key]);
-                if(btn && data[key]) btn.onclick = () => openTour(data[key]);
-                else if(btn) btn.style.display='none';
+                if (btn && data[key]) btn.onclick = () => openTour(data[key]);
+                else if(btn) btn.style.display = 'none';
             });
         });
 
@@ -271,7 +348,7 @@
             e.preventDefault();
             const form = document.getElementById('guestReviewForm');
             const formData = new FormData(form);
-            formData.append('action', 'submit_guest'); // Flag untuk API
+            formData.append('action', 'submit_guest'); 
             
             fetch('reviews_api.php', { method:'POST', body:formData })
             .then(r => r.json())
@@ -284,22 +361,49 @@
             .catch(err => alert("Review submitted! (Pending admin approval)"));
         }
 
-        // Helpers
-        function startSlider() { /* Slider logic */ }
-        function openTour(src) {
-            const m = document.getElementById('tourModal');
-            const v = document.getElementById('tourVideo');
-            if(!src) return;
-            v.src = src.replace(/\\/g, ''); v.load();
-            m.classList.add('active'); document.body.style.overflow='hidden'; v.play();
+        function startSlider() {
+            let slides = document.querySelectorAll('.hero-slide');
+            let i = 0; if(slides.length) slides[0].classList.add('active');
+            setInterval(() => {
+                slides[i].classList.remove('active');
+                i = (i+1)%slides.length; slides[i].classList.add('active');
+            }, 5000);
         }
+
+        function openTour(videoSrc) {
+            const modal = document.getElementById('tourModal');
+            const vid = document.getElementById('tourVideo');
+            if(!videoSrc) return;
+            
+            vid.src = videoSrc.replace(/\\/g, '');
+            vid.load();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            vid.play().catch(e => console.log("User must interact to play"));
+        }
+
         function closeTour() {
-            document.getElementById('tourModal').classList.remove('active');
-            document.getElementById('tourVideo').pause(); document.body.style.overflow='auto';
+            const modal = document.getElementById('tourModal');
+            const vid = document.getElementById('tourVideo');
+            modal.classList.remove('active');
+            vid.pause();
+            vid.src = "";
+            document.body.style.overflow = 'auto';
         }
-        function openBooking() { document.getElementById('bookingModal').classList.add('active'); }
-        function closeBooking() { document.getElementById('bookingModal').classList.remove('active'); }
-        window.addEventListener('scroll', ()=>document.getElementById('navbar').classList.toggle('scrolled', window.scrollY>50));
+
+        function openBooking() {
+            const m = document.getElementById('bookingModal');
+            if(m) m.classList.add('active');
+        }
+        function closeBooking() {
+            const m = document.getElementById('bookingModal');
+            if(m) m.classList.remove('active');
+        }
+
+        window.addEventListener('scroll', ()=> {
+            const nav = document.getElementById('navbar');
+            if(nav) nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
     </script>
 </body>
 </html>
