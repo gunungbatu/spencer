@@ -120,40 +120,6 @@
     </div>
 
     <script>
-        let API_URL = ""; // Dikosongkan, akan diisi otomatis
-    let pendingChanges = []; 
-
-    // FUNGSI BARU: Ambil Config saat halaman dimuat
-    window.onload = function() {
-        fetch('get_config.php')
-        .then(r => r.json())
-        .then(res => {
-            API_URL = res.api_url;
-            if(!API_URL) alert("PERINGATAN: API URL belum diisi di Super Admin!");
-        });
-    };
-
-    document.getElementById('startDate').valueAsDate = new Date();
-
-    function loadData() {
-        if(!API_URL) return alert("API URL Kosong.");
-        const date = document.getElementById('startDate').value;
-        const tbody = document.getElementById('tableBody');
-        pendingChanges = [];
-        updateSaveButton();
-        tbody.innerHTML = '<tr><td colspan="15" style="padding:40px; text-align:center;"><i class="fas fa-spinner fa-spin"></i> Loading Matrix...</td></tr>';
-
-        fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: "getAdminMatrix", startDate: date })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === "success") renderTable(data);
-            else alert("Error: " + data.message);
-        })
-        .catch(err => alert("Connection Error."));
-    }
         // CONFIG: URL APPS SCRIPT
         const API_URL = "https://script.google.com/macros/s/AKfycbz8NCQgwChpMLSYF3FjkVtXlgoe12u_-UHHNedozKrTuMmp-piWtzINkcCZeF0XuBWdXQ/exec"; 
         
