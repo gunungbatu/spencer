@@ -53,7 +53,7 @@ function loadGlobalData() {
     .then(data => {
         if(data.social_whatsapp) CONFIG.WA = cleanWaNumber(data.social_whatsapp);
         if(data.api_url) CONFIG.API_URL = data.api_url; // Pastikan API_URL ada di data.json atau hardcode dibawah
-        if(!CONFIG.API_URL) CONFIG.API_URL = "https://script.google.com/macros/s/AKfycbz8NCQgwChpMLSYF3FjkVtXlgoe12u_-UHHNedozKrTuMmp-piWtzINkcCZeF0XuBWdXQ/exec"; // Fallback URL
+        if(!CONFIG.API_URL) CONFIG.API_URL = "https://script.google.com/macros/s/AKfycbwd6bLCita-mPXVvrjGrCExO7xR2AcSCAtw5cftZ61_fHIvP104P2Fv49FVlmMMK8rRLw/exec"; // Fallback URL
 
         const activePage = document.body.getAttribute('data-page') || 'home';
         generateGlobalHeader(activePage, data);
