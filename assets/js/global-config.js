@@ -1,87 +1,39 @@
 /**
  * GLOBAL CONFIGURATION & SYSTEM MANAGER
- * Mengatur: Config API, Header, Footer, Styling Global, dan Booking Engine Global.
+ * Mengatur: Config API, Header, Footer, Styling, dan Booking Engine Global.
  */
 
 var CONFIG = { API_URL: "", WA: "" };
 
-// --- 1. CSS GLOBAL INJECTION (Modal, Tombol, Header, Footer, dll) ---
+// --- 1. CSS GLOBAL INJECTION (Modal, Tombol, Loading) ---
 const globalCSS = `
-    :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
-
     /* TOMBOL BOOKING */
-    .btn-check { width: 100%; background-color: var(--emerald) !important; color: #fff !important; padding: 15px; border: none; text-transform: uppercase; font-weight: bold; cursor: pointer; margin-top: 25px; margin-bottom: 20px; letter-spacing: 1px; border-radius: 4px; display: block; font-family: 'Montserrat', sans-serif; }
+    .btn-check { width: 100%; background-color: #1B4D3E !important; color: #fff !important; padding: 15px; border: none; text-transform: uppercase; font-weight: bold; cursor: pointer; margin-top: 25px; margin-bottom: 20px; letter-spacing: 1px; border-radius: 4px; display: block; font-family: 'Montserrat', sans-serif; }
     .btn-check:hover { background-color: #143d30 !important; }
-    .btn-submit { width: 100%; background-color: var(--gold) !important; color: #fff !important; padding: 15px; border: none; text-transform: uppercase; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; font-family: 'Montserrat', sans-serif; }
+    .btn-submit { width: 100%; background-color: #D4AF37 !important; color: #fff !important; padding: 15px; border: none; text-transform: uppercase; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; font-family: 'Montserrat', sans-serif; }
     .btn-submit:disabled { background-color: #ccc !important; cursor: not-allowed; }
     
     /* MODAL STYLES */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
     .modal-overlay.active { display: flex; opacity: 1; }
-    .booking-form-box { background: #fff; padding: 40px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); max-height: 90vh; overflow-y: auto; border-radius: 8px; }
+    .booking-form-box { background: #fff; padding: 40px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid #D4AF37; max-height: 90vh; overflow-y: auto; border-radius: 8px; }
     .close-modal { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; color: #999; }
     .form-group { margin-bottom: 15px; text-align: left; }
-    .form-label { display: block; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; color: var(--emerald); }
+    .form-label { display: block; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; color: #1B4D3E; }
     .form-input, .form-select { width: 100%; padding: 10px; border: 1px solid #ddd; font-family: 'Montserrat', sans-serif; font-size: 1rem; border-radius: 4px; box-sizing: border-box; }
-    .form-input:focus { border-color: var(--gold); outline: none; }
+    .form-input:focus { border-color: #D4AF37; outline: none; }
     
     /* UTILS */
     #roomResultArea { display: none; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; animation: fadeUp 0.5s; }
     .loading { display: none; text-align: center; margin: 10px 0; color: #C5A059; font-size: 0.9rem; font-style: italic; }
     @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
-
-    /* GLOBAL HEADER STYLES - DIPINDAH KE SINI SUPAYA KONSISTEN DI SEMUA HALAMAN */
-    #navbar { 
-        position: fixed; 
-        top: 0; 
-        left: 0;
-        width: 100%; 
-        padding: 20px 50px; 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        z-index: 1000; 
-        transition: all 0.4s ease; 
-        background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); 
-        box-sizing: border-box;
-    }
-    #navbar.scrolled { 
-        background: var(--emerald); 
-        padding: 15px 50px; 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-    }
-    .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.8rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; }
-    .nav-menu { display:flex; gap:30px; list-style:none; margin:0; padding:0; }
-    .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; letter-spacing:1px; font-weight:500; }
-    .btn-book { padding:10px 20px; border:1px solid var(--gold); color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; cursor:pointer; border-radius:4px; }
-    .mobile-menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
-    .mobile-nav-overlay { 
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        background: rgba(27, 77, 62, 0.98); 
-        z-index: 1001; 
-        display: flex; flex-direction: column; justify-content: center; align-items: center; 
-        opacity: 0; pointer-events: none; transition: 0.4s; 
-    }
-    .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
-    .mobile-nav-link { color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none; font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px; }
-
-    /* FOOTER SOCIAL */
-    .social-box { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
-    .social-icon { color: #fff; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; text-decoration: none; }
-    .social-icon:hover { background: var(--gold); border-color: var(--gold); transform: translateY(-3px); }
-
-    @media (max-width: 900px) {
-        #navbar { padding: 15px 20px; }
-        .nav-menu, .btn-book { display: none; }
-        .mobile-menu-btn { display: block; }
-    }
 `;
 
 const styleTag = document.createElement('style');
 styleTag.innerHTML = globalCSS;
 document.head.appendChild(styleTag);
 
-// Load FontAwesome sekali saja
+// Load FontAwesome
 if (!document.querySelector('link[href*="font-awesome"]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -93,14 +45,6 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 document.addEventListener('DOMContentLoaded', function() {
     loadGlobalData();
     injectBookingModal(); // Pasang Modal di halaman
-
-    // Efek scroll: header menjadi hijau saat discroll (aktif di semua halaman)
-    window.addEventListener('scroll', function() {
-        const navbar = document.getElementById('navbar');
-        if (navbar) {
-            navbar.classList.toggle('scrolled', window.scrollY > 50);
-        }
-    });
 });
 
 function loadGlobalData() {
@@ -108,7 +52,7 @@ function loadGlobalData() {
     .then(response => response.json())
     .then(data => {
         if(data.social_whatsapp) CONFIG.WA = cleanWaNumber(data.social_whatsapp);
-        if(data.api_url) CONFIG.API_URL = data.api_url; 
+        if(data.api_url) CONFIG.API_URL = data.api_url; // Pastikan API_URL ada di data.json atau hardcode dibawah
         if(!CONFIG.API_URL) CONFIG.API_URL = "https://script.google.com/macros/s/AKfycbwd6bLCita-mPXVvrjGrCExO7xR2AcSCAtw5cftZ61_fHIvP104P2Fv49FVlmMMK8rRLw/exec"; // Fallback URL
 
         const activePage = document.body.getAttribute('data-page') || 'home';
@@ -123,9 +67,9 @@ function loadGlobalData() {
 
 // A. HTML Injection
 function injectBookingModal() {
-    // Cek jika modal sudah ada, jangan buat lagi
+    // Cek jika modal sudah ada (misal di index.html lama), jangan buat lagi
     if (document.getElementById('bookingModal')) {
-        setupDateValidation();
+        setupDateValidation(); // Tetap jalankan validasi tanggal
         return;
     }
 
