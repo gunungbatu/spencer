@@ -21,7 +21,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin: 0; overflow-x: hidden; }
         h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
-        a { text-decoration: none; transition: 0.3s; }
 
         /* HERO */
         .hero { 
@@ -121,7 +120,7 @@
             margin: 30px auto; 
         }
 
-        /* CONTENT CARD (Room) */
+        /* ROOM CARD */
         .content-card { 
             display: flex; 
             width: 100%; 
@@ -219,7 +218,7 @@
             color: #fff; 
         }
 
-        /* FACILITY CARD (Rooftop & Dinner) */
+        /* FACILITY CARD */
         .facility-card { 
             display: flex; 
             align-items: center; 
@@ -229,14 +228,17 @@
         .facility-card.reverse { 
             flex-direction: row-reverse; 
         }
+        .facility-img { 
+            flex: 1; 
+        }
         .facility-img img { 
             width: 100%; 
             height: 500px; 
             object-fit: cover; 
         }
         .facility-info { 
-            padding: 80px; 
             flex: 1; 
+            padding: 80px; 
         }
         .facility-cat { 
             color: var(--gold); 
@@ -255,6 +257,21 @@
             font-size: 1rem; 
             line-height: 1.8; 
             color: #666; 
+        }
+        .facility-cta { 
+            display: inline-block; 
+            margin-top: 30px; 
+            color: var(--dark); 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            border-bottom: 1px solid var(--gold); 
+            padding-bottom: 5px; 
+            cursor: pointer; 
+        }
+        .facility-cta:hover { 
+            color: var(--gold); 
         }
 
         @keyframes fadeUp { 
@@ -377,31 +394,33 @@
 
     <!-- Rooftop Cafe -->
     <div class="facility-card reverse">
-        <div class="card-image-box">
-            <img class="card-img" id="facil_rooftop_img" src="" alt="Rooftop Cafe">
+        <div class="facility-img">
+            <img id="facil_rooftop_img" src="" alt="Rooftop Cafe">
         </div>
         <div class="facility-info">
             <span class="facility-cat" id="facil_rooftop_cat"></span>
             <h3 class="facility-title" id="facil_rooftop_title"></h3>
             <p class="facility-desc" id="facil_rooftop_desc"></p>
+            <a href="#" class="facility-cta">View Menu</a>
         </div>
     </div>
 
     <!-- Candle Light Dinner -->
     <div class="facility-card">
-        <div class="card-image-box">
-            <img class="card-img" id="facil_dinner_img" src="" alt="Candle Light Dinner">
+        <div class="facility-img">
+            <img id="facil_dinner_img" src="" alt="Candle Light Dinner">
         </div>
         <div class="facility-info">
             <span class="facility-cat" id="facil_dinner_cat"></span>
             <h3 class="facility-title" id="facil_dinner_title"></h3>
             <p class="facility-desc" id="facil_dinner_desc"></p>
+            <a href="#" class="facility-cta">Reserve Table</a>
         </div>
     </div>
 
     <footer id="global-footer"></footer>
 
-    <!-- Video Hero & Virtual Tour -->
+    <!-- Video Hero & Virtual Tour Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             fetch('data.json?' + Date.now())
