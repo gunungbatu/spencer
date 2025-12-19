@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Pastikan path ini benar sesuai struktur folder Anda -->
     <script src="assets/js/global-config.js"></script>
 
     <style>
@@ -19,148 +18,69 @@
         h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
 
         /* HERO */
-        .hero { 
-            position: relative; 
-            height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center; 
-            overflow: hidden; 
-        }
-        .hero video { 
-            position: absolute; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            object-fit: cover; 
-            z-index: -2; 
-        }
-        .hero::before { 
-            content: ''; 
-            position: absolute; 
-            inset: 0; 
-            background: rgba(0,0,0,0.4); 
-            z-index: -1; 
-        }
-        .hero-content { 
-            position: relative; 
-            z-index: 2; 
-            color: #fff; 
-        }
-        .hero-subtitle { 
-            font-size: 1.1rem; 
-            letter-spacing: 6px; 
-            text-transform: uppercase; 
-            margin-bottom: 10px; 
-            font-weight: 600; 
-        }
-        .hero-title { 
-            font-size: 5.5rem; 
-            letter-spacing: 10px; 
-            text-transform: uppercase; 
-            text-shadow: 3px 3px 20px rgba(0,0,0,0.8); 
-        }
+        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
+        .hero video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+        .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: -1; }
+        .hero-content { position: relative; z-index: 2; color: #fff; }
+        .hero-subtitle { font-size: 1.2rem; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 15px; font-weight: 600; }
+        .hero-title { font-size: 6rem; letter-spacing: 12px; text-transform: uppercase; text-shadow: 4px 4px 30px rgba(0,0,0,0.8); }
 
         /* INTRO */
-        .intro { padding: 120px 20px; text-align: center; max-width: 1000px; margin: 0 auto; background: #fff; }
-        .intro h2 { font-size: 3.8rem; color: var(--emerald); margin-bottom: 20px; }
-        .divider { width: 100px; height: 4px; background: var(--gold); margin: 40px auto; }
-        .intro p { font-size: 1.2rem; line-height: 1.9; color: #555; }
+        .intro { padding: 120px 20px; text-align: center; max-width: 1100px; margin: 0 auto; background: #fff; }
+        .intro h2 { font-size: 4rem; color: var(--emerald); margin-bottom: 30px; }
+        .divider { width: 120px; height: 4px; background: var(--gold); margin: 40px auto; }
+        .intro p { font-size: 1.3rem; line-height: 2; color: #555; max-width: 800px; margin: 0 auto; }
 
         /* SECTION TITLE */
-        .section-title { text-align: center; padding: 100px 20px 60px; background: #fff; }
-        .section-title h2 { font-size: 3.8rem; text-transform: uppercase; letter-spacing: 4px; color: var(--emerald); }
-        .section-title p { color: var(--gold); text-transform: uppercase; letter-spacing: 3px; font-size: 1rem; margin-top: 15px; font-weight: 600; }
+        .section-title { text-align: center; padding: 100px 20px 70px; background: #fff; }
+        .section-title h2 { font-size: 4rem; color: var(--emerald); text-transform: uppercase; letter-spacing: 5px; }
+        .section-title p { color: var(--gold); text-transform: uppercase; letter-spacing: 3px; font-size: 1.1rem; margin-top: 20px; font-weight: 600; }
 
         /* ROOM CARD */
-        .room-card { 
-            display: flex; 
-            align-items: stretch; 
-            min-height: 600px; 
-            background: #fff; 
-            margin-bottom: 60px; 
-            overflow: hidden; 
-        }
+        .room-card { display: flex; align-items: center; margin: 0 40px 100px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; }
         .room-card.reverse { flex-direction: row-reverse; }
         .room-img { flex: 1; }
-        .room-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .room-img img { width: 100%; height: 650px; object-fit: cover; transition: transform 0.8s ease; }
         .room-card:hover .room-img img { transform: scale(1.08); }
-        .room-info { 
-            flex: 1; 
-            padding: 80px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-        }
-        .room-cat { color: var(--gold); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 600; margin-bottom: 15px; }
-        .room-title { font-size: 3.2rem; color: var(--emerald); margin: 15px 0; line-height: 1.2; }
-        .room-desc { font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 40px; }
-        .room-specs { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 25px; 
-            padding: 25px 0; 
-            border-top: 1px solid #eee; 
-            border-bottom: 1px solid #eee; 
-            margin-bottom: 40px; 
-        }
-        .spec-item { font-size: 1.1rem; color: #444; }
-
-        .btn-tour { 
-            align-self: flex-start; 
-            padding: 14px 35px; 
-            background: transparent; 
-            border: 2px solid var(--emerald); 
-            color: var(--emerald); 
-            text-transform: uppercase; 
-            font-weight: 600; 
-            font-size: 0.9rem; 
-            letter-spacing: 2px; 
-            cursor: pointer; 
-            transition: 0.4s; 
-            border-radius: 4px; 
-        }
-        .btn-tour:hover { 
-            background: var(--emerald); 
-            color: #fff; 
-        }
+        .room-info { flex: 1; padding: 100px 80px; }
+        .room-cat { color: var(--gold); font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 600; margin-bottom: 20px; }
+        .room-title { font-size: 3.8rem; color: var(--emerald); margin-bottom: 30px; line-height: 1.2; }
+        .room-desc { font-size: 1.2rem; line-height: 1.9; color: #666; margin-bottom: 50px; }
+        .room-specs { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 50px; padding: 30px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+        .spec-item { font-size: 1.2rem; color: #444; }
+        .btn-tour { padding: 15px 40px; background: transparent; border: 2px solid var(--emerald); color: var(--emerald); text-transform: uppercase; font-weight: 600; font-size: 1rem; letter-spacing: 2px; cursor: pointer; transition: 0.4s; border-radius: 6px; }
+        .btn-tour:hover { background: var(--emerald); color: #fff; }
 
         /* FACILITY CARD */
-        .facility-card { 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 100px; 
-            background: #fff; 
-        }
+        .facility-card { display: flex; align-items: center; margin: 0 40px 120px; background: #fff; }
         .facility-card.reverse { flex-direction: row-reverse; }
-        .facility-img img { width: 100%; height: 500px; object-fit: cover; }
-        .facility-info { padding: 80px; flex: 1; }
-        .facility-cat { color: var(--gold); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
-        .facility-title { font-size: 3rem; color: var(--emerald); margin: 20px 0; }
-        .facility-desc { font-size: 1.1rem; line-height: 1.8; color: #666; }
+        .facility-img img { width: 100%; height: 550px; object-fit: cover; }
+        .facility-info { padding: 100px 80px; flex: 1; }
+        .facility-cat { color: var(--gold); font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 600; margin-bottom: 20px; }
+        .facility-title { font-size: 3.5rem; color: var(--emerald); margin-bottom: 30px; }
+        .facility-desc { font-size: 1.2rem; line-height: 1.9; color: #666; }
 
-        @media (max-width: 992px) {
-            .hero-title { font-size: 4rem; }
-            .room-card, .facility-card { flex-direction: column; }
-            .room-info, .facility-info { padding: 60px 30px; text-align: center; }
+        @media (max-width: 1024px) {
+            .room-card, .facility-card { margin: 0 20px 80px; flex-direction: column; }
+            .room-info, .facility-info { padding: 60px 40px; text-align: center; }
             .room-specs { justify-content: center; }
             .btn-tour { align-self: center; }
         }
         @media (max-width: 768px) {
-            .hero-title { font-size: 3rem; }
-            .room-title, .facility-title { font-size: 2.5rem; }
+            .hero-title { font-size: 4rem; }
+            .room-title, .facility-title { font-size: 2.8rem; }
+            .room-img img, .facility-img img { height: 400px; }
         }
     </style>
 </head>
 <body data-page="home">
 
-    <!-- Header akan di-inject otomatis oleh global-config.js -->
     <div id="global-header-container"></div>
 
     <!-- HERO WITH VIDEO -->
     <section class="hero">
-        <video autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
-            <source src="assets/Hotel.mp4" type="video/mp4">
+        <video autoplay muted loop playsinline>
+            <source id="hero_video_source" src="" type="video/mp4">
         </video>
         <div class="hero-content">
             <p class="hero-subtitle" id="hero_subtitle"></p>
@@ -267,26 +187,33 @@
 
     <footer id="global-footer"></footer>
 
-    <!-- Virtual Tour Script -->
+    <!-- Script untuk Video Hero & Virtual Tour -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('data.json?' + Date.now())
-            .then(response => response.json())
+            fetch('data.json?t=' + Date.now())
+            .then(r => r.json())
             .then(data => {
+                // Video Hero
+                const videoSource = document.querySelector('#hero_video_source');
+                if (videoSource && data.hero_video) {
+                    videoSource.src = data.hero_video;
+                    videoSource.parentElement.load();
+                }
+
                 // Virtual Tour Buttons
-                const types = ['deluxe', 'superior', 'executive'];
-                types.forEach(type => {
-                    const btn = document.getElementById(`btn_tour_${type}`);
-                    const video = data[`room_${type}_video`];
-                    if (btn && video) {
+                const rooms = ['deluxe', 'superior', 'executive'];
+                rooms.forEach(room => {
+                    const btn = document.getElementById(`btn_tour_${room}`);
+                    const videoKey = `room_${room}_video`;
+                    if (btn && data[videoKey]) {
                         btn.onclick = () => {
                             const modal = document.createElement('div');
-                            modal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:9999;';
+                            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;';
                             modal.innerHTML = `
-                                <div style="position:relative;max-width:90%;max-height:90%;">
-                                    <span style="position:absolute;top:-60px;right:0;color:#fff;font-size:3rem;cursor:pointer;z-index:10;" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                                <div style="position:relative;width:90%;max-width:1000px;">
+                                    <span style="position:absolute;top:-60px;right:0;color:#fff;font-size:3rem;cursor:pointer;" onclick="this.parentElement.parentElement.remove()">&times;</span>
                                     <video controls autoplay style="width:100%;border-radius:10px;">
-                                        <source src="${video}" type="video/mp4">
+                                        <source src="${data[videoKey]}" type="video/mp4">
                                     </video>
                                 </div>`;
                             document.body.appendChild(modal);
@@ -294,7 +221,7 @@
                     }
                 });
             })
-            .catch(err => console.error('Error loading data.json for tour:', err));
+            .catch(err => console.error('Error loading data:', err));
         });
     </script>
 
