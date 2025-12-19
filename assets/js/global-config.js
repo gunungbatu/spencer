@@ -1,11 +1,11 @@
 /**
  * GLOBAL CONFIGURATION & SYSTEM MANAGER
- * Mengatur: Config API, Header, Footer, Styling Global, Booking Engine.
+ * Mengatur: Config API, Header, Footer, Styling Global, dan Booking Engine Global.
  */
 
 var CONFIG = { API_URL: "", WA: "" };
 
-// --- 1. GLOBAL CSS INJECTION ---
+// --- 1. CSS GLOBAL INJECTION (Modal, Tombol, Header, Footer, dll) ---
 const globalCSS = `
     :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
 
@@ -14,7 +14,7 @@ const globalCSS = `
     .btn-check:hover { background-color: #143d30 !important; }
     .btn-submit { width: 100%; background-color: var(--gold) !important; color: #fff !important; padding: 15px; border: none; text-transform: uppercase; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; font-family: 'Montserrat', sans-serif; }
     .btn-submit:disabled { background-color: #ccc !important; cursor: not-allowed; }
-
+    
     /* MODAL STYLES */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
     .modal-overlay.active { display: flex; opacity: 1; }
@@ -24,17 +24,24 @@ const globalCSS = `
     .form-label { display: block; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; color: var(--emerald); }
     .form-input, .form-select { width: 100%; padding: 10px; border: 1px solid #ddd; font-family: 'Montserrat', sans-serif; font-size: 1rem; border-radius: 4px; box-sizing: border-box; }
     .form-input:focus { border-color: var(--gold); outline: none; }
-
+    
     /* UTILS */
     #roomResultArea { display: none; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; animation: fadeUp 0.5s; }
     .loading { display: none; text-align: center; margin: 10px 0; color: #C5A059; font-size: 0.9rem; font-style: italic; }
     @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
 
-    /* GLOBAL HEADER STYLES - SATU TEMPAT */
+    /* GLOBAL HEADER STYLES - DIPINDAH KE SINI SUPAYA KONSISTEN DI SEMUA HALAMAN */
     #navbar { 
-        position: fixed; top: 0; left: 0; width: 100%; padding: 20px 50px; 
-        display: flex; justify-content: space-between; align-items: center; 
-        z-index: 1000; transition: all 0.4s ease; 
+        position: fixed; 
+        top: 0; 
+        left: 0;
+        width: 100%; 
+        padding: 20px 50px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        z-index: 1000; 
+        transition: all 0.4s ease; 
         background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); 
         box-sizing: border-box;
     }
@@ -50,7 +57,8 @@ const globalCSS = `
     .mobile-menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
     .mobile-nav-overlay { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        background: rgba(27, 77, 62, 0.98); z-index: 1001; 
+        background: rgba(27, 77, 62, 0.98); 
+        z-index: 1001; 
         display: flex; flex-direction: column; justify-content: center; align-items: center; 
         opacity: 0; pointer-events: none; transition: 0.4s; 
     }
@@ -84,9 +92,9 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 // --- 2. INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', function() {
     loadGlobalData();
-    injectBookingModal();
+    injectBookingModal(); // Pasang Modal di halaman
 
-    // Scroll effect: header menjadi hijau - aktif di semua halaman
+    // Efek scroll: header menjadi hijau saat discroll (aktif di semua halaman)
     window.addEventListener('scroll', function() {
         const navbar = document.getElementById('navbar');
         if (navbar) {
@@ -100,19 +108,22 @@ function loadGlobalData() {
     .then(response => response.json())
     .then(data => {
         if(data.social_whatsapp) CONFIG.WA = cleanWaNumber(data.social_whatsapp);
-        if(data.api_url) CONFIG.API_URL = data.api_url;
-        if(!CONFIG.API_URL) CONFIG.API_URL = "https://script.google.com/macros/s/AKfycbwd6bLCita-mPXVvrjGrCExO7xR2AcSCAtw5cftZ61_fHIvP104P2Fv49FVlmMMK8rRLw/exec";
+        if(data.api_url) CONFIG.API_URL = data.api_url; 
+        if(!CONFIG.API_URL) CONFIG.API_URL = "https://script.google.com/macros/s/AKfycbwd6bLCita-mPXVvrjGrCExO7xR2AcSCAtw5cftZ61_fHIvP104P2Fv49FVlmMMK8rRLw/exec"; // Fallback URL
 
         const activePage = document.body.getAttribute('data-page') || 'home';
         generateGlobalHeader(activePage, data);
         generateGlobalFooter(data);
         magicContentLoader(data);
     })
-    .catch(err => console.error("Error loading data:", err));
+    .catch(err => console.error("Error:", err));
 }
 
-// --- 3. BOOKING ENGINE ---
+// --- 3. BOOKING ENGINE LOGIC ---
+
+// A. HTML Injection
 function injectBookingModal() {
+    // Cek jika modal sudah ada, jangan buat lagi
     if (document.getElementById('bookingModal')) {
         setupDateValidation();
         return;
@@ -160,6 +171,7 @@ function injectBookingModal() {
     setupDateValidation();
 }
 
+// B. Date Validation Logic (H+1)
 function setupDateValidation() {
     const elCheckIn = document.getElementById('checkIn');
     const elCheckOut = document.getElementById('checkOut');
@@ -176,7 +188,7 @@ function setupDateValidation() {
             date.setDate(date.getDate() + 1);
             let nextDay = date.toISOString().split('T')[0];
             elCheckOut.setAttribute('min', nextDay);
-            elCheckOut.value = nextDay;
+            elCheckOut.value = nextDay; // Auto Fill H+1
         } else {
             elCheckOut.disabled = true;
             elCheckOut.value = '';
@@ -184,6 +196,7 @@ function setupDateValidation() {
     });
 }
 
+// C. Booking Functions
 function openBooking() { document.getElementById('bookingModal').classList.add('active'); }
 function closeBooking() { document.getElementById('bookingModal').classList.remove('active'); }
 function enableSubmit() { 
@@ -253,17 +266,20 @@ function submitBooking() {
     document.getElementById('submitLoader').style.display = 'block';
     document.getElementById('btnFinalSubmit').disabled = true;
 
+    // 1. Kirim ke Google Sheets
     fetch(CONFIG.API_URL, {
         method: 'POST',
         body: JSON.stringify({ action: "book", nama: name, email: email, whatsapp: wa, checkIn: cin, checkOut: cout, kamar: roomVal, totalHarga: priceRaw })
     });
 
+    // 2. Kirim Email (PHP)
     fetch('send_email.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nama: name, email: email, whatsapp: wa, checkIn: cin, checkOut: cout, kamar: roomVal, totalHarga: priceFormatted })
     });
 
+    // 3. Redirect WA
     setTimeout(() => {
         const msg = `Halo Spencer Green, saya mau konfirmasi booking:\n\nNama: ${name}\nKamar: ${roomVal}\nCheck-In: ${cin}\nCheck-Out: ${cout}\nTotal: ${priceFormatted}\n\nMohon info pembayaran.`;
         const waNum = CONFIG.WA || "6281234567890";
@@ -326,13 +342,8 @@ function generateGlobalFooter(data) {
     el.innerHTML = `<p>&copy; ${new Date().getFullYear()} Spencer Green Hotel. All Rights Reserved.</p><div class="social-box">${html}</div>`;
 }
 
-function toggleMobileMenu() { 
-    document.getElementById('mobileNav').classList.toggle('active'); 
-}
-
-function cleanWaNumber(str) { 
-    return str.toString().replace(/[^0-9]/g, '').replace(/^08/, '628'); 
-}
+function toggleMobileMenu() { document.getElementById('mobileNav').classList.toggle('active'); }
+function cleanWaNumber(str) { return str.toString().replace(/[^0-9]/g, '').replace(/^08/, '628'); }
 
 // --- 5. MAGIC CONTENT LOADER ---
 function magicContentLoader(data) {
