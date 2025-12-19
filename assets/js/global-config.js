@@ -152,6 +152,13 @@ function magicContentLoader(data) {
         if (el) {
             if (key.startsWith('img_')) {
                 el.src = data[key];
+            } else if (key === 'hero_video') {
+                // Tambahan ini untuk video hero
+                const videoSource = document.getElementById('hero_video_source');
+                if (videoSource) {
+                    videoSource.src = data[key];
+                    videoSource.parentElement.load();
+                }
             } else if (!key.startsWith('social_')) {
                 el.innerText = data[key];
             }
