@@ -354,121 +354,101 @@
     </div>
 
     <script>
-       <script>
-    // 1. LOAD DATA DARI JSON
-    fetch('data.json?t=' + Date.now()).then(r => r.json()).then(data => {
-        const vid = document.getElementById('heroVideo');
-        const slider = document.getElementById('heroSlider');
-        if(data.hero_type === 'slider') {
-            vid.style.display = 'none';
-            slider.style.display = 'block';
-            if(data.img_hero_slide_1) document.getElementById('slide1').style.backgroundImage = `url('${data.img_hero_slide_1}')`;
-            if(data.img_hero_slide_2) document.getElementById('slide2').style.backgroundImage = `url('${data.img_hero_slide_2}')`;
-            if(data.img_hero_slide_3) document.getElementById('slide3').style.backgroundImage = `url('${data.img_hero_slide_3}')`;
-            startSlider();
-        } else {
-            slider.style.display = 'none';
-            vid.src = data.hero_video;
-        }
-
-        Object.keys(data).forEach(key => {
-            const el = document.getElementById(key);
-            if (el) {
-                if (key.startsWith('img_') || key.endsWith('_img')) el.src = data[key];
-                else if (!key.startsWith('social_')) el.innerText = data[key];
-            }
-        });
-
-        if(data.room_deluxe_video) document.getElementById('btn_tour_deluxe').onclick = () => openTour(data.room_deluxe_video);
-        if(data.room_superior_video) document.getElementById('btn_tour_superior').onclick = () => openTour(data.room_superior_video);
-        if(data.room_executive_video) document.getElementById('btn_tour_executive').onclick = () => openTour(data.room_executive_video);
+    // 1. GLOBAL INITIALIZATION
+    document.addEventListener('DOMContentLoaded', () => {
+        loadHotelData();
+        setupBookingEngine();
+        
+        // Set minimal tanggal untuk booking
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('checkIn').setAttribute('min', today);
+        document.getElementById('checkOut').setAttribute('min', today);
     });
 
-    // 2. LOGIKA BOOKING ENGINE
-    function checkRooms() {
-        const checkIn = document.getElementById('checkIn').value;
-        const checkOut = document.getElementById('checkOut').value;
-        const loader = document.getElementById('searchLoader');
-        const resultArea = document.getElementById('roomResultArea');
-        const roomSelect = document.getElementById('roomSelect');
+    // 2. LOAD DATA DARI JSON (Video Hero & Room Tour)
+    function loadHotelData() {
+        fetch('data.json?t=' + Date.now())
+            .then(r => r.json())
+            .then(data => {
+                // Hero Section Logic
+                const vid = document.getElementById('heroVideo');
+                const slider = document.getElementById('heroSlider');
+                
+                if(data.hero_type === 'slider') {
+                    if(vid) vid.style.display = 'none';
+                    if(slider) {
+                        slider.style.display = 'block';
+                        if(data.img_hero_slide_1) document.getElementById('slide1').style.backgroundImage = `url('${data.img_hero_slide_1}')`;
+                        if(data.img_hero_slide_2) document.getElementById('slide2').style.backgroundImage = `url('${data.img_hero_slide_2}')`;
+                        if(data.img_hero_slide_3) document.getElementById('slide3').style.backgroundImage = `url('${data.img_hero_slide_3}')`;
+                        startSlider();
+                    }
+                } else {
+                    if(slider) slider.style.display = 'none';
+                    if(vid && data.hero_video) vid.src = data.hero_video;
+                }
 
-        if (!checkIn || !checkOut) {
-            alert("Silakan pilih tanggal check-in dan check-out.");
-            return;
-        }
+                // Auto-fill Text & Images berdasarkan ID di JSON
+                Object.keys(data).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) {
+                        if (key.startsWith('img_') || key.endsWith('_img')) el.src = data[key];
+                        else if (!key.startsWith('social_')) el.innerText = data[key];
+                    }
+                });
 
-        if (new Date(checkIn) >= new Date(checkOut)) {
-            alert("Tanggal Check-out harus setelah tanggal Check-in.");
-            return;
-        }
+                // Set Video Tour (Penting: Menghubungkan tombol ke link video di JSON)
+                const tours = {
+                    'btn_tour_deluxe': data.room_deluxe_video,
+                    'btn_tour_superior': data.room_superior_video,
+                    'btn_tour_executive': data.room_executive_video
+                };
 
-        loader.style.display = 'block';
-        document.getElementById('btnSearch').disabled = true;
+                Object.keys(tours).forEach(id => {
+                    const btn = document.getElementById(id);
+                    if(btn && tours[id]) {
+                        btn.onclick = () => openTour(tours[id]);
+                    }
+                });
+            })
+            .catch(err => console.error("Gagal memuat data hotel:", err));
+    }
 
-        // Simulasi pengecekan ketersediaan (2 detik)
-        setTimeout(() => {
-            loader.style.display = 'none';
-            resultArea.style.display = 'block';
-            document.getElementById('btnSearch').disabled = false;
+    // 3. BOOKING ENGINE LOGIC
+    function setupBookingEngine() {
+        // Fungsi pencarian kamar
+        window.checkRooms = function() {
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+            if (!checkIn || !checkOut) return alert("Pilih tanggal!");
             
-            // Isi dropdown kamar secara dinamis
-            const rooms = ["Deluxe Room", "Superior Room", "Executive Room"];
-            roomSelect.innerHTML = rooms.map(r => `<option value="${r}">${r}</option>`).join('');
+            document.getElementById('searchLoader').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('searchLoader').style.display = 'none';
+                document.getElementById('roomResultArea').style.display = 'block';
+                const rooms = ["Deluxe Room", "Superior Room", "Executive Room"];
+                document.getElementById('roomSelect').innerHTML = rooms.map(r => `<option value="${r}">${r}</option>`).join('');
+                document.getElementById('btnFinalSubmit').disabled = false;
+            }, 1000);
+        };
+
+        // Fungsi kirim ke WhatsApp
+        window.submitBooking = function() {
+            const nama = document.getElementById('namaTamu').value;
+            const wa = document.getElementById('waTamu').value;
+            const room = document.getElementById('roomSelect').value;
+            const phone = "628123456789"; // Ganti dengan nomor hotel Anda
             
-            document.getElementById('btnFinalSubmit').disabled = false;
-        }, 1500);
+            const message = `Halo Spencer Green Hotel, saya reservasi atas nama ${nama} untuk kamar ${room}.`;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        };
     }
 
-    function submitBooking() {
-        const nama = document.getElementById('namaTamu').value;
-        const wa = document.getElementById('waTamu').value;
-        const checkIn = document.getElementById('checkIn').value;
-        const checkOut = document.getElementById('checkOut').value;
-        const room = document.getElementById('roomSelect').value;
-        const promo = document.getElementById('promoCode').value || "-";
-
-        if (!nama || !wa) {
-            alert("Mohon lengkapi Nama dan nomor WhatsApp Anda.");
-            return;
-        }
-
-        const loader = document.getElementById('submitLoader');
-        loader.style.display = 'block';
-
-        // Ganti nomor ini dengan nomor WA Spencer Green Hotel
-        const phone = "628123456789"; 
-        
-        const message = `Halo Spencer Green Hotel, saya ingin reservasi:%0A%0A` +
-                        `*Nama:* ${nama}%0A` +
-                        `*WA:* ${wa}%0A` +
-                        `*Kamar:* ${room}%0A` +
-                        `*Check In:* ${checkIn}%0A` +
-                        `*Check Out:* ${checkOut}%0A` +
-                        `*Promo:* ${promo}`;
-
-        setTimeout(() => {
-            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-            loader.style.display = 'none';
-            closeBooking();
-        }, 1000);
-    }
-
-    // 3. FUNGSI UI LAINNYA
-    function startSlider() {
-        let slides = document.querySelectorAll('.hero-slide');
-        let i = 0;
-        if(slides.length) slides[0].classList.add('active');
-        setInterval(() => {
-            slides[i].classList.remove('active');
-            i = (i+1)%slides.length;
-            slides[i].classList.add('active');
-        }, 5000);
-    }
-
+    // 4. MODAL & UI FUNCTIONS
     function openTour(src) {
         const modal = document.getElementById('tourModal');
         const vid = document.getElementById('tourVideo');
-        if(!src) return alert("Video belum tersedia.");
+        if(!src || !vid) return alert("Video belum tersedia.");
         vid.src = src;
         modal.classList.add('active');
         vid.play();
@@ -477,19 +457,25 @@
     function closeTour() {
         const modal = document.getElementById('tourModal');
         const vid = document.getElementById('tourVideo');
-        vid.pause();
-        vid.src = "";
+        if(vid) { vid.pause(); vid.src = ""; }
         modal.classList.remove('active');
+    }
+
+    function startSlider() {
+        let slides = document.querySelectorAll('.hero-slide');
+        let i = 0;
+        if(slides.length > 0) {
+            slides[0].classList.add('active');
+            setInterval(() => {
+                slides[i].classList.remove('active');
+                i = (i + 1) % slides.length;
+                slides[i].classList.add('active');
+            }, 5000);
+        }
     }
 
     function openBooking() { document.getElementById('bookingModal').classList.add('active'); }
     function closeBooking() { document.getElementById('bookingModal').classList.remove('active'); }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('checkIn').setAttribute('min', today);
-        document.getElementById('checkOut').setAttribute('min', today);
-    });
 </script>
 </body>
 </html>
