@@ -12,11 +12,6 @@
     <script src="assets/js/global-config.js"></script>
 
     <style>
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin: 0; overflow-x: hidden; }
@@ -64,7 +59,7 @@
             font-size: 5rem; 
             text-transform: uppercase; 
             letter-spacing: 5px; 
-            text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.7); 
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.7); 
             line-height: 1.1; 
             margin: 0; 
         }
@@ -94,7 +89,7 @@
             line-height: 1.8; 
         }
 
-        /* SECTION TITLE (Accommodation, Facilities) */
+        /* SECTION TITLE */
         .section-title { 
             text-align: center; 
             padding: 100px 20px 50px; 
@@ -113,14 +108,8 @@
             margin-top: 10px; 
             font-weight: 600; 
         }
-        .section-divider { 
-            width: 60px; 
-            height: 3px; 
-            background: var(--gold); 
-            margin: 30px auto; 
-        }
 
-        /* ROOM CARD */
+        /* CONTENT CARD (Room) */
         .content-card { 
             display: flex; 
             width: 100%; 
@@ -181,8 +170,8 @@
             gap: 30px; 
             margin-bottom: 30px; 
             padding: 20px 0; 
-            border-top: 2px solid var(--gold); 
-            border-bottom: 2px solid var(--gold); 
+            border-top: 1px solid var(--gold); 
+            border-bottom: 1px solid var(--gold); 
         }
         .spec-item { 
             font-size: 1rem; 
@@ -197,6 +186,19 @@
             align-items: center; 
             flex-wrap: wrap; 
             margin-top: 20px; 
+        }
+        .btn-book-room { 
+            color: var(--dark); 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            border-bottom: 1px solid var(--gold); 
+            padding-bottom: 5px; 
+            cursor: pointer; 
+        }
+        .btn-book-room:hover { 
+            color: var(--gold); 
         }
         .btn-tour { 
             background: transparent; 
@@ -322,7 +324,6 @@
     <div class="section-title">
         <h2 id="home_accom_title"></h2>
         <p id="home_accom_subtitle"></p>
-        <div class="section-divider"></div>
     </div>
 
     <!-- Deluxe Room -->
@@ -340,7 +341,8 @@
                 <span class="spec-item" id="room_deluxe_spec3"></span>
             </div>
             <div class="card-actions">
-                <button class="btn-tour" id="btn_tour_deluxe">Virtual Tour</button>
+                <span class="btn-book-room">Book Room</span>
+                <button class="btn-tour" id="btn_tour_deluxe">Room Tour</button>
             </div>
         </div>
     </div>
@@ -360,7 +362,8 @@
                 <span class="spec-item" id="room_superior_spec3"></span>
             </div>
             <div class="card-actions">
-                <button class="btn-tour" id="btn_tour_superior">Virtual Tour</button>
+                <span class="btn-book-room">Book Room</span>
+                <button class="btn-tour" id="btn_tour_superior">Room Tour</button>
             </div>
         </div>
     </div>
@@ -380,7 +383,8 @@
                 <span class="spec-item" id="room_executive_spec3"></span>
             </div>
             <div class="card-actions">
-                <button class="btn-tour" id="btn_tour_executive">Virtual Tour</button>
+                <span class="btn-book-room">Book Room</span>
+                <button class="btn-tour" id="btn_tour_executive">Room Tour</button>
             </div>
         </div>
     </div>
@@ -389,7 +393,6 @@
     <div class="section-title">
         <h2 id="home_facil_title"></h2>
         <p id="home_facil_subtitle"></p>
-        <div class="section-divider"></div>
     </div>
 
     <!-- Rooftop Cafe -->
@@ -401,7 +404,7 @@
             <span class="facility-cat" id="facil_rooftop_cat"></span>
             <h3 class="facility-title" id="facil_rooftop_title"></h3>
             <p class="facility-desc" id="facil_rooftop_desc"></p>
-            <a href="#" class="facility-cta">View Menu</a>
+            <span class="facility-cta">View Menu</span>
         </div>
     </div>
 
@@ -414,7 +417,7 @@
             <span class="facility-cat" id="facil_dinner_cat"></span>
             <h3 class="facility-title" id="facil_dinner_title"></h3>
             <p class="facility-desc" id="facil_dinner_desc"></p>
-            <a href="#" class="facility-cta">Reserve Table</a>
+            <span class="facility-cta">Reserve Table</span>
         </div>
     </div>
 
