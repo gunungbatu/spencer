@@ -7,6 +7,9 @@ var CONFIG = { API_URL: "", WA: "" };
 
 // --- 1. CSS GLOBAL INJECTION (Modal, Tombol, Loading) ---
 const globalCSS = `
+    /* PERBAIKAN: Tambahkan root variables di sini agar konsisten */
+    :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
+
     /* TOMBOL BOOKING */
     .btn-check { width: 100%; background-color: #1B4D3E !important; color: #fff !important; padding: 15px; border: none; text-transform: uppercase; font-weight: bold; cursor: pointer; margin-top: 25px; margin-bottom: 20px; letter-spacing: 1px; border-radius: 4px; display: block; font-family: 'Montserrat', sans-serif; }
     .btn-check:hover { background-color: #143d30 !important; }
@@ -27,6 +30,52 @@ const globalCSS = `
     #roomResultArea { display: none; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; animation: fadeUp 0.5s; }
     .loading { display: none; text-align: center; margin: 10px 0; color: #C5A059; font-size: 0.9rem; font-style: italic; }
     @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
+
+    /* PERBAIKAN: Semua styling header dipindah ke sini agar tidak duplikat di tiap halaman */
+    #navbar { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        padding: 20px 50px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        z-index: 1000; 
+        transition: all 0.4s ease; 
+        background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); 
+        box-sizing: border-box;
+    }
+    #navbar.scrolled { 
+        background: #1B4D3E; /* Hijau emerald saat scroll */
+        padding: 15px 50px; 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    }
+    .logo { color:#fff; font-family:'Cormorant Garamond', serif; font-size:1.8rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; }
+    .nav-menu { display:flex; gap:30px; list-style:none; margin:0; padding:0; }
+    .nav-link { color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; letter-spacing:1px; font-weight:500; }
+    .btn-book { padding:10px 20px; border:1px solid #D4AF37; color:#fff; text-decoration:none; text-transform:uppercase; font-size:0.8rem; cursor:pointer; border-radius:4px; }
+    .mobile-menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
+    .mobile-nav-overlay { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(27, 77, 62, 0.98); 
+        z-index: 1001; 
+        display: flex; flex-direction: column; justify-content: center; align-items: center; 
+        opacity: 0; pointer-events: none; transition: 0.4s; 
+    }
+    .mobile-nav-overlay.active { opacity: 1; pointer-events: auto; }
+    .mobile-nav-link { color: #fff; font-size: 1.5rem; margin: 15px 0; text-decoration: none; font-family: 'Cormorant Garamond', serif; text-transform: uppercase; letter-spacing: 2px; }
+
+    /* PERBAIKAN: Footer social style juga dipindah ke sini agar konsisten */
+    .social-box { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+    .social-icon { color: #fff; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; text-decoration: none; }
+    .social-icon:hover { background: #D4AF37; border-color: #D4AF37; transform: translateY(-3px); }
+
+    @media (max-width: 900px) {
+        #navbar { padding: 15px 20px; }
+        .nav-menu, .btn-book { display: none; }
+        .mobile-menu-btn { display: block; }
+    }
 `;
 
 const styleTag = document.createElement('style');
@@ -45,6 +94,14 @@ if (!document.querySelector('link[href*="font-awesome"]')) {
 document.addEventListener('DOMContentLoaded', function() {
     loadGlobalData();
     injectBookingModal(); // Pasang Modal di halaman
+
+    /* PERBAIKAN: Tambahkan efek scroll header menjadi hijau di semua halaman */
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('navbar');
+        if (navbar) {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        }
+    });
 });
 
 function loadGlobalData() {
