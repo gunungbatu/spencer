@@ -12,86 +12,270 @@
     <script src="assets/js/global-config.js"></script>
 
     <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
         :root { --gold: #D4AF37; --emerald: #1B4D3E; --dark: #1a1a1a; --light: #F9F9F9; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; color: #4a4a4a; background: var(--light); margin: 0; overflow-x: hidden; }
         h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dark); }
+        a { text-decoration: none; transition: 0.3s; }
 
         /* HERO */
-        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
-        .hero video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
-        .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: -1; }
-        .hero-content { position: relative; z-index: 2; color: #fff; }
-        .hero-subtitle { font-size: 1.2rem; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 20px; font-weight: 600; }
-        .hero-title { font-size: 6rem; letter-spacing: 12px; text-transform: uppercase; text-shadow: 4px 4px 30px rgba(0,0,0,0.8); }
+        .hero { 
+            position: relative; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            overflow: hidden; 
+        }
+        .hero video { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            z-index: -2; 
+        }
+        .hero::before { 
+            content: ''; 
+            position: absolute; 
+            inset: 0; 
+            background: rgba(0,0,0,0.35); 
+            z-index: -1; 
+        }
+        .hero-content { 
+            position: relative; 
+            z-index: 2; 
+        }
+        .hero-subtitle { 
+            color: #fff; 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
+            font-size: 0.9rem; 
+            margin-bottom: 15px; 
+            font-weight: 600; 
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.5); 
+        }
+        .hero-title { 
+            color: #ffffff; 
+            font-size: 5rem; 
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
+            text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.7); 
+            line-height: 1.1; 
+            margin: 0; 
+        }
 
         /* INTRO */
-        .intro { padding: 140px 20px; text-align: center; max-width: 1100px; margin: 0 auto; background: #fff; }
-        .intro h2 { font-size: 4.2rem; color: var(--emerald); margin-bottom: 30px; }
-        .divider { width: 120px; height: 4px; background: var(--gold); margin: 40px auto; }
-        .intro p { font-size: 1.3rem; line-height: 2; color: #555; max-width: 900px; margin: 0 auto; }
+        .intro { 
+            padding: 100px 20px; 
+            text-align: center; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background-color: #fff; 
+        }
+        .intro h2 { 
+            font-size: 3.5rem; 
+            color: var(--emerald); 
+            margin-bottom: 10px; 
+        }
+        .divider { 
+            width: 60px; 
+            height: 3px; 
+            background: var(--gold); 
+            margin: 30px auto; 
+        }
+        .intro p { 
+            font-size: 1.1rem; 
+            color: #666; 
+            line-height: 1.8; 
+        }
 
-        /* SECTION TITLE */
-        .section-title { text-align: center; padding: 120px 20px 80px; background: #fff; position: relative; }
-        .section-title::before { content: ''; position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 100px; height: 3px; background: var(--gold); }
-        .section-title h2 { font-size: 4rem; color: var(--emerald); text-transform: uppercase; letter-spacing: 5px; margin-bottom: 20px; }
-        .section-title p { color: var(--gold); text-transform: uppercase; letter-spacing: 3px; font-size: 1.1rem; font-weight: 600; }
+        /* SECTION TITLE (Accommodation, Facilities) */
+        .section-title { 
+            text-align: center; 
+            padding: 100px 20px 50px; 
+            background-color: #fff; 
+        }
+        .section-title h2 { 
+            font-size: 3.5rem; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+        }
+        .section-title p { 
+            color: var(--gold); 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            font-size: 0.9rem; 
+            margin-top: 10px; 
+            font-weight: 600; 
+        }
+        .section-divider { 
+            width: 60px; 
+            height: 3px; 
+            background: var(--gold); 
+            margin: 30px auto; 
+        }
 
-        /* ROOM CARD */
-        .room-card { display: flex; align-items: stretch; margin: 0 60px 120px; background: #fff; box-shadow: 0 15px 40px rgba(0,0,0,0.08); border-radius: 12px; overflow: hidden; }
-        .room-card.reverse { flex-direction: row-reverse; }
-        .room-img { flex: 1; }
-        .room-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
-        .room-card:hover .room-img img { transform: scale(1.1); }
-        .room-info { flex: 1; padding: 100px 90px; display: flex; flex-direction: column; justify-content: center; }
-        .room-cat { color: var(--gold); font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 600; margin-bottom: 20px; }
-        .room-title { font-size: 4rem; color: var(--emerald); margin-bottom: 30px; line-height: 1.2; }
-        .room-desc { font-size: 1.2rem; line-height: 1.9; color: #666; margin-bottom: 50px; }
-        .room-specs { 
+        /* CONTENT CARD (Room) */
+        .content-card { 
             display: flex; 
-            flex-wrap: wrap; 
+            width: 100%; 
+            min-height: 600px; 
+            overflow: hidden; 
+            margin-bottom: 80px; 
+        }
+        .content-card.reverse { 
+            flex-direction: row-reverse; 
+        }
+        .card-image-box { 
+            flex: 1; 
+            position: relative; 
+        }
+        .card-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.8s ease; 
+        }
+        .content-card:hover .card-img { 
+            transform: scale(1.05); 
+        }
+        .card-info-box { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            padding: 60px 80px; 
+            background-color: #fff; 
+        }
+        .content-card.reverse .card-info-box { 
+            background-color: #F9F9F9; 
+        }
+
+        .card-cat { 
+            color: var(--gold); 
+            letter-spacing: 2px; 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+        }
+        .card-title { 
+            font-size: 3rem; 
+            margin-bottom: 25px; 
+            line-height: 1.1; 
+            color: var(--emerald); 
+        }
+        .card-desc { 
+            font-size: 1rem; 
+            color: #666; 
+            margin-bottom: 30px; 
+            line-height: 1.8; 
+        }
+        .card-specs { 
+            display: flex; 
             gap: 30px; 
-            padding: 30px 0; 
-            margin-bottom: 50px; 
+            margin-bottom: 30px; 
+            padding: 20px 0; 
             border-top: 2px solid var(--gold); 
             border-bottom: 2px solid var(--gold); 
         }
-        .spec-item { font-size: 1.3rem; color: #444; }
-        .btn-tour { 
-            align-self: flex-start; 
-            padding: 16px 45px; 
-            background: transparent; 
-            border: 2px solid var(--emerald); 
-            color: var(--emerald); 
-            text-transform: uppercase; 
-            font-weight: 600; 
+        .spec-item { 
             font-size: 1rem; 
-            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            color: #333; 
+            letter-spacing: 1px; 
+        }
+
+        .card-actions { 
+            display: flex; 
+            gap: 15px; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            margin-top: 20px; 
+        }
+        .btn-tour { 
+            background: transparent; 
+            border: 1px solid #333; 
+            color: #333; 
+            padding: 10px 20px; 
+            text-transform: uppercase; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            border-radius: 4px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
             cursor: pointer; 
-            transition: 0.4s; 
-            border-radius: 6px; 
+            transition: 0.3s; 
         }
-        .btn-tour:hover { background: var(--emerald); color: #fff; }
-
-        /* FACILITY CARD */
-        .facility-card { display: flex; align-items: center; margin: 0 60px 140px; background: #fff; }
-        .facility-card.reverse { flex-direction: row-reverse; }
-        .facility-img img { width: 100%; height: 600px; object-fit: cover; }
-        .facility-info { padding: 100px 90px; flex: 1; }
-        .facility-cat { color: var(--gold); font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 600; margin-bottom: 20px; }
-        .facility-title { font-size: 3.8rem; color: var(--emerald); margin-bottom: 30px; }
-        .facility-desc { font-size: 1.2rem; line-height: 1.9; color: #666; }
-
-        @media (max-width: 1024px) {
-            .room-card, .facility-card { margin: 0 30px 100px; flex-direction: column; }
-            .room-info, .facility-info { padding: 70px 50px; text-align: center; }
-            .room-specs { justify-content: center; }
-            .btn-tour { align-self: center; }
+        .btn-tour:hover { 
+            background: #333; 
+            color: #fff; 
         }
-        @media (max-width: 768px) {
-            .hero-title { font-size: 4rem; }
-            .room-title, .facility-title { font-size: 3rem; }
-            .room-img img, .facility-img img { height: 400px; }
+
+        /* FACILITY CARD (Rooftop & Dinner) */
+        .facility-card { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 100px; 
+            background: #fff; 
+        }
+        .facility-card.reverse { 
+            flex-direction: row-reverse; 
+        }
+        .facility-img img { 
+            width: 100%; 
+            height: 500px; 
+            object-fit: cover; 
+        }
+        .facility-info { 
+            padding: 80px; 
+            flex: 1; 
+        }
+        .facility-cat { 
+            color: var(--gold); 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+        }
+        .facility-title { 
+            font-size: 3rem; 
+            color: var(--emerald); 
+            margin-bottom: 25px; 
+        }
+        .facility-desc { 
+            font-size: 1rem; 
+            line-height: 1.8; 
+            color: #666; 
+        }
+
+        @keyframes fadeUp { 
+            from {opacity:0; transform:translateY(30px);} 
+            to {opacity:1; transform:translateY(0);} 
+        }
+
+        @media (max-width: 900px) {
+            .content-card, .content-card.reverse, .facility-card, .facility-card.reverse { 
+                flex-direction: column; 
+            }
+            .card-info-box, .facility-info { 
+                padding: 40px 20px; 
+                text-align: center; 
+            }
+            .card-specs { 
+                justify-content: center; 
+            }
+            .hero-title { 
+                font-size: 3.5rem; 
+            }
         }
     </style>
 </head>
@@ -121,59 +305,66 @@
     <div class="section-title">
         <h2 id="home_accom_title"></h2>
         <p id="home_accom_subtitle"></p>
+        <div class="section-divider"></div>
     </div>
 
     <!-- Deluxe Room -->
-    <div class="room-card">
-        <div class="room-img">
-            <img id="room_deluxe_img" src="" alt="Deluxe Room">
+    <div class="content-card">
+        <div class="card-image-box">
+            <img class="card-img" id="room_deluxe_img" src="" alt="Deluxe Room">
         </div>
-        <div class="room-info">
-            <span class="room-cat" id="room_deluxe_cat"></span>
-            <h3 class="room-title" id="room_deluxe_title"></h3>
-            <p class="room-desc" id="room_deluxe_desc"></p>
-            <div class="room-specs">
+        <div class="card-info-box">
+            <span class="card-cat" id="room_deluxe_cat"></span>
+            <h3 class="card-title" id="room_deluxe_title"></h3>
+            <p class="card-desc" id="room_deluxe_desc"></p>
+            <div class="card-specs">
                 <span class="spec-item" id="room_deluxe_spec1"></span>
                 <span class="spec-item" id="room_deluxe_spec2"></span>
                 <span class="spec-item" id="room_deluxe_spec3"></span>
             </div>
-            <button class="btn-tour" id="btn_tour_deluxe">Virtual Tour</button>
+            <div class="card-actions">
+                <button class="btn-tour" id="btn_tour_deluxe">Virtual Tour</button>
+            </div>
         </div>
     </div>
 
     <!-- Superior Room -->
-    <div class="room-card reverse">
-        <div class="room-img">
-            <img id="room_superior_img" src="" alt="Superior Room">
+    <div class="content-card reverse">
+        <div class="card-image-box">
+            <img class="card-img" id="room_superior_img" src="" alt="Superior Room">
         </div>
-        <div class="room-info">
-            <span class="room-cat" id="room_superior_cat"></span>
-            <h3 class="room-title" id="room_superior_title"></h3>
-            <p class="room-desc" id="room_superior_desc"></p>
-            <div class="room-specs">
+        <div class="card-info-box">
+            <span class="card-cat" id="room_superior_cat"></span>
+            <h3 class="card-title" id="room_superior_title"></h3>
+            <p class="card-desc" id="room_superior_desc"></p>
+            <div class="card-specs">
                 <span class="spec-item" id="room_superior_spec1"></span>
                 <span class="spec-item" id="room_superior_spec2"></span>
                 <span class="spec-item" id="room_superior_spec3"></span>
             </div>
-            <button class="btn-tour" id="btn_tour_superior">Virtual Tour</button>
+            <div class="card-actions">
+                <button class="btn-tour" id="btn_tour_superior">Virtual Tour</button>
+            </div>
         </div>
     </div>
 
     <!-- Executive Room -->
-    <div class="room-card">
-        <div class="room-img">
-            <img id="room_executive_img" src="" alt="Executive Room">
+    <div class="content-card">
+        <div class="card-image-box">
+            <img class="card-img" id="room_executive_img" src="" alt="Executive Room">
         </div>
-        <div class="room-info">
-            <span class="room-cat" id="room_executive_cat"></span>
-            <h3 class="room-title" id="room_executive_title"></h3>
-            <p class="room-desc" id="room_executive_desc"></p>
-            <div class="room-specs">
+        <div class="card-info-box">
+            <span class="card-cat" id="room_executive_cat"></span>
+            <h3 class="card-title" id="room_executive_title"></h3>
+            <p class="card-desc" id="room_executive_desc"></p>
+            <div class="card-specs">
                 <span class="spec-item" id="room_executive_spec1"></span>
                 <span class="spec-item" id="room_executive_spec2"></span>
                 <span class="spec-item" id="room_executive_spec3"></span>
             </div>
-            <button class="btn-tour" id="btn_tour_executive">Virtual Tour</button>
+            <div class="card-actions">
+                <button class="btn-tour" id="btn_tour_executive">Virtual Tour</button>
+            </div>
         </div>
     </div>
 
@@ -181,12 +372,13 @@
     <div class="section-title">
         <h2 id="home_facil_title"></h2>
         <p id="home_facil_subtitle"></p>
+        <div class="section-divider"></div>
     </div>
 
     <!-- Rooftop Cafe -->
     <div class="facility-card reverse">
-        <div class="room-img">
-            <img id="facil_rooftop_img" src="" alt="Rooftop Cafe">
+        <div class="card-image-box">
+            <img class="card-img" id="facil_rooftop_img" src="" alt="Rooftop Cafe">
         </div>
         <div class="facility-info">
             <span class="facility-cat" id="facil_rooftop_cat"></span>
@@ -197,8 +389,8 @@
 
     <!-- Candle Light Dinner -->
     <div class="facility-card">
-        <div class="room-img">
-            <img id="facil_dinner_img" src="" alt="Candle Light Dinner">
+        <div class="card-image-box">
+            <img class="card-img" id="facil_dinner_img" src="" alt="Candle Light Dinner">
         </div>
         <div class="facility-info">
             <span class="facility-cat" id="facil_dinner_cat"></span>
@@ -209,13 +401,13 @@
 
     <footer id="global-footer"></footer>
 
-    <!-- Video Hero & Virtual Tour Script -->
+    <!-- Video Hero & Virtual Tour -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             fetch('data.json?' + Date.now())
             .then(r => r.json())
             .then(data => {
-                // Video Hero
+                // Hero Video
                 const videoSource = document.getElementById('hero_video_source');
                 if (videoSource && data.hero_video) {
                     videoSource.src = data.hero_video;
@@ -230,10 +422,10 @@
                             const modal = document.createElement('div');
                             modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;';
                             modal.innerHTML = `
-                                <div style="position:relative;width:90%;max-width:1000px;">
-                                    <span style="position:absolute;top:-60px;right:0;color:#fff;font-size:3rem;cursor:pointer;" onclick="this.parentElement.parentElement.remove()">&times;</span>
-                                    <video controls autoplay style="width:100%;border-radius:10px;">
-                                        <source src="${data[`room_${type}_video`]}" type="video/mp4">
+                                <div style="position:relative;width:90%;max-width:900px;">
+                                    <span style="position:absolute;top:-50px;right:0;color:#fff;font-size:2.5rem;cursor:pointer;" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                                    <video controls autoplay style="width:100%;border-radius:8px;">
+                                        <source src="${data[`room_${type}_video`]}">
                                     </video>
                                 </div>`;
                             document.body.appendChild(modal);
