@@ -66,7 +66,9 @@
                 <li class="nav-item"><a class="nav-link" href="#rooms">Rooms</a></li>
                 <li class="nav-item"><a class="nav-link" href="#facilities">Facilities</a></li>
                 <li class="nav-item">
-                    <a class="btn btn-outline-light ms-3" href="#">Book Now</a>
+                    <button class="btn btn-outline-light ms-3" data-bs-toggle="modal" data-bs-target="#bookingModal">
+    Book Now
+</button>
                 </li>
             </ul>
         </div>
@@ -182,6 +184,91 @@ window.addEventListener('scroll', () => {
     }
 });
 </script>
+    <script>
+async function submitBooking() {
+  const data = {
+    name: guestName.value,
+    email: "guest@email.com",
+    whatsapp: guestWA.value,
+    checkIn: checkIn.value,
+    checkOut: checkOut.value,
+    room: "Deluxe",
+    promo: ""
+  };
+
+  const res = await fetch("https://script.google.com/macros/s/AKfycbwJo-Kztojivqdn_IjUp3Y9YMgiCV37wCXMZOh7LP7UTZQW4HrJdw71Z4kMttvFOCO4gA/exec", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+
+  if (result.error) {
+    alert(result.error);
+  } else {
+    alert("Total Harga: Rp " + result.total.toLocaleString());
+  }
+}
+
+    const hotelWA = "6281334480210"; // GANTI nomor hotel Anda
+
+    const message =
+        `Halo Spencer Green Hotel,%0A` +
+        `Saya ingin reservasi:%0A` +
+        `Nama: ${name}%0A` +
+        `Check-in: ${checkIn}%0A` +
+        `Check-out: ${checkOut}%0A` +
+        `No. WA: ${wa}`;
+
+    window.open(`https://wa.me/${hotelWA}?text=${message}`, '_blank');
+}
+</script>
+
+<!-- BOOKING MODAL -->
+<div class="modal fade" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Check Availability</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="bookingForm">
+
+                    <div class="mb-3">
+                        <label class="form-label">Check In</label>
+                        <input type="date" id="checkIn" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Check Out</label>
+                        <input type="date" id="checkOut" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nama Tamu</label>
+                        <input type="text" id="guestName" class="form-control" placeholder="Nama Anda" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">WhatsApp</label>
+                        <input type="text" id="guestWA" class="form-control" placeholder="08xxxxxxxxxx" required>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success w-100" onclick="submitBooking()">
+                    Kirim ke WhatsApp
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
