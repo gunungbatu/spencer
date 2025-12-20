@@ -274,16 +274,35 @@ $gallery_tags  = $current_data['gallery_tags'] ?? 'Rooms, Dining, Facilities, We
         </div>
     </div>
 
-    <script>
-        let tInput = '', tPrev = '';
-        function openMediaModal(id, prev='') { tInput=id; tPrev=prev; document.getElementById('mediaModal').style.display='block'; }
-        function selectImg(path) {
-            document.getElementById(tInput).value = path;
-            if(tPrev && document.getElementById(tPrev)) {
-                if(!path.includes('.mp4')) document.getElementById(tPrev).src = path;
-            }
-            document.getElementById('mediaModal').style.display='none';
-        }
-    </script>
+   <script>
+function addGalleryItem() {
+    const cont = document.getElementById('gallery-items');
+    const tags = document.querySelector('input[name="gallery_tags"]').value.split(',');
+
+    const div = document.createElement('div');
+    div.className = 'row-item';
+
+    div.innerHTML = `
+        <img src="" style="width:80px;height:60px;object-fit:cover;border-radius:4px;background:#eee;">
+        <input type="text" name="gallery_items_src[]" style="flex:1">
+        <select name="gallery_items_tag[]">
+            ${tags.map(t => `<option value="${t.trim()}">${t.trim()}</option>`).join('')}
+        </select>
+        <button type="button" onclick="openMediaModalForGallery(this)">Pilih</button>
+        <button type="button" onclick="this.parentElement.remove()" style="color:#c00">✕</button>
+    `;
+    cont.appendChild(div);
+}
+
+function openMediaModalForGallery(btn) {
+    const row = btn.closest('.row-item');
+    const input = row.querySelector('input[name="gallery_items_src[]"]');
+    const img   = row.querySelector('img');
+
+    tInput = input;
+    tPrev  = img;
+    document.getElementById('mediaModal').style.display = 'block';
+}
+</script>
 </body>
 </html>
