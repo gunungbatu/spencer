@@ -130,7 +130,70 @@ if (isset($_POST['save_content'])) {
         
         <form method="post" enctype="multipart/form-data">
             <?php if($page == 'gallery'): ?>
-                <div class="card"><h3>GALLERY MANAGER</h3><p>Gunakan menu ini untuk menambah foto tanpa batas di halaman galeri.</p></div>
+                <?php
+$gallery_items = $current_data['gallery_items'] ?? [];
+$gallery_tags  = $current_data['gallery_tags'] ?? 'Rooms, Dining, Facilities, Wedding, MICE';
+?>
+
+<div class="card">
+    <h3>GALLERY SETTINGS</h3>
+
+    <label>Gallery Title</label>
+    <input type="text" name="gallery_title" value="<?= $current_data['gallery_title'] ?? '' ?>">
+
+    <label>Gallery Subtitle</label>
+    <input type="text" name="gallery_subtitle" value="<?= $current_data['gallery_subtitle'] ?? '' ?>">
+
+    <label>Hero Image</label>
+    <div class="media-box">
+        <img src="<?= $current_data['img_gallery_hero'] ?? '' ?>" id="prev_img_gallery_hero" class="media-prev">
+        <div style="display:flex;gap:10px;">
+            <input type="text" name="img_gallery_hero" id="img_gallery_hero"
+                   value="<?= $current_data['img_gallery_hero'] ?? '' ?>">
+            <button type="button" class="btn-pilih"
+                onclick="openMediaModal('img_gallery_hero','prev_img_gallery_hero')">
+                Pilih Server
+            </button>
+        </div>
+        <div style="margin-top:10px;">Upload Baru: <input type="file" name="img_gallery_hero"></div>
+    </div>
+
+    <label>Gallery Tags (pisahkan dengan koma)</label>
+    <input type="text" name="gallery_tags" value="<?= $gallery_tags ?>">
+</div>
+
+<div class="card">
+    <h3>GALLERY ITEMS</h3>
+
+    <div id="gallery-items">
+        <?php foreach($gallery_items as $i => $item): ?>
+        <div class="row-item">
+            <img src="<?= $item['src'] ?>" style="width:80px;height:60px;object-fit:cover;border-radius:4px;">
+
+            <input type="text"
+                   name="gallery_items_src[]"
+                   value="<?= $item['src'] ?>"
+                   style="flex:1">
+
+            <select name="gallery_items_tag[]">
+                <?php foreach(explode(',', $gallery_tags) as $tag): 
+                    $tag = trim($tag); ?>
+                    <option value="<?= $tag ?>" <?= ($item['tag']==$tag?'selected':'') ?>>
+                        <?= $tag ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <button type="button" onclick="openMediaModalForGallery(this)">Pilih</button>
+            <button type="button" onclick="this.parentElement.remove()" style="color:#c00">✕</button>
+        </div>
+        <?php endforeach; ?>
+    </div>
+
+    <button type="button" onclick="addGalleryItem()" class="btn-pilih" style="margin-top:15px;">
+        + Tambah Foto
+    </button>
+</div>
             <?php else: ?>
                 <?php 
                 // Prefix mapping sesuai file JSON Bapak
