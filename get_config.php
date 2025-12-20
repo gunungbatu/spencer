@@ -5,7 +5,7 @@ error_reporting(0); // Matikan pesan error agar tidak merusak format JSON
 
 $config_file = 'config.json';
 $response = [
-    "api_url" => "https://script.google.com/macros/s/AKfycbwd6bLCita-mPXVvrjGrCExO7xR2AcSCAtw5cftZ61_fHIvP104P2Fv49FVlmMMK8rRLw/exec",
+    "api_url" => "https://script.google.com/macros/s/AKfycbwFqHW5MHURvj9HikuBTw6IrLglUOkorh2qILwUeWCplwJ_cGt61mQM66CMIrUFlMcUdQ/exec",
     "hotel_wa" => "6281130700206"
 ];
 
