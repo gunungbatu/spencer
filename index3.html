@@ -186,43 +186,67 @@ window.addEventListener('scroll', () => {
 </script>
     <script>
 async function submitBooking() {
-  const data = {
-    name: guestName.value,
-    email: "guest@email.com",
-    whatsapp: guestWA.value,
-    checkIn: checkIn.value,
-    checkOut: checkOut.value,
-    room: "Deluxe",
-    promo: ""
-  };
+    const guestName = document.getElementById("guestName").value;
+    const guestWA   = document.getElementById("guestWA").value;
+    const checkIn   = document.getElementById("checkIn").value;
+    const checkOut  = document.getElementById("checkOut").value;
 
-  const res = await fetch("https://script.google.com/macros/s/AKfycbwJo-Kztojivqdn_IjUp3Y9YMgiCV37wCXMZOh7LP7UTZQW4HrJdw71Z4kMttvFOCO4gA/exec", {
-    method: "POST",
-    body: JSON.stringify(data)
-  });
+    if (!guestName || !guestWA || !checkIn || !checkOut) {
+        alert("Lengkapi semua data");
+        return;
+    }
 
-  const result = await res.json();
+    const payload = {
+        name: guestName,
+        email: "",
+        whatsapp: guestWA,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        room: "Deluxe",
+        promo: ""
+    };
 
-  if (result.error) {
-    alert(result.error);
-  } else {
-    alert("Total Harga: Rp " + result.total.toLocaleString());
-  }
-}
+    try {
+        const res = await fetch(
+            "https://script.google.com/macros/s/AKfycbwJo-Kztojivqdn_IjUp3Y9YMgiCV37wCXMZOh7LP7UTZQW4HrJdw71Z4kMttvFOCO4gA/exec",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }
+        );
 
-    const hotelWA = "6281334480210"; // GANTI nomor hotel Anda
+        const result = await res.json();
 
-    const message =
-        `Halo Spencer Green Hotel,%0A` +
-        `Saya ingin reservasi:%0A` +
-        `Nama: ${name}%0A` +
-        `Check-in: ${checkIn}%0A` +
-        `Check-out: ${checkOut}%0A` +
-        `No. WA: ${wa}`;
+        if (result.error) {
+            alert(result.error);
+            return;
+        }
 
-    window.open(`https://wa.me/${hotelWA}?text=${message}`, '_blank');
+        // === BUKA WHATSAPP SETELAH BERHASIL ===
+        const hotelWA = "6281334480210";
+
+        const message =
+            `Halo Spencer Green Hotel,%0A` +
+            `Saya ingin reservasi:%0A` +
+            `Nama: ${guestName}%0A` +
+            `Check-in: ${checkIn}%0A` +
+            `Check-out: ${checkOut}%0A` +
+            `No. WA: ${guestWA}%0A` +
+            `Total Estimasi: Rp ${result.total.toLocaleString()}`;
+
+        window.open(
+            `https://wa.me/${hotelWA}?text=${message}`,
+            "_blank"
+        );
+
+    } catch (err) {
+        alert("Gagal menghubungi server booking");
+        console.error(err);
+    }
 }
 </script>
+
 
 <!-- BOOKING MODAL -->
 <div class="modal fade" id="bookingModal" tabindex="-1">
